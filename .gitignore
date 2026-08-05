@@ -44,6 +44,9 @@ Thumbs.db
 models/
 *.gguf
 
+# Verification outputs (T2I PNG / T2V MP4 produced by diffusers bridge)
+verification/
+
 # Secrets
 .env
 credentials.json

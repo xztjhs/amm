@@ -16,6 +16,7 @@ import json
 import logging
 import os
 import glob
+import time
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -25,6 +26,16 @@ logger = logging.getLogger("AMM.DiffusersBridge")
 
 MODELS_DIR = os.environ.get("MODELS_DIR", "/models")
 MODELSCOPE_CACHE = os.environ.get("MODELSCOPE_CACHE", os.path.join(MODELS_DIR, "zoo", "modelscope"))
+
+# 验证产物输出目录 (T2I PNG / T2V MP4)
+# 可通过环境变量 VERIFICATION_DIR 覆盖, 默认 /amm/verification
+# 在启动时自动创建 (权限允许则失败警告, 不报错)
+VERIFICATION_DIR = os.environ.get("VERIFICATION_DIR", "/amm/verification")
+try:
+    os.makedirs(VERIFICATION_DIR, exist_ok=True)
+except Exception as _e:
+    logger.warning(f"创建 VERIFICATION_DIR={VERIFICATION_DIR} 失败: {_e}, 回退到 /tmp")
+    VERIFICATION_DIR = "/tmp"
 
 # 惰性加载的 pipeline 缓存
 _pipeline_cache: Dict[str, Any] = {}
@@ -305,6 +316,42 @@ def _to_base64_video_bytes(raw_bytes: bytes) -> str:
     return base64.b64encode(raw_bytes).decode()
 
 
+def _save_png(img, model_id: str, seed: int = -1) -> Optional[str]:
+    """保存 PNG 到 VERIFICATION_DIR, 返回绝对路径 (失败返回 None)
+
+    文件名: <model_short>__seed<seed>__<ts>.png
+    例: qwen_image__seed42__20260805-201530.png
+    """
+    try:
+        ts = time.strftime("%Y%m%d-%H%M%S")
+        short = model_id.split("/")[-1].lower().replace(".", "_").replace("-", "_") if model_id else "unknown"
+        seed_part = f"seed{seed}" if seed >= 0 else "noseed"
+        fname = f"{short}__{seed_part}__{ts}.png"
+        fpath = os.path.join(VERIFICATION_DIR, fname)
+        img.save(fpath, format="PNG")
+        return fpath
+    except Exception as e:
+        logger.warning(f"save_png 失败: {e}")
+        return None
+
+
+def _save_video_bytes(raw_bytes: bytes, model_id: str, seed: int = -1) -> Optional[str]:
+    """保存 MP4 到 VERIFICATION_DIR, 返回绝对路径"""
+    try:
+        ts = time.strftime("%Y%m%d-%H%M%S")
+        short = model_id.split("/")[-1].lower().replace(".", "_").replace("-", "_") if model_id else "unknown"
+        seed_part = f"seed{seed}" if seed >= 0 else "noseed"
+        fname = f"{short}__{seed_part}__{ts}.mp4"
+        fpath = os.path.join(VERIFICATION_DIR, fname)
+        with open(fpath, "wb") as f:
+            f.write(raw_bytes)
+        return fpath
+    except Exception as e:
+        logger.warning(f"save_video 失败: {e}")
+        return None
+
+
+
 # ============================================================
 # HTTP Handler
 # ============================================================
@@ -318,7 +365,12 @@ class DiffusersBridgeHandler:
                                   headers={"Access-Control-Allow-Origin": "*"})
 
     async def health(self, req):
-        return self._json({"status": "ok", "bridge": "diffusers"})
+        return self._json({
+            "status": "ok",
+            "bridge": "diffusers",
+            "verification_dir": VERIFICATION_DIR,
+            "verification_dir_writable": os.access(VERIFICATION_DIR, os.W_OK),
+        })
 
     # ---- T2I: 文生图 ----
     async def t2i_generate(self, req):
@@ -365,7 +417,20 @@ class DiffusersBridgeHandler:
             images = await loop.run_in_executor(None, _gen)
 
             data_list = [{"b64_json": _to_base64_png(img)} for img in images]
-            return self._json({"data": data_list, "created": int(asyncio.get_event_loop().time())})
+            resp = {"data": data_list, "created": int(asyncio.get_event_loop().time())}
+
+            # 可选: 同步落盘到 VERIFICATION_DIR (默认不落, 避免冷启动期产废文件)
+            if data.get("save_to_disk"):
+                saved_paths = []
+                for img in images:
+                    p = _save_png(img, model_cfg.get("model_id", ""), seed=seed)
+                    if p:
+                        saved_paths.append(p)
+                if saved_paths:
+                    resp["saved_paths"] = saved_paths
+                    logger.info(f"t2i saved {len(saved_paths)} PNG -> {saved_paths[0] if len(saved_paths)==1 else saved_paths}")
+
+            return self._json(resp)
 
         except Exception as e:
             logger.exception("t2i generate error")
@@ -433,10 +498,16 @@ class DiffusersBridgeHandler:
                 with open(mp4_bytes, "rb") as f:
                     mp4_bytes = f.read()
 
-            return self._json({
+            resp = {
                 "data": [{"b64_json": _to_base64_video_bytes(mp4_bytes), "mime": "video/mp4"}],
                 "created": int(asyncio.get_event_loop().time()),
-            })
+            }
+            if data.get("save_to_disk"):
+                p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
+                if p:
+                    resp["saved_paths"] = [p]
+                    logger.info(f"t2v saved MP4 -> {p}")
+            return self._json(resp)
 
         except Exception as e:
             logger.exception("t2v generate error")
@@ -510,10 +581,16 @@ class DiffusersBridgeHandler:
                 with open(mp4_bytes, "rb") as f:
                     mp4_bytes = f.read()
 
-            return self._json({
+            resp = {
                 "data": [{"b64_json": _to_base64_video_bytes(mp4_bytes), "mime": "video/mp4"}],
                 "created": int(asyncio.get_event_loop().time()),
-            })
+            }
+            if data.get("save_to_disk"):
+                p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
+                if p:
+                    resp["saved_paths"] = [p]
+                    logger.info(f"i2v saved MP4 -> {p}")
+            return self._json(resp)
 
         except Exception as e:
             logger.exception("i2v generate error")
