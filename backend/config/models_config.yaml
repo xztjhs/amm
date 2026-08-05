@@ -512,11 +512,11 @@ t2v_model:
   engine_type: "diffusers"
   available_engines: ["diffusers"]
   model_source: "modelscope"
-  model_id: "Wan-AI/Wan2.2-T2V-A14B"
+  model_id: "Wan-AI/Wan2.2-T2V-A14B-Diffusers"
   available_models:
-    - name: "Wan2.2-T2V-A14B"
+    - name: "Wan2.2-T2V-A14B-Diffusers"
       source: "modelscope"
-      model_id: "Wan-AI/Wan2.2-T2V-A14B"
+      model_id: "Wan-AI/Wan2.2-T2V-A14B-Diffusers"
       size_gb: 28.0
   parameters:
     - name: "resolution"
@@ -575,11 +575,11 @@ i2v_model:
   engine_type: "diffusers"
   available_engines: ["diffusers"]
   model_source: "modelscope"
-  model_id: "Wan-AI/Wan2.2-I2V-A14B"
+  model_id: "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
   available_models:
-    - name: "Wan2.2-I2V-A14B"
+    - name: "Wan2.2-I2V-A14B-Diffusers"
       source: "modelscope"
-      model_id: "Wan-AI/Wan2.2-I2V-A14B"
+      model_id: "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
       size_gb: 28.0
   parameters:
     - name: "resolution"

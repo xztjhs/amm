@@ -20,6 +20,29 @@ logger = logging.getLogger("AMM.Engine.Diffusers")
 DIFFUSERS_VERSIONS = [
     EngineVersion(
         engine_type="diffusers",
+        version="0.39.0",
+        install_path="/amm/backend/engines_installed/diffusers/0.39.0",
+        is_default=True,
+        metadata={
+            "install_method": "pip",
+            "pip_packages": [
+                "diffusers==0.39.0",
+                "transformers>=4.46.0",
+                "accelerate>=1.0.0",
+                "safetensors>=0.4.0",
+                "peft>=0.20.0",
+                "torch>=2.5.0",
+            ],
+            "model_scope_support": True,
+            "min_cuda": "13.0",
+            "min_gpu_memory_gb": 12,
+            "blackwell_support": True,
+            "cuda_runtime": "cu130",
+            "note": "running in vllm/0.22.1 venv (torch 2.11+cu130)",
+        },
+    ),
+    EngineVersion(
+        engine_type="diffusers",
         version="0.33.0",
         install_path="/amm/backend/engines_installed/diffusers/0.33.0",
         metadata={
@@ -31,24 +54,6 @@ DIFFUSERS_VERSIONS = [
                 "safetensors>=0.4.0",
                 "peft>=0.12.0",
                 "torch>=2.5.0",
-            ],
-            "model_scope_support": True,
-            "min_cuda": "11.8",
-            "min_gpu_memory_gb": 12,
-        },
-    ),
-    EngineVersion(
-        engine_type="diffusers",
-        version="0.31.0",
-        install_path="/amm/backend/engines_installed/diffusers/0.31.0",
-        metadata={
-            "install_method": "pip",
-            "pip_packages": [
-                "diffusers==0.31.0",
-                "transformers>=4.46.0",
-                "accelerate>=0.33.0",
-                "safetensors>=0.4.0",
-                "torch>=2.4.0",
             ],
             "model_scope_support": True,
             "min_cuda": "11.8",
