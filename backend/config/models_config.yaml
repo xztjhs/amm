@@ -582,6 +582,11 @@ i2v_model:
   available_engines: ["diffusers"]
   model_source: "modelscope"
   model_id: "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
+  # 量化与显存优化 (2026-08-05)
+  quant: "fp8"
+  compute_dtype: "bf16"
+  boundary_ratio: 0.875
+  cpu_offload: false
   available_models:
     - name: "Wan2.2-I2V-A14B-Diffusers"
       source: "modelscope"

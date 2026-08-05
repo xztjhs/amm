@@ -67,17 +67,21 @@ def _torch_dtype(name: Optional[str]):
 def _should_enable_layerwise_casting(model_cfg: Dict) -> bool:
     """决定是否对 transformer 启用 FP8 存储 + BF16 计算
 
-    触发条件 (任意一个):
-      - model_cfg["quant"] == "fp8"  (用户/管理员显式声明)
-      - model_cfg["category"] == "video" AND model_cfg["quant"] != "none"
-      - model_cfg["quant"] is None AND 总参数估计 > 20B (兜底)
+    触发逻辑 (优先级从高到低):
+      1. model_cfg["quant"] == "none"  → 强制关闭 (用户在 YAML 明确要 BF16)
+      2. model_cfg["quant"] == "fp8"   → 强制开启 (用户明确要 FP8)
+      3. model_cfg["quant"] == "bf16"  → 强制关闭 (明确 BF16)
+      4. model_cfg["quant"] 为空 / 未设:
+           - category=video AND model_id 含 A14B → 开启 (兜底, MoE 27B 必备)
+           - 其他 → 关闭 (Qwen-Image 等 8-20B 走 BF16)
     """
-    quant = (model_cfg.get("quant") or "").lower()
-    if quant == "none":
+    quant_raw = model_cfg.get("quant")
+    quant = (quant_raw or "").lower().strip() if quant_raw else ""
+    if quant in ("none", "off", "bf16", "fp16", "fp32"):
         return False
-    if quant in ("fp8", "float8"):
+    if quant in ("fp8", "float8", "float8_e4m3fn"):
         return True
-    # 默认: 视频模型 + 27B MoE → 开启
+    # 默认: 视频 MoE (Wan2.2-A14B / I2V-A14B) 开启
     if model_cfg.get("category") == "video" and "A14B" in model_cfg.get("model_id", ""):
         return True
     return False
@@ -213,10 +217,11 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
 
         if category == "image":
             from diffusers import QwenImagePipeline
+            # 适配 ModelScope 下载的权重: 没有 .bf16 变体后缀, 不能传 variant
+            # (HF 仓库才有 model.bf16.safetensors 这种, ModelScope 默认走 fp32 总分片)
             pipe = QwenImagePipeline.from_pretrained(
                 local,
                 torch_dtype=compute_dtype,
-                variant="bf16",
             )
         else:
             # 视频: 根据 model_index.json 的 _class_name 动态选择 pipeline
@@ -246,7 +251,6 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
 
             load_kwargs = dict(
                 torch_dtype=compute_dtype,
-                variant="bf16",
             )
             # boundary_ratio 在 WanPipeline.__init__ 阶段传入 (写进 config)
             if boundary_ratio is not None:
