@@ -45,8 +45,25 @@ class OpenAIBridgeHandler:
             raise
 
     async def _forward_to_vllm(self, inst, endpoint: str, body: Dict) -> Dict:
-        """转发请求到 vLLM OpenAI API"""
+        """转发请求到 vLLM OpenAI API
+
+        AMM 侧模型 id 为内部 id(如 "chat")，而 vLLM 端 served model 名是模型路径
+        (如 /models/Qwen3-4B)，因此转发前把 body["model"] 重写为 vLLM 能识别的名字。
+        """
         try:
+            model_id = os.environ.get("MODELS_DIR", "/models") + "/" + inst.selected_model_file
+            # 去掉尾部路径分隔符，得到 vLLM 的 served model 名（即 --model 参数）
+            vllm_model = model_id.rstrip("/")
+            body = dict(body)
+            body["model"] = vllm_model
+            # 硬写入文件调试，绕过 logger 可能未输出的问题
+            try:
+                import traceback
+                with open("/tmp/amm_bridge_debug.txt", "a") as f:
+                    f.write(f"rewrote model -> {vllm_model} endpoint={endpoint}\n")
+            except Exception:
+                pass
+            logger.info(f"[vllm-bridge] rewrote model '{body.get('model')}' -> '{vllm_model}' endpoint={endpoint}")
             async with aiohttp.ClientSession() as session:
                 url = f"http://127.0.0.1:{inst.port}/{endpoint}"
                 async with session.post(url, json=body, timeout=aiohttp.ClientTimeout(total=300)) as resp:
@@ -319,6 +336,13 @@ audio 并返回。模型文件与 mmproj 从 AMM 配置读取。
     # Streaming support (placeholder - pass-through)
     # ================================================================
 
+    async def _rewrite_vllm_model(self, inst, body: Dict) -> Dict:
+        """把 AMM 内部模型 id 重写为 vLLM 端 served model 名（模型路径）"""
+        body = dict(body)
+        vllm_model = (os.environ.get("MODELS_DIR", "/models") + "/" + inst.selected_model_file).rstrip("/")
+        body["model"] = vllm_model
+        return body
+
     async def chat_completions_stream(self, req):
         """POST /v1/chat/completions with stream=true - proxy stream"""
         try:
@@ -329,6 +353,10 @@ audio 并返回。模型文件与 mmproj 从 AMM 配置读取。
             inst = self._get_model_inst(model_id)
             if not inst or inst.status != "running":
                 return self._json({"error": "Model not running"}, 503)
+
+            # 若引擎为 vllm，把 model 重写为 vLLM 端 served 名（模型路径）
+            if inst.engine_type == "vllm":
+                body = self._rewrite_vllm_model(inst, body)
 
             # Stream proxy
             async with aiohttp.ClientSession() as session:
