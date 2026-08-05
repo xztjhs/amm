@@ -76,6 +76,126 @@ class OpenAIBridgeHandler:
             raise ValueError(f"Unsupported engine for embeddings: {engine_type}")
 
     # ================================================================
+    # ASR / TTS / OCR bridges (OpenAI compatible)
+    # llama-server 本身即为 OpenAI 兼容端点，这里做透传转发。
+    # ================================================================
+
+    def _resolve_model_id(self, body: Dict, fallback: str) -> str:
+        """从请求体解析模型 id，结合 body 中的 model 字段与 fallback"""
+        m = body.get("model", "")
+        if m in self.manager.instances:
+            return m
+        return fallback
+
+    async def _forward_audio(self, inst, endpoint: str, body: Dict):
+        """（保留）转发 JSON body 到 llama-server audio 端点 (TTS)"""
+        try:
+            async with aiohttp.ClientSession() as session:
+                url = f"http://127.0.0.1:{inst.port}/{endpoint}"
+                async with session.post(url, json=body, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+                    data = await resp.read()
+                    return web.Response(status=resp.status, body=data, content_type=resp.content_type or "audio/wav")
+        except Exception as e:
+            logger.error(f"forward audio {endpoint} failed: {e}")
+            return web.json_response({"error": str(e)}, status=500)
+
+    async def asr_transcriptions(self, req):
+        """POST /v1/audio/transcriptions - 语音转文字
+
+        接收 OpenAI 格式 multipart（file + model），读取文件内容后
+        重新组装 multipart 转发给 llama-server。
+        """
+        try:
+            inst = self._get_model_inst("asr")
+            if not inst:
+                return self._json({"error": "ASR 模型未配置"}, 404)
+            if inst.status != "running":
+                return self._json({"error": "ASR model is not running"}, 503)
+
+            # 读取 multipart 所有字段
+            reader = await req.multipart()
+            filename = "audio.wav"
+            audio_bytes = None
+            extra_fields = []
+            async for part in reader:
+                name = part.name
+                if part.filename:
+                    filename = part.filename
+                    audio_bytes = await part.read()
+                else:
+                    value = (await part.read()).decode("utf-8", "ignore")
+                    extra_fields.append((name, value))
+            if audio_bytes is None:
+                return self._json({"error": "缺少音频文件字段 (file)"}, 400)
+
+            # 重新组装 multipart 转发给 llama-server
+            form = aiohttp.FormData()
+            form.add_field("file", audio_bytes, filename=filename, content_type="application/octet-stream")
+            for k, v in extra_fields:
+                form.add_field(k, v)
+
+            async with aiohttp.ClientSession() as session:
+                url = f"http://127.0.0.1:{inst.port}/v1/audio/transcriptions"
+                async with session.post(url, data=form, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+                    text = await resp.text()
+                    return web.Response(status=resp.status, text=text, content_type=resp.content_type)
+        except Exception as e:
+            logger.exception("asr_transcriptions error")
+            return self._json({"error": str(e)}, 500)
+
+    async def tts_speech(self, req):
+        """POST /v1/audio/speech - 文字转语音"""
+        try:
+            body = await req.json()
+            inst = self._get_model_inst("tts")
+            if not inst:
+                return self._json({"error": "TTS 模型未配置"}, 404)
+            if inst.status != "running":
+                return self._json({"error": "TTS model is not running"}, 503)
+            # 转发 JSON body 到 llama-server /v1/audio/speech
+            async with aiohttp.ClientSession() as session:
+                url = f"http://127.0.0.1:{inst.port}/v1/audio/speech"
+                async with session.post(url, json=body, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+                    data = await resp.read()
+                    ctype = resp.content_type or "audio/wav"
+                    return web.Response(status=resp.status, body=data, content_type=ctype)
+        except Exception as e:
+            logger.exception("tts_speech error")
+            return self._json({"error": str(e)}, 500)
+
+    # OCR 复用 chat/completions（视觉多模态），OpenAI 兼容即可，无需独立端点。
+    # 但提供显式 /v1/ocr 别名提升可发现性。
+    async def ocr_handler(self, req):
+        """POST /v1/ocr - 传入图片做文字识别（转 chat 视觉请求）"""
+        try:
+            body = await req.json()
+            inst = self._get_model_inst("ocr")
+            if not inst:
+                return self._json({"error": "OCR 模型未配置"}, 404)
+            if inst.status != "running":
+                return self._json({"error": "OCR model is not running"}, 503)
+
+            # 构造多模态 chat 请求
+            image_urls = body.get("images", []) or []
+            prompt = body.get("prompt", "请识别图片中的文字，完整输出。")
+            content: list = []
+            for u in image_urls:
+                content.append({"type": "image_url", "image_url": {"url": u}})
+            content.append({"type": "text", "text": prompt})
+
+            chat_body = {
+                "model": "ocr",
+                "messages": [{"role": "user", "content": content}],
+                "max_tokens": body.get("max_tokens", 2048),
+                "temperature": body.get("temperature", 0.2),
+            }
+            result = await self._make_completion(inst, chat_body)
+            return self._json(result)
+        except Exception as e:
+            logger.exception("ocr_handler error")
+            return self._json({"error": str(e)}, 500)
+
+    # ================================================================
     # OpenAI API Endpoints
     # ================================================================
 
@@ -185,3 +305,7 @@ def setup_routes(app: web.Application, manager):
     app.router.add_get("/v1/models", h.models_list)
     app.router.add_post("/v1/chat/completions", h.chat_completions_stream)
     app.router.add_post("/v1/embeddings", h.embeddings)
+    # ASR / TTS / OCR
+    app.router.add_post("/v1/audio/transcriptions", h.asr_transcriptions)
+    app.router.add_post("/v1/audio/speech", h.tts_speech)
+    app.router.add_post("/v1/ocr", h.ocr_handler)
