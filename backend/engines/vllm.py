@@ -20,14 +20,31 @@ logger = logging.getLogger("AMM.Engine.VLLM")
 VLLM_VERSIONS = [
     EngineVersion(
         engine_type="vllm",
+        version="0.22.1",
+        install_path="/amm/backend/engines_installed/vllm/0.22.1",
+        binary_path="/amm/backend/engines_installed/vllm/0.22.1/bin/vllm",
+        is_default=True,
+        metadata={
+            "install_method": "pip",
+            "pip_package": "vllm==0.22.1",
+            "min_cuda": "13.0",
+            "min_gpu_memory_gb": 16,
+            "cuda_runtime": "cu130",
+            "blackwell_support": True,  # torch 2.11+cu130, arch 含 sm_120
+        },
+    ),
+    EngineVersion(
+        engine_type="vllm",
         version="0.8.5",
         install_path="/amm/backend/engines_installed/vllm/0.8.5",
         binary_path="/amm/backend/engines_installed/vllm/0.8.5/bin/vllm",
+        is_default=False,
         metadata={
             "install_method": "pip",
             "pip_package": "vllm==0.8.5",
             "min_cuda": "12.0",
             "min_gpu_memory_gb": 16,
+            "note": "cu124, 不支持 Blackwell sm_120",
         },
     ),
     EngineVersion(
