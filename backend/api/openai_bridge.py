@@ -51,19 +51,7 @@ class OpenAIBridgeHandler:
         (如 /models/Qwen3-4B)，因此转发前把 body["model"] 重写为 vLLM 能识别的名字。
         """
         try:
-            model_id = os.environ.get("MODELS_DIR", "/models") + "/" + inst.selected_model_file
-            # 去掉尾部路径分隔符，得到 vLLM 的 served model 名（即 --model 参数）
-            vllm_model = model_id.rstrip("/")
-            body = dict(body)
-            body["model"] = vllm_model
-            # 硬写入文件调试，绕过 logger 可能未输出的问题
-            try:
-                import traceback
-                with open("/tmp/amm_bridge_debug.txt", "a") as f:
-                    f.write(f"rewrote model -> {vllm_model} endpoint={endpoint}\n")
-            except Exception:
-                pass
-            logger.info(f"[vllm-bridge] rewrote model '{body.get('model')}' -> '{vllm_model}' endpoint={endpoint}")
+            body = self._rewrite_vllm_model(inst, body)
             async with aiohttp.ClientSession() as session:
                 url = f"http://127.0.0.1:{inst.port}/{endpoint}"
                 async with session.post(url, json=body, timeout=aiohttp.ClientTimeout(total=300)) as resp:
