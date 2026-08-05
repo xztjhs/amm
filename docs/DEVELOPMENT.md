@@ -164,6 +164,41 @@ git commit -m "your message"
 git push origin master
 ```
 
+## 部署验证环境（开发/测试机）
+
+> **平台**: 192.168.100.245 容器（Unraid 宿主）
+> **SSH**: `ssh -p 62022 root@192.168.100.245`（密码 admin@123）
+> **GPU**: NVIDIA RTX 6000D ×1（84 GB 显存）
+> **Python**: 3.11（`/usr/bin/python3.11`），系统默认 python3 为 3.9
+> **模型目录**: `/models`（7TB 共享盘，已含 HauhauCS/Qwen/ggml-org/mradermacher 等 GGUF）
+> **Web UI**: `http://192.168.100.245:60006/`
+
+### ⚠️ 显存管理铁律（务必遵守）
+
+**每类模型部署、测试、验证时，只开启 1 个模型实例，依次串行进行，严禁并发多模型同时加载**，避免 84GB 显存不够用导致 OOM 崩掉已运行的模型。
+
+推荐验证顺序（由轻到重、按当前就绪度）：
+
+1. **Chat / LLM**（llama_cpp，引擎已装 b4727）
+2. **Embedding**（llama_cpp）
+3. **ASR / TTS / Reranker / OCR**（llama_cpp）
+4. **Text-to-Image**（Diffusers，需先装引擎 + 拉取 Qwen-Image-2512）
+5. **Text-to-Video / Image-to-Video**（Diffusers，需 28GB 级模型，最重，最后验证）
+6. **vLLM**（目前引擎目录为空，需先 `install_engine_version` 安装）
+
+### 当前就绪度快照（2026-08-05）
+
+- [x] llama_cpp 引擎 b4727（llama-server 已编译）
+- [ ] vLLM 引擎（目录空，待安装验证）
+- [ ] Diffusers 引擎（目录空，待安装验证）
+- [x] AMM server 运行中
+
+### 排查/调试入口
+
+- 服务日志: `/amm/logs/amm_server.log`
+- 引擎安装目录: `/amm/backend/engines_installed/`
+- GPU 状态: `nvidia-smi`（当前基线显存占用需先核对外部任务）
+
 ## 已知问题
 
 1. **llama.cpp .so 依赖**: 编译产物需要复制到 `/usr/local/lib` 并运行 `ldconfig`
