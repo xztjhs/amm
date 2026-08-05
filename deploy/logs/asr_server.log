@@ -1,0 +1,121 @@
+error while handling argument "--flash-attn": error: unknown value for --flash-attn: '--mlock'
+
+
+usage:
+-fa,   --flash-attn [on|off|auto]       set Flash Attention use ('on', 'off', or 'auto', default: 'auto')
+                                        (env: LLAMA_ARG_FLASH_ATTN)
+
+
+to show complete usage, run with -h
+0.00.154.510 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.154.662 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.285.368 W srv  llama_server: -----------------
+0.00.285.373 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.285.374 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.285.374 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.285.374 W srv  llama_server: -----------------
+0.00.286.776 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.404.809 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.644.786 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.03.647.137 I srv  llama_server: model loaded
+0.03.647.147 I srv  llama_server: listening on http://0.0.0.0:18083
+0.00.022.456 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.022.600 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.150.874 W srv  llama_server: -----------------
+0.00.150.879 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.150.880 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.150.880 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.150.881 W srv  llama_server: -----------------
+0.00.150.996 E srv         start: couldn't bind HTTP server socket, hostname: 0.0.0.0, port: 18083
+0.00.150.997 I srv    operator(): operator(): cleaning up before exit...
+0.00.151.175 E srv  llama_server: exiting due to HTTP server error
+2.52.651.935 I srv    operator(): operator(): cleaning up before exit...
+0.00.177.050 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.177.209 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.304.504 W srv  llama_server: -----------------
+0.00.304.511 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.304.511 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.304.511 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.304.512 W srv  llama_server: -----------------
+0.00.305.927 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.373.675 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.664.163 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.03.666.587 I srv  llama_server: model loaded
+0.03.666.598 I srv  llama_server: listening on http://0.0.0.0:18083
+2.00.454.395 I srv    operator(): operator(): cleaning up before exit...
+0.00.203.701 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.203.895 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.333.802 W srv  llama_server: -----------------
+0.00.333.808 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.333.809 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.333.810 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.333.810 W srv  llama_server: -----------------
+0.00.335.216 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.222.265 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+0.01.390.661 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.01.457.001 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 1743.77 MiB on device 0: cudaMalloc failed: out of memory
+0.01.457.007 E alloc_tensor_range: failed to allocate CUDA0 buffer of size 1828474880
+0.01.480.927 E llama_model_load: error loading model: unable to allocate CUDA0 buffer
+0.01.480.936 E llama_model_load_from_file_impl: failed to load model
+0.01.480.943 E cmn  common_init_: failed to load model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.480.960 E srv    load_model: failed to load model, '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.480.963 I srv    operator(): operator(): cleaning up before exit...
+0.01.491.885 E srv  llama_server: exiting due to model loading error
+0.00.193.746 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.193.906 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.336.768 W srv  llama_server: -----------------
+0.00.336.773 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.336.774 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.336.774 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.336.774 W srv  llama_server: -----------------
+0.00.338.236 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.00.789.426 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.02.901.661 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.02.904.016 I srv  llama_server: model loaded
+0.02.904.027 I srv  llama_server: listening on http://0.0.0.0:18083
+0.25.200.965 I srv    operator(): operator(): cleaning up before exit...
+0.00.206.385 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.206.551 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.342.478 W srv  llama_server: -----------------
+0.00.342.483 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.342.483 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.342.484 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.342.484 W srv  llama_server: -----------------
+0.00.343.918 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.426.247 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.974.227 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.03.976.464 I srv  llama_server: model loaded
+0.03.976.474 I srv  llama_server: listening on http://0.0.0.0:18083
+0.00.022.428 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.022.571 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.153.164 W srv  llama_server: -----------------
+0.00.153.169 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.153.169 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.153.169 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.153.170 W srv  llama_server: -----------------
+0.00.153.269 E srv         start: couldn't bind HTTP server socket, hostname: 0.0.0.0, port: 18083
+0.00.153.276 I srv    operator(): operator(): cleaning up before exit...
+0.00.153.477 E srv  llama_server: exiting due to HTTP server error
+0.00.119.593 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.119.739 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.242.260 W srv  llama_server: -----------------
+0.00.242.265 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.242.266 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.242.266 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.242.266 W srv  llama_server: -----------------
+0.00.243.685 I srv    load_model: loading model '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf'
+0.01.570.989 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.04.709.799 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+0.04.709.896 I srv    load_model: loaded multimodal model, '/models/ggml-org/Qwen3-ASR-1.7B-GGUF/mmproj-Qwen3-ASR-1.7B-bf16.gguf'
+0.04.716.705 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.04.718.779 I srv  llama_server: model loaded
+0.04.718.790 I srv  llama_server: listening on http://0.0.0.0:18083
+0.20.920.729 I slot get_availabl: id  3 | task -1 | selected slot by LRU, t_last = -1
+0.20.920.972 I slot launch_slot_: id  3 | task 0 | processing task, is_child = 0
+0.21.087.253 I slot print_timing: id  3 | task 0 | prompt eval time =     152.14 ms /    54 tokens (    2.82 ms per token,   354.93 tokens per second)
+0.21.087.262 I slot print_timing: id  3 | task 0 |        eval time =      14.06 ms /     4 tokens (    3.52 ms per token,   284.43 tokens per second)
+0.21.087.262 I slot print_timing: id  3 | task 0 |       total time =     166.21 ms /    58 tokens
+0.21.087.266 I slot print_timing: id  3 | task 0 |    graphs reused =          3
+0.21.087.328 I slot      release: id  3 | task 0 | stop processing: n_tokens = 57, truncated = 0
+0.28.219.573 I srv    operator(): operator(): cleaning up before exit...

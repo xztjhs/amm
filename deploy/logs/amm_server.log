@@ -1,0 +1,1192 @@
+2026-08-05 08:35:09,555 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 08:35:09,555 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 08:35:09,555 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 08:35:09,586 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 08:35:09,586 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 08:35:09,587 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 08:35:43,240 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:43 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 08:35:43,248 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:43 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 08:35:47,267 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:47 +0800] "GET / HTTP/1.1" 200 238 "-" "curl/7.76.1"
+2026-08-05 08:35:47,277 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:47 +0800] "GET /api/engines HTTP/1.1" 200 1282 "-" "curl/7.76.1"
+2026-08-05 08:35:47,285 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:47 +0800] "GET /api/settings HTTP/1.1" 200 272 "-" "curl/7.76.1"
+2026-08-05 08:35:47,294 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:47 +0800] "GET /api/instances HTTP/1.1" 200 5644 "-" "curl/7.76.1"
+2026-08-05 08:35:52,833 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/0.8.5
+2026-08-05 08:35:52,834 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:52 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 258 "-" "curl/7.76.1"
+2026-08-05 08:35:52,843 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:52 +0800] "GET /api/instances/chat HTTP/1.1" 200 1096 "-" "curl/7.76.1"
+2026-08-05 08:35:52,866 [INFO] AMM.Manager: 模型 chat 引擎切换: llama_cpp/
+2026-08-05 08:35:52,866 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:52 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 258 "-" "curl/7.76.1"
+2026-08-05 08:35:52,875 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:52 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 400 272 "-" "curl/7.76.1"
+2026-08-05 08:35:56,237 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:35:56 +0800] "GET /api/engines/versions HTTP/1.1" 200 2357 "-" "curl/7.76.1"
+2026-08-05 08:36:10,749 [INFO] AMM.Manager: 模型 chat 参数已更新: {'ctx_size': 32768, 'temp': 0.7, 'n_gpu_layers': -1}
+2026-08-05 08:36:10,749 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:36:10 +0800] "PUT /api/instances/chat/parameters HTTP/1.1" 200 208 "-" "curl/7.76.1"
+2026-08-05 08:36:10,758 [INFO] AMM.Manager: 模型 chat 文件已切换: HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf
+2026-08-05 08:36:10,759 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:36:10 +0800] "PUT /api/instances/chat/model-file HTTP/1.1" 200 208 "-" "curl/7.76.1"
+2026-08-05 08:36:10,769 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:08:36:10 +0800] "GET /api/instances/chat HTTP/1.1" 200 1096 "-" "curl/7.76.1"
+2026-08-05 09:47:54,594 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 09:47:54,594 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 09:47:54,594 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 09:47:54,626 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 09:47:54,626 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 09:47:54,626 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 09:47:54,628 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 09:48:01,282 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:48:01 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 09:49:13,309 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:49:13 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "-" "curl/7.76.1"
+2026-08-05 09:50:44,084 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=10912: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 09:50:44,084 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=10912
+2026-08-05 09:50:44,085 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:50:44 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 09:50:54,100 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:50:54 +0800] "GET /api/instances/asr HTTP/1.1" 200 744 "-" "curl/7.76.1"
+2026-08-05 09:53:48,706 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 09:53:48,706 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 09:53:48,706 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 09:53:48,736 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 09:53:48,736 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 09:53:48,736 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 09:53:48,738 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 09:53:54,396 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:53:54 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 09:54:01,925 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=11163: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 09:54:01,926 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=11163
+2026-08-05 09:54:01,927 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:54:01 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 09:54:22,043 [ERROR] aiohttp.server: Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_middlewares.py", line 117, in impl
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/amm/backend/server.py", line 232, in cors_middleware
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/amm/backend/server.py", line 111, in get_instance
+    d = asdict(inst)
+        ^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1286, in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1293, in _asdict_inner
+    value = _asdict_inner(getattr(obj, f.name), dict_factory)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1327, in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 206, in _deepcopy_list
+    append(deepcopy(a, memo))
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 161, in deepcopy
+    rv = reductor(4)
+         ^^^^^^^^^^^
+TypeError: cannot pickle '_asyncio.Future' object
+2026-08-05 09:54:22,048 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:54:21 +0800] "GET /api/instances/asr HTTP/1.1" 500 246 "-" "curl/7.76.1"
+2026-08-05 09:54:46,292 [ERROR] aiohttp.server: Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/web_middlewares.py", line 117, in impl
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/amm/backend/server.py", line 232, in cors_middleware
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/amm/backend/server.py", line 111, in get_instance
+    d = asdict(inst)
+        ^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1286, in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1293, in _asdict_inner
+    value = _asdict_inner(getattr(obj, f.name), dict_factory)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/dataclasses.py", line 1327, in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 206, in _deepcopy_list
+    append(deepcopy(a, memo))
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 271, in _reconstruct
+    state = deepcopy(state, memo)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 231, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 146, in deepcopy
+    y = copier(x, memo)
+        ^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 211, in <listcomp>
+    y = [deepcopy(a, memo) for a in x]
+         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/copy.py", line 161, in deepcopy
+    rv = reductor(4)
+         ^^^^^^^^^^^
+TypeError: cannot pickle '_asyncio.Future' object
+2026-08-05 09:54:46,295 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:54:46 +0800] "GET /api/instances/asr HTTP/1.1" 500 246 "-" "curl/7.76.1"
+2026-08-05 09:55:33,253 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 09:55:33,253 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 09:55:33,253 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 09:55:33,285 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 09:55:33,285 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 09:55:33,285 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 09:55:33,287 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 09:55:38,954 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:55:38 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 09:55:38,966 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:55:38 +0800] "GET /api/instances/asr HTTP/1.1" 200 731 "-" "curl/7.76.1"
+2026-08-05 09:55:45,396 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=11539: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 09:55:45,396 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=11539
+2026-08-05 09:55:45,397 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:55:45 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 09:55:53,412 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:55:53 +0800] "GET /api/instances/asr HTTP/1.1" 200 744 "-" "curl/7.76.1"
+2026-08-05 09:56:58,078 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 09:56:58,078 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 09:56:58,078 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 09:56:58,109 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 09:56:58,109 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 09:56:58,110 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 09:56:58,111 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 09:57:03,782 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:57:03 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 09:57:09,062 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=11743: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 09:57:09,062 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=11743
+2026-08-05 09:57:09,063 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:57:09 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 09:57:17,179 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:57:17 +0800] "GET /api/instances/asr HTTP/1.1" 200 769 "-" "curl/7.76.1"
+2026-08-05 09:58:34,927 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=11918: /usr/local/bin/llama-server -m /models/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 09:58:34,928 [INFO] AMM.Manager: 模型 chat 已启动, engine=llama_cpp, PID=11918
+2026-08-05 09:58:34,928 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:58:34 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 286 "-" "curl/7.76.1"
+2026-08-05 09:58:50,146 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:58:49 +0800] "GET /api/instances/chat HTTP/1.1" 200 1135 "-" "curl/7.76.1"
+2026-08-05 09:59:13,022 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 09:59:13,022 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 09:59:13,023 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 09:59:13,053 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 09:59:13,053 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 09:59:13,053 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 09:59:13,055 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 09:59:18,720 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:59:18 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 09:59:36,161 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=12216: /usr/local/bin/llama-server -m /models/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 09:59:36,162 [INFO] AMM.Manager: 模型 chat 已启动, engine=llama_cpp, PID=12216
+2026-08-05 09:59:36,162 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:09:59:36 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 286 "-" "curl/7.76.1"
+2026-08-05 10:00:01,281 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:10:00:01 +0800] "GET /api/instances/chat HTTP/1.1" 200 1134 "-" "curl/7.76.1"
+2026-08-05 10:10:19,800 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:10:10:19 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 10:34:36,078 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET / HTTP/1.1" 200 238 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,104 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /css/style.css HTTP/1.1" 200 238 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,116 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /js/app.js HTTP/1.1" 200 252 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,162 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /api/config/models HTTP/1.1" 200 13526 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,199 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /api/engines HTTP/1.1" 200 1282 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,220 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:36,337 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:37,387 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:36 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:42,512 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:42 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:43,642 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:42 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:47,514 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:47 +0800] "GET /api/instances HTTP/1.1" 200 5681 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:48,566 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:52,509 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:52 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:53,557 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:52 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:56,187 [INFO] AMM.Engine: [llama_cpp] 进程停止 PID=12216
+2026-08-05 10:34:56,187 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 10:34:56,188 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:54 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:56,292 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:56 +0800] "GET /api/instances HTTP/1.1" 200 5652 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:57,387 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:56 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:57,410 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:57 +0800] "GET /api/instances HTTP/1.1" 200 5652 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:34:58,468 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:34:57 +0800] "GET /api/system HTTP/1.1" 200 608 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:02,410 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:02 +0800] "GET /api/instances HTTP/1.1" 200 5652 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:03,458 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:02 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:06,334 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/
+2026-08-05 10:35:06,335 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:06 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 253 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:06,354 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:06 +0800] "GET /api/config/models HTTP/1.1" 200 13526 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:07,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:07 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:08,468 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:07 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:08,656 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/
+2026-08-05 10:35:08,656 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:08 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 253 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:08,677 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:08 +0800] "GET /api/config/models HTTP/1.1" 200 13526 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:12,428 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:12 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:13,504 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:12 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:17,413 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:17 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:18,479 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:17 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:22,411 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:22 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:23,482 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:22 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:27,404 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:27 +0800] "GET /api/settings HTTP/1.1" 200 272 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:27,413 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:27 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:27,424 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:27 +0800] "GET /api/engines HTTP/1.1" 200 1282 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:28,475 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:27 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:28,477 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:28 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:32,416 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:32 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:33,485 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:32 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:37,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:37 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:38,478 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:37 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:42,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:42 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:43,487 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:42 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:47,415 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:47 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:48,485 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:52,414 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:52 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:53,485 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:52 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:57,221 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:57,299 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:57,409 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:57 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:35:58,470 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:35:57 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:00,304 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:00 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:02,417 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:02 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:03,488 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:02 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:03,489 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:03 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:06,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:06 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:07,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:07 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:08,912 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:07 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:09,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:09 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:12,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:12 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:12,846 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:12 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:13,918 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:12 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:15,856 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:15 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:17,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:17 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:18,908 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:17 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:18,910 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:18 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:21,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:21 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:22,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:22 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:23,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:22 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:24,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:24 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:27,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:27 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:27,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:27 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:28,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:27 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:30,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:30 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:32,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:32 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:33,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:32 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:33,913 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:33 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:36,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:36 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:37,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:37 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:38,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:37 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:39,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:39 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:42,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:42 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:42,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:42 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:43,914 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:42 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:45,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:45 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:47,838 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:47 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:48,910 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:48,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:48 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:51,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:51 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:52,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:52 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:53,905 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:52 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:54,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:54 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:57,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:57,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:57 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:36:58,910 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:36:57 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:00,846 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:00 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:02,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:02 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:03,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:02 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:31,848 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:31,849 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:37:32,919 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:37:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:38:31,886 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:38:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:38:31,888 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:38:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:38:32,956 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:38:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:39:31,848 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:39:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:39:31,851 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:39:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:39:32,917 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:39:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:31,865 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:31,867 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:32,928 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:37,577 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:37 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:37,580 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:37 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:38,646 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:37 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:39,303 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:39 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:42,303 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:42 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:42,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:42 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:43,483 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:42 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:45,302 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:45 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:47,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:47 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:48,479 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:48,481 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:48 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:51,302 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:51 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:52,410 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:52 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:53,481 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:52 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:54,301 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:54 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:57,301 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:57,412 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:57 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:40:58,482 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:40:57 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:00,304 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:00 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:02,411 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:02 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:03,481 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:02 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:03,487 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:03 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:06,872 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:06 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:07,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:07 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:08,917 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:07 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:09,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:09 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:12,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:12 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:12,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:12 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:13,904 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:12 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:15,888 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:15 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:17,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:17 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:18,909 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:17 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:18,910 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:18 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:21,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:21 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:22,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:22 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:23,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:22 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:24,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:24 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:27,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:27 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:27,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:27 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:28,915 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:27 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:30,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:30 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:32,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:32 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:33,909 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:32 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:33,911 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:33 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:36,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:36 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:37,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:37 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:38,912 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:37 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:39,884 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:39 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:42,936 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:42 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:42,943 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:42 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:44,053 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:43 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:45,846 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:45 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:47,847 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:47 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:48,913 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:48,915 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:48 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:51,856 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:51 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:52,864 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:52 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:53,972 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:52 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:54,858 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:54 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:57,868 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:57 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:57,870 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:41:58,963 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:41:57 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:00,857 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:00 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:02,890 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:02 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:04,027 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:02 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:04,029 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:04 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:31,876 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:31,877 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:32,935 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:32,936 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:32 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:34,045 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:32 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:34,047 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:34 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:36,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:36 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:37,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:37 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:38,912 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:37 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:39,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:39 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:42,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:42 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:42,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:42 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:43,913 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:42 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:45,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:45 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:47,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:47 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:48,907 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:47 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:48,909 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:48 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:51,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:51 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:52,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:52 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:53,907 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:52 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:54,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:54 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:57,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:57 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:57,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:57 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:42:58,912 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:42:57 +0800] "GET /api/system HTTP/1.1" 200 607 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:00,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:00 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:02,854 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:02 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:03,918 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:02 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:03,920 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:03 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:06,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:06 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:07,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:07 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:08,903 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:07 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:09,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:09 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:12,839 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:12 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:12,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:12 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:13,913 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:12 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:15,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:15 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:17,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:17 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:18,916 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:17 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:18,917 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:18 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:21,847 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:21 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:22,894 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:22 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:23,963 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:22 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:24,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:24 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:27,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:27 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:27,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:27 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:28,915 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:27 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:30,848 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:30 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:32,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:32 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:33,910 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:32 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:43:33,912 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:43:33 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:44:31,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:44:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:44:31,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:44:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:44:32,907 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:44:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:45:31,849 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:45:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:45:31,852 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:45:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:45:32,920 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:45:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:46:31,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:46:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:46:31,847 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:46:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:46:32,914 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:46:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:47:31,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:47:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:47:31,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:47:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:47:32,921 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:47:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:48:31,841 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:48:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:48:31,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:48:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:48:32,915 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:48:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:49:31,840 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:49:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:49:31,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:49:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:49:32,904 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:49:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:50:31,849 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:50:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:50:31,851 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:50:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:50:32,915 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:50:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:51:31,856 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:51:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:51:31,858 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:51:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:51:32,932 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:51:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:52:31,852 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:52:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:52:31,854 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:52:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:52:32,929 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:52:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:53:31,851 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:53:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:53:31,854 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:53:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:53:32,906 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:53:31 +0800] "GET /api/system HTTP/1.1" 200 608 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:54:31,846 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:54:31 +0800] "GET /api/instances HTTP/1.1" 200 5647 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:54:31,848 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:54:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:54:32,919 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:10:54:31 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 10:55:41,645 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 10:55:41,645 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 10:55:41,645 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 10:55:41,676 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 10:55:41,676 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 10:55:41,676 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 10:55:41,677 [INFO] AMM: AMM 启动: http://0.0.0.0:18080
+2026-08-05 10:56:52,632 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:10:56:52 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 10:56:52,643 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:10:56:52 +0800] "GET /api/instances/asr HTTP/1.1" 200 731 "-" "curl/7.76.1"
+2026-08-05 10:57:01,873 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=13577: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 10:57:01,873 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=13577
+2026-08-05 10:57:01,874 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:10:57:01 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 10:57:09,872 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:10:57:09 +0800] "GET /api/instances/asr HTTP/1.1" 200 743 "-" "curl/7.76.1"
+2026-08-05 11:05:23,737 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 11:05:23,737 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 11:05:23,737 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 11:05:23,769 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 11:05:23,769 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 11:05:23,769 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 11:05:23,771 [INFO] AMM: AMM 启动: http://0.0.0.0:18080
+2026-08-05 11:05:43,285 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:05:43 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 11:05:43,299 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:05:43 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 11:13:50,382 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 11:13:50,382 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 11:13:50,382 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 11:13:50,413 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 11:13:50,413 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 11:13:50,413 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 11:13:50,414 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 11:14:31,857 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:14:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:14:31,861 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:14:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:14:32,916 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:14:31 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:15:02,488 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:15:02 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 11:15:20,874 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:15:20 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 11:15:20,882 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:15:20 +0800] "GET /api/engines HTTP/1.1" 200 1282 "-" "curl/7.76.1"
+2026-08-05 11:15:20,921 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:15:20 +0800] "GET /api/instances/asr HTTP/1.1" 200 731 "-" "curl/7.76.1"
+2026-08-05 11:15:31,842 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:15:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:15:31,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:15:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:15:32,899 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:15:31 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:16:31,876 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:16:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:16:31,878 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:16:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:16:33,031 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:16:31 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:17:31,844 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:17:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:17:31,846 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:17:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:17:32,906 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:17:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:18:31,882 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:18:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:18:31,884 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:18:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:18:33,000 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:18:31 +0800] "GET /api/system HTTP/1.1" 200 611 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:19:31,843 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:19:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:19:31,845 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:19:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:19:33,111 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:19:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:20:31,868 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:20:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:20:31,869 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:20:31 +0800] "GET /api/instances/chat/logs?lines=100 HTTP/1.1" 200 6724 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:20:32,942 [INFO] aiohttp.access: 10.0.0.3 [05/Aug/2026:11:20:31 +0800] "GET /api/system HTTP/1.1" 200 606 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:22:50,864 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 11:22:50,864 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 11:22:50,865 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 11:22:50,897 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 11:22:50,897 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 11:22:50,898 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 11:22:50,899 [INFO] AMM: AMM 启动: http://0.0.0.0:80
+2026-08-05 11:23:06,163 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:23:06 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 11:25:10,324 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:25:10 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 11:25:10,364 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:25:10 +0800] "GET /api/engines HTTP/1.1" 200 1282 "-" "curl/7.76.1"
+2026-08-05 11:25:10,396 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:25:10 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 11:41:17,885 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:17 +0800] "GET / HTTP/1.1" 200 239 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:17,928 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:17 +0800] "GET /css/style.css HTTP/1.1" 200 238 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:17,929 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:17 +0800] "GET /js/app.js HTTP/1.1" 200 252 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:17,983 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:17 +0800] "GET /api/config/models HTTP/1.1" 200 13218 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:18,021 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:18 +0800] "GET /api/engines HTTP/1.1" 200 1282 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:18,042 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:18 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:18,060 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:18 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:19,117 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:18 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:24,143 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:24 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:25,210 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:24 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:29,869 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:29 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:30,975 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:29 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:34,850 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:34 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:35,917 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:34 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:39,142 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:39 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:40,214 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:39 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:44,848 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:44 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:45,914 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:44 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:49,849 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:49 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:50,921 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:49 +0800] "GET /api/system HTTP/1.1" 200 608 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:54,844 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:54 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:55,908 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:54 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:41:59,846 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:59 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:00,914 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:41:59 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:04,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:04 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:05,911 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:09,145 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:09 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:10,212 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:09 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:14,865 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:14 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:15,945 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:14 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:19,890 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:19 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:21,032 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:19 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:24,874 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:24 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:25,998 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:24 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:29,975 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:29 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:31,074 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:30 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:34,882 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:34 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:35,996 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:34 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:39,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:39 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:40,921 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:39 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:44,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:44 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:45,908 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:44 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:49,848 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:49 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:50,919 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:49 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:54,846 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:54 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:55,913 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:54 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:42:59,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:59 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:43:00,915 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:42:59 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:43:04,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:43:04 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:43:05,912 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:43:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:43:31,848 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:43:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:43:32,924 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:43:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:44:31,851 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:44:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:44:32,914 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:44:31 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:45:31,850 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:45:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:45:32,917 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:45:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:31,848 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:31 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:32,917 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:50,729 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:50 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:51,801 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:50 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,239 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET / HTTP/1.1" 304 179 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,264 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /js/app.js HTTP/1.1" 304 179 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,265 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /css/style.css HTTP/1.1" 304 179 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,301 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /api/config/models HTTP/1.1" 200 13218 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,334 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /api/engines HTTP/1.1" 200 1282 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,354 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:53,371 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:54,438 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:53 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:46:59,532 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:59 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:00,636 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:46:59 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:04,492 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:04 +0800] "GET /api/instances HTTP/1.1" 200 5639 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:05,557 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:05,566 [ERROR] AMM.Manager: 启动模型 chat 失败: [Errno 2] No such file or directory: 'python'
+2026-08-05 11:47:05,567 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:05 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 11:47:05,579 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:05 +0800] "GET /api/instances HTTP/1.1" 200 5651 "-" "curl/7.76.1"
+2026-08-05 11:47:09,495 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:09 +0800] "GET /api/instances HTTP/1.1" 200 5651 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:10,555 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:09 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:14,491 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:14 +0800] "GET /api/instances HTTP/1.1" 200 5651 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:15,574 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:14 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:15,606 [INFO] AMM.Manager: 模型 chat 引擎切换: llama_cpp/
+2026-08-05 11:47:15,606 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:15 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 258 "-" "curl/7.76.1"
+2026-08-05 11:47:15,617 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:15 +0800] "GET /api/instances HTTP/1.1" 200 5656 "-" "curl/7.76.1"
+2026-08-05 11:47:19,503 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:19 +0800] "GET /api/instances HTTP/1.1" 200 5656 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:20,579 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:19 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:20,591 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=14848: /usr/local/bin/llama-server -m /models/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 11:47:20,591 [INFO] AMM.Manager: 模型 chat 已启动, engine=llama_cpp, PID=14848
+2026-08-05 11:47:20,592 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:20 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 286 "-" "curl/7.76.1"
+2026-08-05 11:47:24,589 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:24 +0800] "GET /api/instances HTTP/1.1" 200 5681 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:25,637 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:24 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:29,588 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:29 +0800] "GET /api/instances HTTP/1.1" 200 5681 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:30,648 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:29 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:34,588 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:34 +0800] "GET /api/instances HTTP/1.1" 200 5683 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:35,640 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:34 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:39,588 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:39 +0800] "GET /api/instances HTTP/1.1" 200 5683 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:40,638 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:39 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:44,588 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:44 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:45,640 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:44 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:45,743 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:45 +0800] "GET /api/instances HTTP/1.1" 200 5682 "-" "curl/7.76.1"
+2026-08-05 11:47:46,583 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:46 +0800] "POST /v1/chat/completions HTTP/1.1" 200 272 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:49,590 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:49 +0800] "GET /api/instances HTTP/1.1" 200 5676 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:50,644 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:49 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:50,644 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:50 +0800] "GET /api/settings HTTP/1.1" 200 272 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:50,664 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:50 +0800] "GET /api/engines HTTP/1.1" 200 1282 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:50,688 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:50 +0800] "GET /api/engines/versions HTTP/1.1" 200 2376 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:51,587 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:50 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1439 "-" "curl/7.76.1"
+2026-08-05 11:47:54,587 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:54 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:55,651 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:54 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:47:57,040 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:47:56 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1202 "-" "curl/7.76.1"
+2026-08-05 11:47:59,585 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:59 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:00,634 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:47:59 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:03,521 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:02 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1744 "-" "curl/7.76.1"
+2026-08-05 11:48:04,589 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:04 +0800] "GET /api/instances HTTP/1.1" 200 5683 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:05,638 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:09,593 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:09 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:10,747 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:09 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:14,852 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:14 +0800] "GET /api/instances HTTP/1.1" 200 5682 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:15,906 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:14 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:15,906 [WARNING] AMM.Engine: [llama_cpp] 停止进程异常: 'NoneType' object has no attribute 'returncode'
+2026-08-05 11:48:15,907 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 11:48:15,907 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:13 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 11:48:15,916 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:15 +0800] "GET /api/instances HTTP/1.1" 200 5654 "-" "curl/7.76.1"
+2026-08-05 11:48:19,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:19 +0800] "GET /api/instances HTTP/1.1" 200 5654 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:20,901 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:19 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:20,911 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=15192: /usr/local/bin/llama-server -m /models/Qwen/Qwen3-Embedding-8B-GGUF/Qwen3-Embedding-8B-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 11:48:20,912 [INFO] AMM.Manager: 模型 embedding 已启动, engine=llama_cpp, PID=15192
+2026-08-05 11:48:20,912 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:20 +0800] "POST /api/instances/embedding/start HTTP/1.1" 200 292 "-" "curl/7.76.1"
+2026-08-05 11:48:24,976 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:24 +0800] "GET /api/instances HTTP/1.1" 200 5694 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:26,085 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:25 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:29,947 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:29 +0800] "GET /api/instances HTTP/1.1" 200 5692 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:30,999 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:29 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:34,949 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:34 +0800] "GET /api/instances HTTP/1.1" 200 5693 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:35,997 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:34 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:37,573 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:37 +0800] "POST /v1/embeddings HTTP/1.1" 200 184535 "-" "curl/7.76.1"
+2026-08-05 11:48:39,945 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:39 +0800] "GET /api/instances HTTP/1.1" 200 5691 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:40,994 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:39 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:44,849 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:44 +0800] "GET /api/instances HTTP/1.1" 200 5691 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:45,901 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:44 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:45,901 [WARNING] AMM.Engine: [llama_cpp] 停止进程异常: 'NoneType' object has no attribute 'returncode'
+2026-08-05 11:48:45,902 [INFO] AMM.Manager: 模型 embedding 已停止
+2026-08-05 11:48:45,902 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:43 +0800] "POST /api/instances/embedding/stop HTTP/1.1" 200 254 "-" "curl/7.76.1"
+2026-08-05 11:48:49,846 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:49 +0800] "GET /api/instances HTTP/1.1" 200 5661 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:50,896 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:49 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:54,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:54 +0800] "GET /api/instances HTTP/1.1" 200 5661 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:55,930 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:54 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:48:55,944 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=15455: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 11:48:55,944 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=15455
+2026-08-05 11:48:55,945 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:48:55 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 285 "-" "curl/7.76.1"
+2026-08-05 11:48:59,951 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:59 +0800] "GET /api/instances HTTP/1.1" 200 5695 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:01,003 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:48:59 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:04,946 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:04 +0800] "GET /api/instances HTTP/1.1" 200 5695 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:05,992 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:09,995 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:09 +0800] "GET /api/instances HTTP/1.1" 200 5696 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:11,044 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:10 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:23,193 [INFO] AMM.Engine: [llama_cpp] 进程停止 PID=15455
+2026-08-05 11:49:23,193 [INFO] AMM.Manager: 模型 asr 已停止
+2026-08-05 11:49:23,194 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:11:49:21 +0800] "POST /api/instances/asr/stop HTTP/1.1" 200 248 "-" "curl/7.76.1"
+2026-08-05 11:49:31,862 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:31 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:49:32,924 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:49:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:20,608 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:20 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:21,669 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:20 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:24,489 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:24 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:25,556 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:24 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:29,487 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:29 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:30,554 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:29 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:34,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:34 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:35,913 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:34 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:39,846 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:39 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:40,911 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:39 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:44,849 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:44 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:45,906 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:44 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:49,846 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:49 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:50,911 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:49 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:54,845 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:54 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:55,916 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:54 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:50:59,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:59 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:00,913 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:50:59 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:04,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:04 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:05,912 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:04 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:09,848 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:09 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:10,910 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:09 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:14,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:14 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:15,916 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:14 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:19,844 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:19 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:20,909 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:19 +0800] "GET /api/system HTTP/1.1" 200 608 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:24,847 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:24 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:51:25,908 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:51:24 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:07,327 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:07,328 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:07,329 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:07,329 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:07,352 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:08,395 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:07 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:09,458 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:08 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:10,519 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:09 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:11,580 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:10 +0800] "GET /api/system HTTP/1.1" 200 609 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:12,642 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:11 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:31,865 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:31 +0800] "GET /api/instances HTTP/1.1" 200 5668 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 11:52:32,929 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:11:52:31 +0800] "GET /api/system HTTP/1.1" 200 610 "http://192.168.100.245:60006/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:00:33,549 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:00:33,549 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:00:33,549 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:00:33,581 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:00:33,581 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:00:33,581 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:00:33,582 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:01:00,626 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:01:00 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 12:01:00,637 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:01:00 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 12:01:00,677 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:01:00 +0800] "POST /v1/chat/completions HTTP/1.1" 503 238 "-" "curl/7.76.1"
+2026-08-05 12:02:53,880 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:02:53 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:02:53,976 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:02:53 +0800] "GET /favicon.ico HTTP/1.1" 404 174 "http://192.168.100.245:60008/v1/models" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:03:38,853 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:03:38,853 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:03:38,853 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:03:38,884 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:03:38,884 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:03:38,885 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:03:38,886 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:03:47,572 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:03:47 +0800] "GET /v1/ocr HTTP/1.1" 405 205 "-" "curl/7.76.1"
+2026-08-05 12:03:55,517 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:03:55 +0800] "POST /v1/models HTTP/1.1" 405 209 "-" "curl/7.76.1"
+2026-08-05 12:03:55,531 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:03:55 +0800] "POST /v1/ocr HTTP/1.1" 503 245 "-" "curl/7.76.1"
+2026-08-05 12:04:03,936 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=419: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 12:04:03,937 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=419
+2026-08-05 12:04:03,938 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:04:03 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 283 "-" "curl/7.76.1"
+2026-08-05 12:04:16,671 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:04:16 +0800] "POST /v1/audio/transcriptions HTTP/1.1" 501 284 "-" "curl/7.76.1"
+2026-08-05 12:05:16,357 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:05:16,358 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:05:16,358 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:05:16,390 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:05:16,390 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:05:16,390 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:05:16,391 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:05:24,056 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:05:24 +0800] "GET /api/instances/asr HTTP/1.1" 200 805 "-" "curl/7.76.1"
+2026-08-05 12:05:30,512 [INFO] AMM.Manager: 模型 asr 已停止
+2026-08-05 12:05:30,512 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:05:30 +0800] "POST /api/instances/asr/stop HTTP/1.1" 200 248 "-" "curl/7.76.1"
+2026-08-05 12:05:33,539 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=812: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 12:05:33,540 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=812
+2026-08-05 12:05:33,541 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:05:33 +0800] "POST /api/instances/asr/start HTTP/1.1" 200 283 "-" "curl/7.76.1"
+2026-08-05 12:05:51,596 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:05:51 +0800] "GET /api/instances HTTP/1.1" 200 5728 "-" "curl/7.76.1"
+2026-08-05 12:06:05,266 [INFO] AMM.Manager: 模型 asr 已停止
+2026-08-05 12:06:07,278 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=906: /usr/local/bin/llama-server -m /models/ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf --host 0.0.0.0...
+2026-08-05 12:06:07,278 [INFO] AMM.Manager: 模型 asr 已启动, engine=llama_cpp, PID=906
+2026-08-05 12:06:07,279 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:05 +0800] "POST /api/instances/asr/restart HTTP/1.1" 200 283 "-" "curl/7.76.1"
+2026-08-05 12:06:19,408 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:19 +0800] "GET /api/instances HTTP/1.1" 200 5755 "-" "curl/7.76.1"
+2026-08-05 12:06:28,411 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:28 +0800] "POST /v1/audio/transcriptions HTTP/1.1" 200 347 "-" "curl/7.76.1"
+2026-08-05 12:06:37,541 [WARNING] AMM.Engine: [llama_cpp] 停止进程异常: 'NoneType' object has no attribute 'returncode'
+2026-08-05 12:06:37,541 [INFO] AMM.Manager: 模型 asr 已停止
+2026-08-05 12:06:37,542 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:35 +0800] "POST /api/instances/asr/stop HTTP/1.1" 200 248 "-" "curl/7.76.1"
+2026-08-05 12:06:44,547 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=1166: /usr/local/bin/llama-server -m /models/mradermacher/Qwen3-1.7B-Multilingual-TTS-GGUF/Qwen3-1.7B-Multilingual-TTS.Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 12:06:44,547 [INFO] AMM.Manager: 模型 tts 已启动, engine=llama_cpp, PID=1166
+2026-08-05 12:06:44,547 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:44 +0800] "POST /api/instances/tts/start HTTP/1.1" 200 284 "-" "curl/7.76.1"
+2026-08-05 12:06:58,271 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:06:58 +0800] "POST /v1/audio/speech HTTP/1.1" 404 225 "-" "curl/7.76.1"
+2026-08-05 12:07:30,836 [INFO] AMM.Engine: [llama_cpp] 进程停止 PID=1166
+2026-08-05 12:07:30,836 [INFO] AMM.Manager: 模型 tts 已停止
+2026-08-05 12:07:30,837 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:07:28 +0800] "POST /api/instances/tts/stop HTTP/1.1" 200 248 "-" "curl/7.76.1"
+2026-08-05 12:07:43,190 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:07:43 +0800] "GET /api/instances/ocr HTTP/1.1" 200 749 "-" "curl/7.76.1"
+2026-08-05 12:07:43,222 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=1555: /usr/local/bin/llama-server -m /models/sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 12:07:43,222 [INFO] AMM.Manager: 模型 ocr 已启动, engine=llama_cpp, PID=1555
+2026-08-05 12:07:43,222 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:07:43 +0800] "POST /api/instances/ocr/start HTTP/1.1" 200 284 "-" "curl/7.76.1"
+2026-08-05 12:08:07,947 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:08:07,947 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:08:07,947 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:08:07,978 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:08:07,979 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:08:07,979 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:08:07,980 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:08:15,649 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:08:15 +0800] "GET /api/instances/ocr HTTP/1.1" 200 749 "-" "curl/7.76.1"
+2026-08-05 12:08:32,408 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:08:32,408 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:08:32,408 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:08:32,439 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:08:32,439 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:08:32,440 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:08:32,441 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:08:40,116 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:08:40 +0800] "GET /api/instances/ocr HTTP/1.1" 200 811 "-" "curl/7.76.1"
+2026-08-05 12:08:48,432 [INFO] AMM.Manager: 模型 ocr 已停止
+2026-08-05 12:08:50,447 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=1881: /usr/local/bin/llama-server -m /models/sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 12:08:50,448 [INFO] AMM.Manager: 模型 ocr 已启动, engine=llama_cpp, PID=1881
+2026-08-05 12:08:50,448 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:08:48 +0800] "POST /api/instances/ocr/restart HTTP/1.1" 200 284 "-" "curl/7.76.1"
+2026-08-05 12:09:00,479 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:09:00 +0800] "GET /api/instances HTTP/1.1" 200 5792 "-" "curl/7.76.1"
+2026-08-05 12:09:11,422 [INFO] AMM.Engine: [llama_cpp] 进程启动 PID=1938: /usr/local/bin/llama-server -m /models/sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf --host 0.0.0.0...
+2026-08-05 12:09:11,423 [INFO] AMM.Manager: 模型 ocr 已启动, engine=llama_cpp, PID=1938
+2026-08-05 12:09:11,423 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:09:11 +0800] "POST /api/instances/ocr/start HTTP/1.1" 200 284 "-" "curl/7.76.1"
+2026-08-05 12:09:23,552 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:09:23 +0800] "GET /api/instances HTTP/1.1" 200 5817 "-" "curl/7.76.1"
+2026-08-05 12:09:54,489 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:09:52 +0800] "POST /v1/ocr HTTP/1.1" 200 916 "-" "curl/7.76.1"
+2026-08-05 12:10:03,566 [WARNING] AMM.Engine: [llama_cpp] 停止进程异常: 'NoneType' object has no attribute 'returncode'
+2026-08-05 12:10:03,566 [INFO] AMM.Manager: 模型 ocr 已停止
+2026-08-05 12:10:03,567 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:10:01 +0800] "POST /api/instances/ocr/stop HTTP/1.1" 200 248 "-" "curl/7.76.1"
+2026-08-05 12:21:59,009 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:21:59,009 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:21:59,009 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:21:59,041 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:21:59,041 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:21:59,041 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:21:59,043 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:22:07,715 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:22:07 +0800] "GET /api/instances/tts HTTP/1.1" 200 865 "-" "curl/7.76.1"
+2026-08-05 12:22:18,850 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:22:13 +0800] "POST /v1/audio/speech HTTP/1.1" 200 146105 "-" "curl/7.76.1"
+2026-08-05 12:22:31,129 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:12:22:25 +0800] "POST /v1/audio/speech HTTP/1.1" 200 292025 "-" "curl/7.76.1"
+2026-08-05 12:25:02,384 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:25:02 +0800] "GET /api/instances HTTP/1.1" 200 5882 "-" "curl/7.76.1"
+2026-08-05 12:25:41,194 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:25:41 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 12:26:59,050 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:26:59 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:26:59,502 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:26:59 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:26:59,895 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:26:59 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:27:00,109 [INFO] aiohttp.access: 10.0.0.4 [05/Aug/2026:12:27:00 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+2026-08-05 12:47:12,864 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:47:12 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 12:47:12,874 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:47:12 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 12:52:07,152 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:25:10 +0800] "POST /api/engines/install HTTP/1.1" 200 0 "-" "curl/7.76.1"
+2026-08-05 12:52:52,352 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:52:52 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 12:52:52,384 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:52:52 +0800] "GET /api/instances HTTP/1.1" 200 5882 "-" "curl/7.76.1"
+2026-08-05 12:52:52,393 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:52:52 +0800] "GET /api/models HTTP/1.1" 404 174 "-" "curl/7.76.1"
+2026-08-05 12:53:02,346 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/0.8.5
+2026-08-05 12:53:02,346 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:53:02 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 258 "-" "curl/7.76.1"
+2026-08-05 12:53:02,355 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:53:02 +0800] "GET /api/instances/chat HTTP/1.1" 200 1096 "-" "curl/7.76.1"
+2026-08-05 12:53:07,266 [ERROR] AMM.Manager: 启动模型 chat 失败: [Errno 2] No such file or directory: 'python'
+2026-08-05 12:53:07,267 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:53:07 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 12:53:15,282 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:53:15 +0800] "GET /api/instances/chat HTTP/1.1" 200 1108 "-" "curl/7.76.1"
+2026-08-05 12:54:21,914 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 12:54:21,914 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 12:54:21,914 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 12:54:21,946 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 12:54:21,947 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 12:54:21,947 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 12:54:21,948 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 12:54:27,598 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:54:27 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 12:54:32,531 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/0.8.5
+2026-08-05 12:54:32,532 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:54:32 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 258 "-" "curl/7.76.1"
+2026-08-05 12:54:32,552 [INFO] AMM.Engine: [vllm] 进程启动 PID=8751: /amm/backend/engines_installed/vllm/0.8.5/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf...
+2026-08-05 12:54:32,552 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=8751
+2026-08-05 12:54:32,553 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:54:32 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 280 "-" "curl/7.76.1"
+2026-08-05 12:54:42,667 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:54:42 +0800] "GET /api/instances/chat HTTP/1.1" 200 1134 "-" "curl/7.76.1"
+2026-08-05 12:56:29,068 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:56:29 +0800] "GET /api/instances/chat HTTP/1.1" 200 1134 "-" "curl/7.76.1"
+2026-08-05 12:56:29,091 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 12:56:29,092 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:12:56:29 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 13:07:56,349 [INFO] AMM.Manager: 模型 chat 文件已切换: Qwen3-4B
+2026-08-05 13:07:56,350 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:07:56 +0800] "PUT /api/instances/chat/model-file HTTP/1.1" 200 208 "-" "curl/7.76.1"
+2026-08-05 13:07:56,360 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:07:56 +0800] "GET /api/instances/chat HTTP/1.1" 200 1001 "-" "curl/7.76.1"
+2026-08-05 13:08:01,212 [INFO] AMM.Engine: [vllm] 进程启动 PID=9779: /amm/backend/engines_installed/vllm/0.8.5/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 13:08:01,213 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=9779
+2026-08-05 13:08:01,213 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:08:01 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 280 "-" "curl/7.76.1"
+2026-08-05 13:08:09,329 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:08:09 +0800] "GET /api/instances/chat HTTP/1.1" 200 1020 "-" "curl/7.76.1"
+2026-08-05 13:11:18,971 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 13:11:18,971 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:11:18 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 13:11:49,149 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:11:49 +0800] "GET /api/instances/chat HTTP/1.1" 200 1000 "-" "curl/7.76.1"
+2026-08-05 13:11:49,181 [INFO] AMM.Engine: [vllm] 进程启动 PID=10658: /amm/backend/engines_installed/vllm/0.8.5/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 13:11:49,181 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=10658
+2026-08-05 13:11:49,181 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:11:49 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 13:15:15,855 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 13:15:15,855 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:13:15:15 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 15:24:33,711 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 15:24:33,711 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 15:24:33,712 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 15:24:33,744 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 15:24:33,744 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 15:24:33,744 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 15:24:33,745 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 15:24:39,401 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:24:39 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 15:24:52,407 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:24:52 +0800] "GET /api/engines/versions HTTP/1.1" 200 2795 "-" "curl/7.76.1"
+2026-08-05 15:24:52,442 [INFO] AMM.Manager: 模型 chat 引擎切换: vllm/0.22.1
+2026-08-05 15:24:52,442 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:24:52 +0800] "PUT /api/instances/chat/engine HTTP/1.1" 200 259 "-" "curl/7.76.1"
+2026-08-05 15:24:52,451 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:24:52 +0800] "GET /api/instances/chat HTTP/1.1" 200 991 "-" "curl/7.76.1"
+2026-08-05 15:25:00,004 [INFO] AMM.Engine: [vllm] 进程启动 PID=15996: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:25:00,005 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=15996
+2026-08-05 15:25:00,005 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:24:59 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:25:05,127 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:25:05 +0800] "GET /api/instances/chat HTTP/1.1" 200 1031 "-" "curl/7.76.1"
+2026-08-05 15:28:33,403 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 15:28:33,403 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:28:33 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 15:28:35,419 [INFO] AMM.Manager: 模型 chat 参数已更新: {'gpu_memory_utilization': 0.65}
+2026-08-05 15:28:35,419 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:28:35 +0800] "PUT /api/instances/chat/parameters HTTP/1.1" 200 208 "-" "curl/7.76.1"
+2026-08-05 15:28:35,441 [INFO] AMM.Engine: [vllm] 进程启动 PID=17013: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:28:35,442 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=17013
+2026-08-05 15:28:35,443 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:28:35 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:34:19,417 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:34:19 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 15:34:19,435 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:34:19 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 15:36:59,443 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 15:36:59,443 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 15:36:59,443 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 15:36:59,475 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 15:36:59,475 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 15:36:59,475 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 15:36:59,476 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 15:37:05,131 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:37:05 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 15:37:44,021 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:37:44 +0800] "GET /api/instances/chat HTTP/1.1" 200 992 "-" "curl/7.76.1"
+2026-08-05 15:37:44,050 [INFO] AMM.Engine: [vllm] 进程启动 PID=18350: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:37:44,050 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=18350
+2026-08-05 15:37:44,051 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:37:44 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:39:12,160 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:39:12 +0800] "POST /v1/chat/completions HTTP/1.1" 503 238 "-" "curl/7.76.1"
+2026-08-05 15:40:00,791 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:40:00 +0800] "GET /api/instances/chat HTTP/1.1" 200 1028 "-" "curl/7.76.1"
+2026-08-05 15:40:24,846 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:40:24 +0800] "POST /v1/chat/completions HTTP/1.1" 503 238 "-" "curl/7.76.1"
+2026-08-05 15:40:56,060 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:40:56 +0800] "GET /api/instances/chat HTTP/1.1" 200 1028 "-" "curl/7.76.1"
+2026-08-05 15:42:17,591 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 15:42:17,591 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:42:17 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 15:42:17,613 [INFO] AMM.Engine: [vllm] 进程启动 PID=19049: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:42:17,613 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=19049
+2026-08-05 15:42:17,613 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:42:17 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:42:20,730 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:42:20 +0800] "GET /api/instances/chat HTTP/1.1" 200 1031 "-" "curl/7.76.1"
+2026-08-05 15:44:55,182 [INFO] AMM.Manager: 模型 chat 已停止
+2026-08-05 15:44:55,183 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:44:55 +0800] "POST /api/instances/chat/stop HTTP/1.1" 200 249 "-" "curl/7.76.1"
+2026-08-05 15:44:55,204 [INFO] AMM.Engine: [vllm] 进程启动 PID=19528: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:44:55,204 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=19528
+2026-08-05 15:44:55,205 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:44:55 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:44:58,323 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:44:58 +0800] "GET /api/instances/chat HTTP/1.1" 200 1030 "-" "curl/7.76.1"
+2026-08-05 15:46:01,595 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:46:01 +0800] "GET /api/instances/chat HTTP/1.1" 200 1031 "-" "curl/7.76.1"
+2026-08-05 15:47:11,135 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:47:11 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 15:52:28,045 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 15:52:28,045 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 15:52:28,045 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 15:52:28,077 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 15:52:28,077 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 15:52:28,077 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 15:52:28,079 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 15:52:34,717 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:52:34 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 15:52:34,728 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:52:34 +0800] "GET /api/instances/chat HTTP/1.1" 200 992 "-" "curl/7.76.1"
+2026-08-05 15:54:16,317 [INFO] AMM.Engine: [vllm] 进程启动 PID=20544: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 15:54:16,317 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=20544
+2026-08-05 15:54:16,318 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:54:16 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 15:54:19,432 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:54:19 +0800] "GET /api/instances/chat HTTP/1.1" 200 1031 "-" "curl/7.76.1"
+2026-08-05 15:55:20,224 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:15:55:20 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 16:01:38,012 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:01:38,012 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:01:38,012 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:01:38,045 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:01:38,045 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:01:38,045 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:01:38,046 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:01:44,692 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:01:44 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:03:58,930 [INFO] AMM.Engine: [vllm] 进程启动 PID=21545: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:03:58,930 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=21545
+2026-08-05 16:03:58,930 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:03:58 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:05:05,167 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:05:05 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 16:13:24,312 [INFO] AMM.Engine: [vllm] 进程启动 PID=22438: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:13:24,312 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=22438
+2026-08-05 16:13:24,313 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:13:24 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:14:18,507 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:14:18 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 16:19:03,821 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:19:03,821 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:19:03,821 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:19:03,854 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:19:03,854 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:19:03,855 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:19:03,856 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:19:10,499 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:19:10 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:19:10,521 [INFO] AMM.Engine: [vllm] 进程启动 PID=23253: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:19:10,522 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=23253
+2026-08-05 16:19:10,523 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:19:10 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:20:16,748 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:20:16 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 16:24:38,118 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:24:38,119 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:24:38,119 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:24:38,151 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:24:38,152 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:24:38,152 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:24:38,153 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:24:44,793 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:24:44 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:24:44,803 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:24:44 +0800] "GET /api/instances/chat HTTP/1.1" 200 992 "-" "curl/7.76.1"
+2026-08-05 16:24:58,476 [INFO] AMM.Engine: [vllm] 进程启动 PID=24175: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:24:58,476 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=24175
+2026-08-05 16:24:58,477 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:24:58 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:26:04,716 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:26:04 +0800] "POST /v1/chat/completions HTTP/1.1" 200 306 "-" "curl/7.76.1"
+2026-08-05 16:27:18,209 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:27:18,209 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:27:18,209 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:27:18,241 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:27:18,241 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:27:18,241 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:27:18,242 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:27:24,901 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:27:24 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:27:26,986 [INFO] AMM.Engine: [vllm] 进程启动 PID=24989: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:27:26,986 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=24989
+2026-08-05 16:27:26,987 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:27:26 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:28:33,208 [ERROR] AMM.OpenAIBridge: chat_completions_stream error
+Traceback (most recent call last):
+  File "/amm/backend/api/openai_bridge.py", line 364, in chat_completions_stream
+    async with session.post(url, json=body, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/client.py", line 1693, in __aenter__
+    self._resp: _RetType_co = await self._coro
+                              ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/client.py", line 611, in _request
+    data = payload.JsonPayload(json, dumps=self._json_serialize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib64/python3.11/site-packages/aiohttp/payload.py", line 949, in __init__
+    dumps(value).encode(encoding),
+    ^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.11/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type coroutine is not JSON serializable
+2026-08-05 16:28:33,212 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:28:33 +0800] "POST /v1/chat/completions HTTP/1.1" 500 272 "-" "curl/7.76.1"
+2026-08-05 16:29:09,004 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:29:09,004 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:29:09,004 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:29:09,036 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:29:09,036 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:29:09,036 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:29:09,038 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:29:15,690 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:29:15 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:29:17,729 [INFO] AMM.Engine: [vllm] 进程启动 PID=25769: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:29:17,729 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=25769
+2026-08-05 16:29:17,730 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:29:17 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:30:24,715 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:30:23 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1576 "-" "curl/7.76.1"
+2026-08-05 16:30:36,252 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:30:36 +0800] "GET /api/instances/chat HTTP/1.1" 200 1030 "-" "curl/7.76.1"
+2026-08-05 16:30:36,289 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:30:36 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:30:43,847 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:16:30:43 +0800] "GET /v1/models HTTP/1.1" 200 835 "-" "curl/7.76.1"
+2026-08-05 16:30:44,355 [INFO] aiohttp.access: 192.168.100.74 [05/Aug/2026:16:30:43 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1424 "-" "curl/7.76.1"
+2026-08-05 16:31:32,461 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:31:32 +0800] "GET /api/instances/chat HTTP/1.1" 200 1029 "-" "curl/7.76.1"
+2026-08-05 16:32:05,105 [INFO] AMM.Engine: 引擎已注册: llama_cpp (llama.cpp (GGUF))
+2026-08-05 16:32:05,105 [INFO] AMM.Engine: 引擎已注册: vllm (vLLM)
+2026-08-05 16:32:05,105 [INFO] AMM.Engine: 引擎已注册: diffusers (Diffusers (HuggingFace))
+2026-08-05 16:32:05,137 [INFO] AMM.Manager: 配置已加载: /amm/backend/config/models_config.yaml
+2026-08-05 16:32:05,137 [INFO] AMM.Manager: 端口检查完成，9 个模型
+2026-08-05 16:32:05,137 [INFO] AMM.Manager: 状态已恢复: 9 个模型
+2026-08-05 16:32:05,139 [INFO] AMM: AMM 启动: http://0.0.0.0:8080
+2026-08-05 16:32:11,784 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:32:11 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:32:13,825 [INFO] AMM.Engine: [vllm] 进程启动 PID=26836: /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python -m vllm.entrypoints.openai.api_server --model /models/Qwen3-4B...
+2026-08-05 16:32:13,825 [INFO] AMM.Manager: 模型 chat 已启动, engine=vllm, PID=26836
+2026-08-05 16:32:13,826 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:32:13 +0800] "POST /api/instances/chat/start HTTP/1.1" 200 281 "-" "curl/7.76.1"
+2026-08-05 16:33:20,336 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:33:20 +0800] "POST /v1/chat/completions HTTP/1.1" 200 1049 "-" "curl/7.76.1"
+2026-08-05 16:33:42,984 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:33:42 +0800] "GET /api/health HTTP/1.1" 200 250 "-" "curl/7.76.1"
+2026-08-05 16:33:43,094 [INFO] aiohttp.access: 127.0.0.1 [05/Aug/2026:16:33:42 +0800] "GET /api/instances HTTP/1.1" 200 5817 "-" "curl/7.76.1"

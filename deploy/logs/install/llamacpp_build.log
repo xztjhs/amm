@@ -1,0 +1,48 @@
+=== CUDA 版本 ===
+Cuda compilation tools, release 13.2, V13.2.86
+=== 从 codeload 下载 llama.cpp master tarball ===
+download http: 200 size: 36559053 time: 248.848048s
+  源码解压完成: AGENTS.md
+AUTHORS
+CLAUDE.md
+CMakeLists.txt
+CMakePresets.json
+  源码大小: 165M
+
+=== CMake 配置 (GGML_CUDA=ON, Blackwell) ===
+
+-- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR) 
+CMake Warning at vendor/cpp-httplib/CMakeLists.txt:152 (message):
+  OpenSSL not found, HTTPS support disabled
+
+
+-- Generating embedded license file for target: llama-app
+-- Configuring done (7.3s)
+-- Generating done (0.4s)
+-- Build files have been written to: /tmp/llama_build_cuda13/build
+
+=== 编译 (128 线程) ===
+[ 98%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server-http.cpp.o
+[ 98%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server.cpp.o
+[100%] Building CXX object tools/server/CMakeFiles/llama-server-impl.dir/server-models.cpp.o
+[100%] Linking CXX shared library ../../bin/libllama-server-impl.so
+[100%] Built target llama-server-impl
+[100%] Building CXX object tools/server/CMakeFiles/llama-server.dir/main.cpp.o
+[100%] Linking CXX executable ../../bin/llama-server
+[100%] Built target llama-server
+
+=== 复制全部产物 (含 .so) ===
+  bin 内容:
+total 20
+drwxr-xr-x 2 root root    26 Aug  5 09:34 .
+drwxr-xr-x 3 root root    25 Aug  5 08:55 ..
+-rwxr-xr-x 1 root root 17448 Aug  5 09:34 llama-server
+
+=== 验证 ===
+--- 直接运行 ---
+version: 0 (unknown)
+built with GNU 11.5.0 for Linux x86_64
+--- 系统运行 ---
+version: 0 (unknown)
+built with GNU 11.5.0 for Linux x86_64
+LLAMACPP_BUILD_DONE

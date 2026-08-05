@@ -1,0 +1,21 @@
+0.00.116.688 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.116.837 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.243.827 W srv  llama_server: embeddings enabled with n_batch (1024) > n_ubatch (512)
+0.00.243.833 W srv  llama_server: setting n_batch = n_ubatch = 512 to avoid assertion failure
+0.00.244.167 W srv  llama_server: -----------------
+0.00.244.171 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.244.171 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.244.171 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.244.172 W srv  llama_server: -----------------
+0.00.245.601 I srv    load_model: loading model '/models/Qwen/Qwen3-Embedding-8B-GGUF/Qwen3-Embedding-8B-Q4_K_M.gguf'
+0.02.204.566 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.06.889.162 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 8192, kv_unified = 'true'
+0.06.893.701 I srv  llama_server: model loaded
+0.06.893.712 I srv  llama_server: listening on http://0.0.0.0:18082
+0.16.561.746 I slot get_availabl: id  3 | task -1 | selected slot by LRU, t_last = -1
+0.16.561.776 I slot launch_slot_: id  3 | task 0 | processing task, is_child = 0
+0.16.561.803 I slot get_availabl: id  2 | task -1 | selected slot by LRU, t_last = -1
+0.16.561.806 I slot launch_slot_: id  2 | task 1 | processing task, is_child = 0
+0.16.599.746 I slot      release: id  2 | task 1 | stop processing: n_tokens = 4, truncated = 0
+0.16.599.780 I slot      release: id  3 | task 0 | stop processing: n_tokens = 6, truncated = 0
+0.22.512.477 I srv    operator(): operator(): cleaning up before exit...

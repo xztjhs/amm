@@ -1,0 +1,62 @@
+0.00.169.482 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.169.626 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.305.063 W srv  llama_server: -----------------
+0.00.305.068 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.305.069 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.305.069 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.305.069 W srv  llama_server: -----------------
+0.00.306.472 I srv    load_model: loading model '/models/sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf'
+0.03.219.374 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.03.221.255 I srv  llama_server: model loaded
+0.03.221.265 I srv  llama_server: listening on http://0.0.0.0:18086
+0.00.021.432 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.021.782 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.156.430 W srv  llama_server: -----------------
+0.00.156.435 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.156.435 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.156.435 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.156.436 W srv  llama_server: -----------------
+0.00.156.548 E srv         start: couldn't bind HTTP server socket, hostname: 0.0.0.0, port: 18086
+0.00.156.549 I srv    operator(): operator(): cleaning up before exit...
+0.00.156.725 E srv  llama_server: exiting due to HTTP server error
+0.00.119.756 W DEPRECATED: --mlock is deprecated. use --load-mode mlock instead
+0.00.119.902 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.242.746 W srv  llama_server: -----------------
+0.00.242.751 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.242.752 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.242.752 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.242.752 W srv  llama_server: -----------------
+0.00.244.175 I srv    load_model: loading model '/models/sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf'
+0.04.238.944 W warmup: flash attention is not supported by the current backend; falling back to CPU (performance will be degraded)
+0.04.238.953 W warmup: *****************************************************************
+0.04.238.953 W warmup: WARNING: the CLIP graph uses unsupported operators by the backend
+0.04.238.954 W warmup:          the performance will be suboptimal                      
+0.04.238.954 W warmup:          list of unsupported ops (backend=CUDA0):
+0.04.238.956 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.956 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.957 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 4096 1]
+0.04.238.957 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.957 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.958 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 4096 1]
+0.04.238.959 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.959 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.959 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 4096 1]
+0.04.238.960 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.960 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 196 25]
+0.04.238.962 W warmup:   FLASH_ATTN_EXT: type = f32, ne = [64 12 4096 1]
+0.04.238.963 W warmup: flash attention is enabled
+0.04.238.963 W warmup: please report this on github as an issue
+0.04.238.963 W warmup: ref: https://github.com/ggml-org/llama.cpp/pull/16837#issuecomment-3461676118
+0.04.238.963 W warmup: *****************************************************************
+0.04.238.998 I srv    load_model: loaded multimodal model, '/models/sabafallah/DeepSeek-OCR-2-GGUF/mmproj-deepseek-ocr-2-bf16.gguf'
+0.04.243.076 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.04.244.839 I srv  llama_server: model loaded
+0.04.244.849 I srv  llama_server: listening on http://0.0.0.0:18086
+0.40.894.183 I slot get_availabl: id  3 | task -1 | selected slot by LRU, t_last = -1
+0.40.894.268 I slot launch_slot_: id  3 | task 0 | processing task, is_child = 0
+0.43.022.530 I slot print_timing: id  3 | task 0 | prompt eval time =    2119.66 ms /   264 tokens (    8.03 ms per token,   124.55 tokens per second)
+0.43.022.538 I slot print_timing: id  3 | task 0 |        eval time =       8.54 ms /     6 tokens (    1.42 ms per token,   702.99 tokens per second)
+0.43.022.539 I slot print_timing: id  3 | task 0 |       total time =    2128.19 ms /   270 tokens
+0.43.022.542 I slot print_timing: id  3 | task 0 |    graphs reused =          5
+0.43.022.595 I slot      release: id  3 | task 0 | stop processing: n_tokens = 269, truncated = 0
+0.50.101.569 I srv    operator(): operator(): cleaning up before exit...
