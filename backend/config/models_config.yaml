@@ -25,7 +25,7 @@ chat_model:
   available_engines: ["llama_cpp", "vllm"]
   available_models:
     - name: "Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M"
-      file: "Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf"
+      file: "HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf"
       engine: "llama_cpp"
       size_gb: 20.5
       type: "Q4_K_M"
@@ -148,7 +148,7 @@ embedding_model:
   available_engines: ["llama_cpp", "vllm"]
   available_models:
     - name: "Qwen3-Embedding-8B-Q4_K_M"
-      file: "Qwen3-Embedding-8B-Q4_K_M.gguf"
+      file: "Qwen/Qwen3-Embedding-8B-GGUF/Qwen3-Embedding-8B-Q4_K_M.gguf"
       engine: "llama_cpp"
       size_gb: 4.8
       type: "Q4_K_M"
@@ -225,7 +225,7 @@ asr_model:
   available_engines: ["llama_cpp"]
   available_models:
     - name: "Qwen3-ASR-1.7B-Q8_0"
-      file: "Qwen3-ASR-1.7B-Q8_0.gguf"
+      file: "ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf"
       engine: "llama_cpp"
       size_gb: 1.8
       type: "Q8_0"
@@ -276,7 +276,7 @@ tts_model:
   available_engines: ["llama_cpp"]
   available_models:
     - name: "Qwen3-1.7B-Multilingual-TTS-Q4_K_M"
-      file: "Qwen3-1.7B-Multilingual-TTS.Q4_K_M.gguf"
+      file: "mradermacher/Qwen3-1.7B-Multilingual-TTS-GGUF/Qwen3-1.7B-Multilingual-TTS.Q4_K_M.gguf"
       engine: "llama_cpp"
       size_gb: 1.1
       type: "Q4_K_M"
@@ -327,7 +327,7 @@ reranker_model:
   available_engines: ["llama_cpp"]
   available_models:
     - name: "Qwen3-Reranker-8B-Q4_K_S"
-      file: "Qwen3-Reranker-8B.Q4_K_S.gguf"
+      file: "mradermacher/Qwen3-Reranker-8B-GGUF/Qwen3-Reranker-8B.Q4_K_S.gguf"
       engine: "llama_cpp"
       size_gb: 4.6
       type: "Q4_K_S"
@@ -382,7 +382,7 @@ ocr_model:
   available_engines: ["llama_cpp"]
   available_models:
     - name: "DeepSeek-OCR-2-Q4_K_M"
-      file: "deepseek-ocr-2-Q4_K_M.gguf"
+      file: "sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf"
       engine: "llama_cpp"
       size_gb: 1.8
       type: "Q4_K_M"
