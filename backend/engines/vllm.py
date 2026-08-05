@@ -91,12 +91,17 @@ class VllmEngine(BaseEngine):
         return await self.list_installed_versions()
 
     async def build_command(self, model_cfg: Dict, inst: ModelInstance, models_dir: str, host: str) -> List[str]:
-        """构建 vllm serve 命令行"""
+        """构建 vllm serve 命令行
+
+        使用 vLLM venv 内的 python 解释器（修复裸 'python' 导致 
+        'No such file or directory' 的问题）。
+        """
         model_path = os.path.join(models_dir, inst.selected_model_file)
-        # vLLM 使用 model path 或 HuggingFace model id
-        vllm_bin = "python"
+
+        # 绑定到 vLLM venv 的 python 解释器（根据 engine_version）
+        vllm_python = self._resolve_python(inst)
         cmd = [
-            vllm_bin, "-m", "vllm.entrypoints.openai.api_server",
+            vllm_python, "-m", "vllm.entrypoints.openai.api_server",
             "--model", model_path,
             "--host", host,
             "--port", str(model_cfg["port"]),
@@ -124,6 +129,20 @@ class VllmEngine(BaseEngine):
             cmd += ["--trust-remote-code"]
 
         return cmd
+
+    def _resolve_python(self, inst: ModelInstance) -> str:
+        """根据 engine_version 解析 vLLM venv 的 python 解释器路径"""
+        ver = inst.engine_version
+        if ver:
+            venv_py = f"/amm/backend/engines_installed/vllm/{ver}/venv/bin/python"
+            if os.path.isfile(venv_py):
+                return venv_py
+        # 兜底：在默认安装路径查找
+        for probe in ["/amm/backend/engines_installed/vllm/venv/bin/python"]:
+            if os.path.isfile(probe):
+                return probe
+        # 最后 fallback：系统 python3
+        return "python3"
 
     async def validate_model(self, model_cfg: Dict, models_dir: str) -> Dict[str, Any]:
         """验证模型路径"""
