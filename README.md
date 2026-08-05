@@ -9,11 +9,13 @@
 ## 特性
 
 - **混合推理引擎**: 支持 llama.cpp (GGUF) / vLLM / Diffusers 三种后端，可自由切换
-- **9 类 AI 模型统一管理**: Chat / Embedding / ASR / TTS / Reranker / OCR / Text-to-Image / Text-to-Video / Image-to-Video
-- **引擎版本管理**: 网页端安装/卸载不同版本引擎，无需手动编译
-- **OpenAI 兼容 API**: 提供 `/v1/chat/completions`、`/v1/embeddings` 标准接口
+- **9 类 AI 模型**: Chat / Embedding / ASR / TTS / Reranker / OCR / T2I / T2V / I2V
+- **OpenAI 兼容 API**: `/v1/chat/completions`, `/v1/embeddings`, `/v1/images/generations`, `/v1/videos/generations`
+- **FP8 量化 (Diffusers)**: Wan2.2-A14B MoE 自动启用 FP8 存储+BF16 计算，84G 显存可跑 27B 视频模型
+- **网页端高级配置**: Quant / CPU Offload / Boundary Ratio / Compute Dtype 一键切换
+- **浅色主题**: 🌙/☀️ 一键切换，localStorage 持久记忆
+- **引擎版本管理**: 网页端安装/卸载不同版本引擎
 - **实时监控**: GPU / CPU / 内存 / 磁盘监控，模型运行状态实时刷新
-- **无 Dockerfile 部署**: 纯脚本安装，灵活适配各类容器和物理机
 
 ## 架构
 
@@ -43,8 +45,8 @@
 
 - Linux (Rocky Linux 9 / Ubuntu 22.04 / Debian 12)
 - Python 3.11+
-- NVIDIA GPU (推荐，可选 CPU 模式)
-- CUDA 12.x+ (如需 GPU 推理)
+- NVIDIA GPU（推荐 RTX 6000D / A100 / H100，显存 ≥48G）
+- CUDA 13.2+（需支持 Blackwell sm_120，本项目使用 torch 2.11.0+cu130）
 
 ### 2. 安装
 
@@ -121,7 +123,8 @@ python3.11 /amm/backend/server.py
 | `/api/instances/{id}/start` | POST | 启动模型 |
 | `/api/instances/{id}/stop` | POST | 停止模型 |
 | `/api/instances/{id}/restart` | POST | 重启模型 |
-| `/api/instances/{id}/parameters` | PUT | 更新参数 |
+| `/api/instances/{id}/parameters` | PUT | 更新运行参数 |
+| `/api/instances/{id}/advanced` | GET/PUT | 读取/更新 Diffusers 高级配置（Quant/CPU Offload等） |
 | `/api/instances/{id}/engine` | PUT | 切换引擎 |
 | `/api/instances/{id}/logs` | GET | 查看日志 |
 
@@ -132,6 +135,8 @@ python3.11 /amm/backend/server.py
 | `/v1/models` | GET | 模型列表 |
 | `/v1/chat/completions` | POST | 对话生成 |
 | `/v1/embeddings` | POST | 文本嵌入 |
+| `/v1/images/generations` | POST | 文生图 (T2I) |
+| `/v1/videos/generations` | POST | 视频生成 (T2V/I2V, video_type=t2v\|i2v) |
 
 ## 引擎支持矩阵
 
@@ -178,13 +183,15 @@ PYTHONPATH=/amm python3.11 -m backend.server
 - [x] 混合引擎架构 (llama.cpp / vLLM / Diffusers)
 - [x] 引擎版本管理 (安装/卸载)
 - [x] 9 类模型统一配置
-- [x] OpenAI 兼容 API
-- [x] Web 前端 (Dashboard / GPU 监控 / 引擎切换)
-- [ ] vLLM 完整部署验证
-- [ ] Diffusers 文生图/视频完整实现
+- [x] OpenAI 兼容 API (chat/embeddings/images/videos)
+- [x] Web 前端 (Dashboard / Playground / GPU 监控 / Settings)
+- [x] vLLM CUDA13 + Blackwell sm_120 验证 (0.22.1)
+- [x] Diffusers FP8 layerwise_casting (Wan2.2 MoE)
+- [x] Diffusers T2I 推理验证 (Qwen-Image-2512)
+- [ ] Diffusers T2V/I2V 完全验证 (Wan2.2-A14B 下载中)
 - [ ] 模型自动下载 (HuggingFace / ModelScope)
 - [ ] 权限管理与多用户
-- [ ] 模型量化转换工具
+- [ ] 模型量化转换工具 (GGUF)
 
 ## 许可证
 
