@@ -190,9 +190,19 @@ git push origin master
 
 - [x] llama_cpp 引擎 b4727（llama-server 已编译）
 - [x] **llama-tts 工具已编译**（方案1: TTS 通过 llama-tts CLI 按需生成，非 server 常驻）
-- [x] vLLM 引擎（目录空，待安装验证）
+- [x] **vLLM 0.22.1（CUDA 13 + Blackwell 验证通过）**：
+  - venv: `/amm/backend/engines_installed/vllm/0.22.1`（torch 2.11.0+cu130，arch 含 sm_120）
+  - 引擎优先使用 0.22.1（0.8.5 为 cu124 不支持 Blackwell，保留作历史）；0.22.1 在 `VLLM_VERSIONS` 列表首位并 is_default=True
+  - chat 实例已切 vllm/0.22.1 + `/models/Qwen3-4B`（safetensors），外部 60008 全链路推理验证通过
+  - 安装：`--index-url aliyun --extra-index-url https://download.pytorch.org/whl/cu130`（torch 走 cu130 源）
+  - ⚠️ vLLM 需 HF safetensors 模型（GGUF 的 qwen35moe 不支持）；gpu_memory_utilization 需调低至 ~0.65（Baseline 显存占用）
 - [x] Diffusers 引擎（目录空，待安装验证）
 - [x] AMM server 运行中（端口 8080，宿主映射 60008）
+
+### 已知问题（2026-08-05 补充）
+
+- **AMM stop/restart 模型进程残留 bug**：stop 模型时旧 vllm/llama-server 进程（含 VLLM::EngineCore 子进程）有时不退出，导致端口 18081 被占、新实例 error。临时解决：手动 `kill -9` 残留（`ps aux | grep -E "openai.api_server|VLLM::EngineCore"`），显存随之释放。
+- **OpenAI bridge model 名映射**：vLLM 端 served model 是模型路径（如 `/models/Qwen3-4B`），AMM bridge 需把 AMM 内部 id（chat）重写为路径（`_rewrite_vllm_model`）。`/v1/chat/completions` 路由实际指向 `chat_completions_stream`（含重写），非流式走该 handler 也可。
 
 ### 项目规则（老板 2026-08-05）
 

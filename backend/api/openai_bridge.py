@@ -336,7 +336,7 @@ audio 并返回。模型文件与 mmproj 从 AMM 配置读取。
     # Streaming support (placeholder - pass-through)
     # ================================================================
 
-    async def _rewrite_vllm_model(self, inst, body: Dict) -> Dict:
+    def _rewrite_vllm_model(self, inst, body: Dict) -> Dict:
         """把 AMM 内部模型 id 重写为 vLLM 端 served model 名（模型路径）"""
         body = dict(body)
         vllm_model = (os.environ.get("MODELS_DIR", "/models") + "/" + inst.selected_model_file).rstrip("/")
