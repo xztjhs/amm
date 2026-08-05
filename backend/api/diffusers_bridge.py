@@ -30,6 +30,112 @@ MODELSCOPE_CACHE = os.environ.get("MODELSCOPE_CACHE", os.path.join(MODELS_DIR, "
 _pipeline_cache: Dict[str, Any] = {}
 
 # ============================================================
+# Quantization / dtype helpers (CUDA 13 + Blackwell sm_120)
+# ============================================================
+
+# 老板定的铁律 (2026-08-05):
+# - 推理引擎优先级: vllm > llama.cpp > Diffusers
+# - 每类模型部署/测试/验证只开 1 个、依次串行,避免 84GB 显存不够
+# - vLLM 实例 (PID 27048) 占用 ~57G → Diffusers 文生视频必须腾地方
+#
+# Wan2.2-T2V-A14B: 27B MoE (14B high + 14B low 专家),  BF16 静态 ~75G → OOM
+# 解决方案: enable_layerwise_casting(storage=fp8_e4m3fn, compute=bf16)
+#   - 权重存储按 FP8 → 两个 transformer 从 56G 降到 ~28G
+#   - 实时计算按 BF16 → 质量几乎无损
+#   - WanTransformer3DModel 已声明 _skip_layerwise_casting_patterns 和 _keep_in_fp32_modules
+
+def _torch_dtype(name: Optional[str]):
+    """把字符串 dtype 映射到 torch.dtype"""
+    import torch
+    if not name:
+        return None
+    n = name.lower()
+    mapping = {
+        "fp8": torch.float8_e4m3fn,
+        "float8": torch.float8_e4m3fn,
+        "float8_e4m3fn": torch.float8_e4m3fn,
+        "bf16": torch.bfloat16,
+        "bfloat16": torch.bfloat16,
+        "fp16": torch.float16,
+        "float16": torch.float16,
+        "fp32": torch.float32,
+        "float32": torch.float32,
+    }
+    return mapping.get(n)
+
+
+def _should_enable_layerwise_casting(model_cfg: Dict) -> bool:
+    """决定是否对 transformer 启用 FP8 存储 + BF16 计算
+
+    触发条件 (任意一个):
+      - model_cfg["quant"] == "fp8"  (用户/管理员显式声明)
+      - model_cfg["category"] == "video" AND model_cfg["quant"] != "none"
+      - model_cfg["quant"] is None AND 总参数估计 > 20B (兜底)
+    """
+    quant = (model_cfg.get("quant") or "").lower()
+    if quant == "none":
+        return False
+    if quant in ("fp8", "float8"):
+        return True
+    # 默认: 视频模型 + 27B MoE → 开启
+    if model_cfg.get("category") == "video" and "A14B" in model_cfg.get("model_id", ""):
+        return True
+    return False
+
+
+def _apply_layerwise_casting(pipe) -> None:
+    """对 Wan / QwenImage 等 pipeline 的 transformer 应用 FP8 layerwise casting
+
+    - 两个 transformer (高噪 + 低噪专家) 都要分别 enable
+    - VAE 保留 FP32 (解码器质量敏感,文件也不大)
+    - text_encoder 通常不大,保留 BF16
+    """
+    for attr in ("transformer", "transformer_2"):
+        mod = getattr(pipe, attr, None)
+        if mod is None:
+            continue
+        try:
+            # storage=FP8 (权重驻留), compute=BF16 (前向计算)
+            mod.enable_layerwise_casting(
+                storage_dtype=_torch_dtype("fp8") or getattr(__import__("torch"), "float8_e4m3fn"),
+                compute_dtype=_torch_dtype("bf16"),
+            )
+            logger.info(f"layerwise_casting enabled on {attr}: storage=fp8, compute=bf16")
+        except AttributeError:
+            logger.warning(f"{attr} 不支持 enable_layerwise_casting (旧版 diffusers?), 跳过")
+        except Exception as e:
+            logger.exception(f"{attr} enable_layerwise_casting 失败: {e}")
+
+
+def _apply_group_offload(pipe, onload_device=None, offload_to_cpu: bool = True) -> None:
+    """显存仍不够时的后备方案: leaf_level CPU offload
+
+    触发条件:
+      - model_cfg["cpu_offload"] == True
+      - 或者 FP8 后实测仍 OOM (由调用方决定)
+    """
+    if not offload_to_cpu:
+        return
+    import torch as _t
+    onload = onload_device or (_t.device("cuda") if _t.cuda.is_available() else _t.device("cpu"))
+    offload = _t.device("cpu")
+
+    for attr in ("transformer", "transformer_2", "text_encoder"):
+        mod = getattr(pipe, attr, None)
+        if mod is None:
+            continue
+        try:
+            mod.enable_group_offload(
+                onload_device=onload,
+                offload_device=offload,
+                offload_type="leaf_level",
+                use_stream=True,
+            )
+            logger.info(f"group_offload enabled on {attr}: leaf_level, stream")
+        except Exception as e:
+            logger.warning(f"{attr} enable_group_offload 失败: {e}")
+
+# ============================================================
 # Path / Config helpers
 # ============================================================
 
@@ -68,16 +174,23 @@ def _find_model_cfg(manager, model_id: str) -> Optional[Dict]:
 # ============================================================
 
 async def _load_pipeline(model_cfg: Dict) -> Any:
-    """异步加载 diffusers pipeline (独立线程执行，阻塞式)"""
+    """异步加载 diffusers pipeline (独立线程执行，阻塞式)
+
+    关键能力 (2026-08-05 增强):
+      - 支持 Wan2.2 MoE 双专家 (transformer + transformer_2 一起加载)
+      - 支持 FP8 layerwise_casting 量化加载 (transformer 权重存储 FP8、计算 BF16)
+      - 支持 group_offload 后备方案 (显存仍不够时)
+      - 保留 enable_model_cpu_offload 作为最后兜底
+    """
     model_id = model_cfg.get("model_id", "")
     category = model_cfg.get("category", "")
     model_source = model_cfg.get("model_source", "modelscope")
 
-    cache_key = f"{category}:{model_id}"
+    cache_key = f"{category}:{model_id}:quant={model_cfg.get('quant','default')}"
     if cache_key in _pipeline_cache:
         return _pipeline_cache[cache_key]
 
-    logger.info(f"Loading {category} pipeline: {model_id} (source={model_source})")
+    logger.info(f"Loading {category} pipeline: {model_id} (source={model_source}, quant={model_cfg.get('quant','default')})")
 
     def _load():
         import torch
@@ -86,11 +199,23 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
         local = _resolve_local_path(model_id)
         logger.info(f"Local model path: {local}")
 
+        # ---- 计算 / 存储 dtype ----
+        # image 类 (Qwen-Image) 小 (54G 全 BF16 可吃下), 不强求 FP8
+        # video 类 (Wan2.2-A14B) 27B MoE, 必须 FP8
+        if category == "image":
+            compute_dtype = _torch_dtype(model_cfg.get("compute_dtype", "bf16")) or torch.bfloat16
+            storage_dtype = compute_dtype  # 不量化
+        else:
+            compute_dtype = _torch_dtype(model_cfg.get("compute_dtype", "bf16")) or torch.bfloat16
+            storage_dtype = compute_dtype  # from_pretrained 默认加载用 compute_dtype
+            # Wan VAE 解码器需要 FP32 保真
+            vae_dtype = torch.float32
+
         if category == "image":
             from diffusers import QwenImagePipeline
             pipe = QwenImagePipeline.from_pretrained(
                 local,
-                torch_dtype=torch.bfloat16,
+                torch_dtype=compute_dtype,
                 variant="bf16",
             )
         else:
@@ -113,20 +238,45 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
             except Exception as e:
                 logger.warning(f"read model_index failed, default WanPipeline: {e}")
 
-            pipe = pipe_cls.from_pretrained(
-                local,
-                torch_dtype=torch.bfloat16,
+            # Wan2.2 MoE 双专家: boundary_ratio 由 model_cfg 指定, 默认 0.875 (官方)
+            boundary_ratio = model_cfg.get("boundary_ratio")
+            if boundary_ratio is None and "Wan2.2" in model_id:
+                boundary_ratio = 0.875  # 官方默认值
+            logger.info(f"Wan MoE boundary_ratio = {boundary_ratio}")
+
+            load_kwargs = dict(
+                torch_dtype=compute_dtype,
                 variant="bf16",
             )
+            # boundary_ratio 在 WanPipeline.__init__ 阶段传入 (写进 config)
+            if boundary_ratio is not None:
+                load_kwargs["boundary_ratio"] = float(boundary_ratio)
 
-        # 显存优化: 模型 CPU offload，按子模块序列化搬运，避免 84G 一次吃满
-        try:
-            pipe.enable_model_cpu_offload()
-            logger.info("enable_model_cpu_offload enabled")
-        except Exception as e:
-            logger.warning(f"enable_model_cpu_offload 失败, fallback cuda: {e}")
-            if torch.cuda.is_available():
-                pipe = pipe.to("cuda")
+            pipe = pipe_cls.from_pretrained(local, **load_kwargs)
+
+        # ---- FP8 layerwise_casting (transformer 权重降精度存储) ----
+        if _should_enable_layerwise_casting(model_cfg):
+            _apply_layerwise_casting(pipe)
+
+        # ---- 显存搬运策略 ----
+        # 优先级: group_offload (CPU leaf) > enable_model_cpu_offload > 全 GPU
+        if model_cfg.get("cpu_offload"):
+            _apply_group_offload(pipe, offload_to_cpu=True)
+            # VAE 仍放 GPU,提升解码速度
+            try:
+                if torch.cuda.is_available() and getattr(pipe, "vae", None) is not None:
+                    pipe.vae.to("cuda")
+            except Exception as e:
+                logger.warning(f"VAE 移回 GPU 失败: {e}")
+        else:
+            # 默认: 序列 CPU offload (保守且稳)
+            try:
+                pipe.enable_model_cpu_offload()
+                logger.info("enable_model_cpu_offload enabled (default)")
+            except Exception as e:
+                logger.warning(f"enable_model_cpu_offload 失败, fallback cuda: {e}")
+                if torch.cuda.is_available():
+                    pipe = pipe.to("cuda")
 
         return pipe
 
@@ -238,6 +388,10 @@ class DiffusersBridgeHandler:
             num_frames = int(data.get("num_frames", 81))
             num_steps = int(data.get("num_inference_steps", 50))
             guidance = float(data.get("guidance_scale", 5.0))
+            # Wan2.2 MoE: 双 guidance, 官方默认值 4.0 / 3.0
+            guidance_2 = data.get("guidance_scale_2")
+            if guidance_2 is not None:
+                guidance_2 = float(guidance_2)
             seed = int(data.get("seed", -1))
             fps = int(data.get("frame_rate", 16))
 
@@ -247,17 +401,24 @@ class DiffusersBridgeHandler:
                 generator = torch.Generator(device=device).manual_seed(seed)
 
             def _gen():
+                import inspect as _inspect
+                pipe_kwargs = dict(
+                    prompt=prompt,
+                    height=height,
+                    width=width,
+                    num_frames=num_frames,
+                    num_inference_steps=num_steps,
+                    guidance_scale=guidance,
+                    generator=generator,
+                    output_type="np",
+                )
+                # Wan2.2 MoE 才需要 guidance_scale_2
+                if guidance_2 is not None and getattr(pipe, "transformer_2", None) is not None:
+                    sig = _inspect.signature(pipe.__call__)
+                    if "guidance_scale_2" in sig.parameters:
+                        pipe_kwargs["guidance_scale_2"] = guidance_2
                 with torch.no_grad():
-                    frames = pipe(
-                        prompt=prompt,
-                        height=height,
-                        width=width,
-                        num_frames=num_frames,
-                        num_inference_steps=num_steps,
-                        guidance_scale=guidance,
-                        generator=generator,
-                        output_type="np",
-                    )
+                    frames = pipe(**pipe_kwargs)
                 # frames 可能是 (video, meta) 或 numpy 数组
                 vid = frames[0] if isinstance(frames, (tuple, list)) else frames
                 return export_to_video(vid, fps=fps)
@@ -306,6 +467,9 @@ class DiffusersBridgeHandler:
             num_frames = int(data.get("num_frames", 81))
             num_steps = int(data.get("num_inference_steps", 50))
             guidance = float(data.get("guidance_scale", 5.0))
+            guidance_2 = data.get("guidance_scale_2")
+            if guidance_2 is not None:
+                guidance_2 = float(guidance_2)
             seed = int(data.get("seed", -1))
             fps = int(data.get("frame_rate", 16))
 
@@ -315,18 +479,24 @@ class DiffusersBridgeHandler:
                 generator = torch.Generator(device=device).manual_seed(seed)
 
             def _gen():
+                import inspect as _inspect
+                pipe_kwargs = dict(
+                    prompt=prompt,
+                    image=image,
+                    height=height,
+                    width=width,
+                    num_frames=num_frames,
+                    num_inference_steps=num_steps,
+                    guidance_scale=guidance,
+                    generator=generator,
+                    output_type="np",
+                )
+                if guidance_2 is not None and getattr(pipe, "transformer_2", None) is not None:
+                    sig = _inspect.signature(pipe.__call__)
+                    if "guidance_scale_2" in sig.parameters:
+                        pipe_kwargs["guidance_scale_2"] = guidance_2
                 with torch.no_grad():
-                    frames = pipe(
-                        prompt=prompt,
-                        image=image,
-                        height=height,
-                        width=width,
-                        num_frames=num_frames,
-                        num_inference_steps=num_steps,
-                        guidance_scale=guidance,
-                        generator=generator,
-                        output_type="np",
-                    )
+                    frames = pipe(**pipe_kwargs)
                 vid = frames[0] if isinstance(frames, (tuple, list)) else frames
                 return export_to_video(vid, fps=fps)
 
