@@ -316,6 +316,31 @@ def _to_base64_video_bytes(raw_bytes: bytes) -> str:
     return base64.b64encode(raw_bytes).decode()
 
 
+def _extract_video_frames(pipe_out) -> "np.ndarray":
+    """从 Wan 等 pipeline 输出中提取可传给 export_to_video 的帧序列
+
+    diffusers 0.39 的 WanPipeline 在 output_type='np' 下返回
+    WanPipelineOutput (有序 dict), 其 frames 为 5D ndarray (1, num_frames, H, W, C)。
+    export_to_video 需要 4D (num_frames, H, W, C)。
+    """
+    import numpy as np
+    # 1) 优先取 .frames (WanPipelineOutput 等规范输出)
+    frames = getattr(pipe_out, "frames", None)
+    if frames is None and isinstance(pipe_out, (tuple, list)):
+        # 兼容老版本 tuple/list 返回: (video, meta) 或 (frames,)
+        if len(pipe_out) >= 1:
+            frames = pipe_out[0]
+    if frames is None and hasattr(pipe_out, "videos"):
+        frames = pipe_out.videos
+    if frames is None:
+        raise TypeError(f"无法从 pipeline 输出提取帧: {type(pipe_out)}")
+
+    arr = np.asarray(frames)
+    if arr.ndim == 5:  # (1, num_frames, H, W, C) -> squeeze batch
+        arr = arr[0]
+    return arr
+
+
 def _save_png(img, model_id: str, seed: int = -1) -> Optional[str]:
     """保存 PNG 到 VERIFICATION_DIR, 返回绝对路径 (失败返回 None)
 
@@ -510,8 +535,8 @@ class DiffusersBridgeHandler:
                         pipe_kwargs["guidance_scale_2"] = guidance_2
                 with torch.no_grad():
                     frames = pipe(**pipe_kwargs)
-                # frames 可能是 (video, meta) 或 numpy 数组
-                vid = frames[0] if isinstance(frames, (tuple, list)) else frames
+                # diffusers 0.39: Wan 返回 WanPipelineOutput, 统一提取帧序列
+                vid = _extract_video_frames(frames)
                 return export_to_video(vid, fps=fps)
 
             loop = asyncio.get_event_loop()
@@ -594,7 +619,7 @@ class DiffusersBridgeHandler:
                         pipe_kwargs["guidance_scale_2"] = guidance_2
                 with torch.no_grad():
                     frames = pipe(**pipe_kwargs)
-                vid = frames[0] if isinstance(frames, (tuple, list)) else frames
+                vid = _extract_video_frames(frames)
                 return export_to_video(vid, fps=fps)
 
             loop = asyncio.get_event_loop()
