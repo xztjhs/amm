@@ -787,3 +787,83 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ---- Playground ---- */
+.playground-panel { max-width: 900px; }
+.playground-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.pg-tab {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    transition: var(--transition);
+}
+.pg-tab:hover, .pg-tab.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+.pg-content { display: none; }
+.pg-content.active { display: block; }
+
+.pg-chat-messages {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: 400px;
+    overflow-y: auto;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+.pg-chat-welcome { color: var(--text-muted); text-align: center; padding-top: 160px; }
+.pg-chat-user { margin-bottom: 12px; color: var(--text); }
+.pg-chat-bot { margin-bottom: 12px; color: var(--text-secondary); }
+.pg-chat-input { display: flex; gap: 8px; }
+.pg-chat-input textarea {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 10px 14px;
+    font-size: 14px;
+    resize: vertical;
+}
+.pg-chat-input textarea:focus { outline: none; border-color: var(--accent); }
+
+.pg-form { display: grid; gap: 12px; max-width: 500px; margin-bottom: 20px; }
+.pg-form-row { display: flex; flex-direction: column; gap: 6px; }
+.pg-form-row label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.pg-form-row input, .pg-form-row textarea, .pg-form-row select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 13px;
+}
+.pg-form-row input:focus, .pg-form-row textarea:focus { outline: none; border-color: var(--accent); }
+.pg-result {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-height: 200px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pg-placeholder { color: var(--text-muted); font-size: 13px; }
+.pg-result-code {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    min-height: 200px;
+    overflow-x: auto;
+    font-size: 12px;
+    color: var(--text-secondary);
+}

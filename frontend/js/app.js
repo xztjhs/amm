@@ -53,6 +53,7 @@
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 document.getElementById('tab-' + tab).classList.add('active');
                 if (tab === 'models') renderModelsDetail();
+                if (tab === 'playground') renderPlayground();
                 if (tab === 'gpu') renderGPU();
                 if (tab === 'logs') startLogAutoRefresh();
                 if (tab === 'settings') renderSettings();
@@ -534,6 +535,100 @@
         return s + 's';
     }
 
+    async function renderPlayground() {
+        // playground 标签页初始化
+        setupPlaygroundTabs();
+    }
+
+    function setupPlaygroundTabs() {
+        document.querySelectorAll('.pg-tab').forEach(tab => {
+            tab.onclick = function() {
+                document.querySelectorAll('.pg-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.pg-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('pg-' + tab.dataset.pg).classList.add('active');
+            };
+        });
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById('pgChatInput');
+        const msg = input.value.trim();
+        if (!msg) return;
+        const container = document.getElementById('pgChatMessages');
+        container.innerHTML += '<div class="pg-chat-user"><strong>You:</strong> ' + escapeHtml(msg) + '</div>';
+        input.value = '';
+
+        const chatInst = instances.chat;
+        if (!chatInst || chatInst.status !== 'running') {
+            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">Chat model is not running. Please start it first.</span></div>';
+            return;
+        }
+
+        container.innerHTML += '<div class="pg-chat-bot" id="pgChatLoading"><strong>Bot:</strong> <span style="color:var(--text-muted)">Thinking...</span></div>';
+        container.scrollTop = container.scrollHeight;
+
+        try {
+            const resp = await fetch('/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'chat', messages: [{ role: 'user', content: msg }], max_tokens: 512 }),
+            });
+            const data = await resp.json();
+            document.getElementById('pgChatLoading').remove();
+            const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || JSON.stringify(data);
+            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> ' + escapeHtml(reply) + '</div>';
+        } catch (e) {
+            document.getElementById('pgChatLoading').remove();
+            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</span></div>';
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function generateImage() {
+        const prompt = document.getElementById('pgT2IPrompt').value;
+        const width = parseInt(document.getElementById('pgT2IWidth').value);
+        const height = parseInt(document.getElementById('pgT2IHeight').value);
+        const steps = parseInt(document.getElementById('pgT2ISteps').value);
+        const guidance = parseFloat(document.getElementById('pgT2IGuidance').value);
+        const result = document.getElementById('pgT2IResult');
+        result.innerHTML = '<div class="pg-placeholder">Generating... please wait</div>';
+        try {
+            const resp = await fetch('/v1/images/generations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt, width: width, height: height, num_inference_steps: steps, guidance_scale: guidance, n: 1 }),
+            });
+            const data = await resp.json();
+            if (data.data && data.data[0] && data.data[0].b64_json) {
+                result.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" style="max-width:100%;border-radius:8px;">';
+            } else {
+                result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
+            }
+        } catch (e) {
+            result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
+        }
+    }
+
+    async function callApi() {
+        const endpoint = document.getElementById('pgApiEndpoint').value;
+        const result = document.getElementById('pgApiResult');
+        result.textContent = 'Loading...';
+        try {
+            const resp = await fetch(endpoint);
+            const data = await resp.json();
+            result.textContent = JSON.stringify(data, null, 2);
+        } catch (e) {
+            result.textContent = 'Error: ' + e.message;
+        }
+    }
+
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
     // ---- Global Exports ----
     window.startModel = startModel;
     window.stopModel = stopModel;
@@ -546,6 +641,9 @@
     window.closeModal = closeModal;
     window.viewLogs = viewLogs;
     window.toggleDetailBody = toggleDetailBody;
+    window.sendChatMessage = sendChatMessage;
+    window.generateImage = generateImage;
+    window.callApi = callApi;
 
     // ---- Boot ----
     document.addEventListener('DOMContentLoaded', init);

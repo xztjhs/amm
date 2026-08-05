@@ -28,6 +28,10 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                 Models
             </a>
+            <a href="#" class="nav-item" data-tab="playground">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Playground
+            </a>
             <a href="#" class="nav-item" data-tab="gpu">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/><path d="M12 16v4"/></svg>
                 GPU
@@ -67,6 +71,52 @@
         <section id="tab-models" class="tab-content">
             <div class="page-header"><h1>Models</h1><p class="subtitle">九类 AI 模型配置与管理 · 可选择推理引擎</p></div>
             <div class="models-detail-grid" id="modelsDetail"></div>
+        </section>
+
+        <!-- Playground Tab -->
+        <section id="tab-playground" class="tab-content">
+            <div class="page-header"><h1>Playground</h1><p class="subtitle">推理测试 · Chat / Image / API 调试</p></div>
+            <div class="playground-panel">
+                <div class="playground-tabs">
+                    <button class="pg-tab active" data-pg="chat">💬 Chat</button>
+                    <button class="pg-tab" data-pg="image">🖼️ T2I</button>
+                    <button class="pg-tab" data-pg="api">🔧 API</button>
+                </div>
+                <!-- Chat Playground -->
+                <div id="pg-chat" class="pg-content active">
+                    <div class="pg-chat-messages" id="pgChatMessages"><div class="pg-chat-welcome">选择 Chat 模型并启动后，在此测试对话</div></div>
+                    <div class="pg-chat-input">
+                        <textarea id="pgChatInput" placeholder="输入消息..." rows="2"></textarea>
+                        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+                <!-- T2I Playground -->
+                <div id="pg-image" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt</label><textarea id="pgT2IPrompt" rows="3" placeholder="a cat in space">a beautiful sunset over mountains, digital art</textarea></div>
+                        <div class="pg-form-row"><label>Width</label><input type="number" id="pgT2IWidth" value="1024" min="512" max="2048" step="64"></div>
+                        <div class="pg-form-row"><label>Height</label><input type="number" id="pgT2IHeight" value="1024" min="512" max="2048" step="64"></div>
+                        <div class="pg-form-row"><label>Steps</label><input type="number" id="pgT2ISteps" value="28" min="10" max="100"></div>
+                        <div class="pg-form-row"><label>Guidance</label><input type="number" id="pgT2IGuidance" value="5.0" min="1" max="20" step="0.5"></div>
+                        <button class="btn btn-primary" onclick="generateImage()">Generate Image</button>
+                    </div>
+                    <div class="pg-result" id="pgT2IResult"><div class="pg-placeholder">点击 Generate 生成图片</div></div>
+                </div>
+                <!-- API Debug -->
+                <div id="pg-api" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Endpoint</label><select id="pgApiEndpoint" class="form-select">
+                            <option value="/api/health">GET /api/health</option>
+                            <option value="/api/system">GET /api/system</option>
+                            <option value="/api/engines">GET /api/engines</option>
+                            <option value="/api/instances">GET /api/instances</option>
+                            <option value="/v1/models">GET /v1/models</option>
+                        </select></div>
+                        <button class="btn btn-primary" onclick="callApi()">Call API</button>
+                    </div>
+                    <pre class="pg-result-code" id="pgApiResult"><div class="pg-placeholder">点击 Call API 查看结果</div></pre>
+                </div>
+            </div>
         </section>
 
         <!-- GPU Tab -->
