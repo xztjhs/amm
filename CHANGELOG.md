@@ -1,0 +1,79 @@
+# AMM Changelog
+
+## v0.1 — 2026-08-05
+
+### 🎯 核心能力
+- **LLM 推理**: vLLM 0.22.1 (CUDA13 + Blackwell sm_120) / llama.cpp
+- **文生图**: Qwen-Image-2512 (Diffusers T2I)
+- **文生视频/图生视频**: Wan2.2-T2V-A14B / Wan2.2-I2V-A14B (Diffusers T2V/I2V)
+- **Embedding**: Qwen3-Embedding-8B
+- **多模态**: ASR/TTS/OCR (Qwen3-ASR / Qwen3-TTS / DeepSeek-OCR)
+- **OpenAI 兼容 API**: `/v1/chat/completions`, `/v1/images/generations`, `/v1/videos/generations`
+
+### 🚀 重大变更
+- **FP8 量化支持** (Diffusers 0.39.0 + torch 2.11.0+cu130)
+  - `enable_layerwise_casting(storage=fp8_e4m3fn, compute=bf16)` ~75G→~28G 显存
+  - 自动识别 Wan2.2-A14B (MoE) 启用 FP8
+  - `_skip_layerwise_casting_patterns`: patch_embedding / condition_embedder / norm
+  - `_keep_in_fp32_modules`: time_embedder / scale_shift_table / norm1/2/3
+- **Wan2.2 MoE 双专家** (高噪 14B + 低噪 14B)
+  - boundary_ratio=0.875 (SNR=-1.5 分界)
+  - guidance_scale=4.0 / guidance_scale_2=3.0
+- **OpenAI /v1/videos/generations** 入口
+  - `video_type=t2v|i2v` 自动路由
+  - 返回 `{data:[{b64_json,mime}], saved_paths:[]}`
+- **save_to_disk** 验证输出
+  - 默认 `/amm/verification` (gitignored, `VERIFICATION_DIR`)
+  - 命名: `<model_short>__seed<N|noseed>__<YYYYMMDD-HHMMSS>.png|mp4`
+
+### 👨‍💻 前端
+- **Playground**: 新增 T2V / I2V 子 tab
+  - 分辨率 / 帧数 / steps / guidance / guidance_2 / seed
+  - 视频播放预览 + 落盘提示
+- **Models Detail**: diffusers 引擎下显示 **Advanced** 区块
+  - quant (fp8 / bf16 / none) ⭐、compute_dtype (bf16)、boundary_ratio、cpu_offload
+  - Save Advanced → 写 yaml + Restart Now 一键生效
+- **主题切换**: topbar 🌙/☀️ 按钮, CSS `[data-theme="light"]`
+  - localStorage 持久记忆, 全部变量重生效
+
+### 🔄 后端 API
+- `PUT /api/instances/{id}/advanced` — 写 yaml 配置 (白名单校验)
+- `GET /api/instances/{id}/advanced` — 读 yaml 配置 (source of truth)
+
+### ✅ 验证记录
+| 模型 | 引擎 | 状态 | 峰值显存 | 备注 |
+|------|------|------|---------|------|
+| chat (Qwen2.5-14B) | vllm 0.22.1 | ✅ 已验证 | ~57G | /v1/chat/completions |
+| embedding (Qwen3-E) | llama.cpp | ✅ 已验证 | ~6G | /v1/embeddings |
+| asr (Qwen3-ASR) | llama.cpp | ✅ 已验证 | ~4G | /v1/audio/transcriptions |
+| t2i (Qwen-Image-2512) | diffusers 0.39 | ✅ 已验证 | ~38G | 512×512 4步 136s |
+| tts (Qwen3-TTS) | llama.cpp CLI | ✅ 已验证 | ~12G | /v1/audio/speech |
+| t2v (Wan2.2-T2V-A14B) | diffusers 0.39 | ⏳ 下载中 | — | 58G/76G, 估计 30-50min |
+
+### 🐛 修复
+- `variant="bf16"` 硬编码 → ModelScope 权重无 `.bf16.` 后缀, 删除 variant 参数
+- `_should_enable_layerwise_casting` 缺少 bf16 分支 → 补充完整决策矩阵 (bf16/fp16/fp32/none/off → False)
+- AMM bridge `/v1/chat/completions` 路由 → 指向 stream handler / `_rewrite_vllm_model`
+- vLLM 子进程残留 → `kill -9` 处理 (待永久修复)
+
+### 📦 依赖
+- torch 2.11.0+cu130 (Blackwell sm_120)
+- diffusers 0.39.0
+- accelerate 1.14.0
+- vLLM 0.22.1 (CUDA13)
+
+### ⚠️ 已知问题
+- Wan2.2-T2V-A14B 仍在下载中 (58G/76G), 完整 T2V 冷启动待验证
+- vLLM stop/restart 子进程残留 (VLLM::EngineCore)
+- mmdc 未安装 → 思维导图渲染降级为纯文本
+- RAGFlow token 未配置 → PPT 工厂降级为 memory+skill+workspace
+
+---
+
+## pre-v0.1 — 2026-08-04 至 08-05
+- vLLM CUDA13 攻坚 + CUDA 13 铁律确立
+- Qwen3-4B / Qwen-Image-2512 / Qwen3-Embedding-8B 等模型下载
+- diffusers bridge 框架搭建 (T2I/T2V/I2V)
+- 前端 Web UI 重构 (单页 SPA, 5 tab)
+- hbppt 技能开发完成 (汇报 PPT 生成器, attached to OpenClaw)
+- 友商产品采集器 ys-collector 启动
