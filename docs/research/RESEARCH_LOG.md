@@ -10,10 +10,10 @@
 **AMM（AI Models Manage）** —— 基于混合推理引擎架构的 AI 模型统一管理与调度平台。
 
 - **仓库**：Gitea `iei/amm`
-- **验证机**：192.168.100.245 容器（SSH 62022, root/admin@123）
+- **验证机**：10.10.10.10 容器（SSH 62022, root/CHANGE_ME_PASSWORD）
 - **GPU**：NVIDIA RTX 6000D ×1（84GB 显存，Blackwell，compute capability 12.0 / sm_120）
 - **对外端口**：宿主 60008 → 容器 8080（所有 OpenAI 请求统一走 60008）
-- **Web UI**：http://192.168.100.245:60006/
+- **Web UI**：http://10.10.10.10:60006/
 
 ### 混合推理引擎
 | 引擎 | 类型 | 适用类别 |

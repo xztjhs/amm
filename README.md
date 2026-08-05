@@ -52,7 +52,7 @@
 
 ```bash
 # 克隆仓库
-git clone http://192.168.100.245:60005/iei/amm.git /amm
+git clone http://10.10.10.10:60005/iei/amm.git /amm
 cd /amm
 
 # 运行安装脚本 (容器内首次使用)

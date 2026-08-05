@@ -6,7 +6,7 @@
 AMM 项目补齐 Diffusers 引擎，支持文生图(T2I)/文生视频(T2V)/图生视频(I2V)。
 
 ## 硬件/环境
-- 验证机: 192.168.100.245 (SSH 62022, root/admin@123)
+- 验证机: 10.10.10.10 (SSH 62022, root/CHANGE_ME_PASSWORD)
 - GPU: RTX 6000D 84GB / CUDA 13.2 / Blackwell sm_120
 - 依赖环境: **vLLM 0.22.1 venv** (`/amm/backend/engines_installed/vllm/0.22.1/venv`)
   - torch 2.11.0+cu130 (Blackwell 验证通过)

@@ -166,12 +166,12 @@ git push origin master
 
 ## 部署验证环境（开发/测试机）
 
-> **平台**: 192.168.100.245 容器（Unraid 宿主）
-> **SSH**: `ssh -p 62022 root@192.168.100.245`（密码 admin@123）
+> **平台**: 10.10.10.10 容器（Unraid 宿主）
+> **SSH**: `ssh -p 62022 root@10.10.10.10`（密码 CHANGE_ME_PASSWORD）
 > **GPU**: NVIDIA RTX 6000D ×1（84 GB 显存）
 > **Python**: 3.11（`/usr/bin/python3.11`），系统默认 python3 为 3.9
 > **模型目录**: `/models`（7TB 共享盘，已含 HauhauCS/Qwen/ggml-org/mradermacher 等 GGUF）
-> **Web UI**: `http://192.168.100.245:60006/`
+> **Web UI**: `http://10.10.10.10:60006/`
 
 ### ⚠️ 显存管理铁律（务必遵守）
 
