@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMM - AI Models Manage</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b82f6'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='sans'>AI</text></svg>">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <svg class="logo" viewBox="0 0 32 32" width="28" height="28">
+                <rect width="32" height="32" rx="6" fill="url(#logoGrad)"/>
+                <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                <text x="16" y="22" font-size="16" font-weight="bold" text-anchor="middle" fill="white" font-family="system-ui">AI</text>
+            </svg>
+            <span class="brand-text">AMM</span>
+            <span class="brand-sub">AI Models Manage</span>
+        </div>
+        <nav class="topbar-nav">
+            <a href="#" class="nav-item active" data-tab="dashboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item" data-tab="models">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Models
+            </a>
+            <a href="#" class="nav-item" data-tab="gpu">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/><path d="M12 16v4"/></svg>
+                GPU
+            </a>
+            <a href="#" class="nav-item" data-tab="logs">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 17"/><line x1="12" y1="17" x2="20" y2="17"/></svg>
+                Logs
+            </a>
+            <a href="#" class="nav-item" data-tab="settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+            </a>
+        </nav>
+        <div class="topbar-status">
+            <span id="serverStatus" class="status-dot offline"></span>
+            <span id="serverStatusText">Offline</span>
+            <span id="clock" class="clock"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div class="page-header"><h1>Dashboard</h1><p class="subtitle">AI 模型管理面板 · 系统概览</p></div>
+            <div class="cards-grid" id="systemCards">
+                <div class="card cpu-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg></div><div class="card-info"><span class="card-label">CPU</span><span class="card-value" id="cpuValue">--</span></div><div class="card-bar"><div class="card-bar-fill" id="cpuBar" style="width:0%"></div></div></div>
+                <div class="card mem-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/></svg></div><div class="card-info"><span class="card-label">Memory</span><span class="card-value" id="memValue">--</span></div><div class="card-bar"><div class="card-bar-fill mem-bar" id="memBar" style="width:0%"></div></div></div>
+                <div class="card disk-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div class="card-info"><span class="card-label">Disk</span><span class="card-value" id="diskValue">--</span></div><div class="card-bar"><div class="card-bar-fill disk-bar" id="diskBar" style="width:0%"></div></div></div>
+                <div class="card uptime-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="card-info"><span class="card-label">Uptime</span><span class="card-value" id="uptimeValue">--</span></div></div>
+            </div>
+            <h2 class="section-title">Model Status</h2>
+            <div class="models-grid" id="dashboardModels"></div>
+        </section>
+
+        <!-- Models Tab -->
+        <section id="tab-models" class="tab-content">
+            <div class="page-header"><h1>Models</h1><p class="subtitle">九类 AI 模型配置与管理 · 可选择推理引擎</p></div>
+            <div class="models-detail-grid" id="modelsDetail"></div>
+        </section>
+
+        <!-- GPU Tab -->
+        <section id="tab-gpu" class="tab-content">
+            <div class="page-header"><h1>GPU Monitor</h1><p class="subtitle">GPU 运行状态实时监控</p></div>
+            <div class="gpu-grid" id="gpuGrid"></div>
+        </section>
+
+        <!-- Logs Tab -->
+        <section id="tab-logs" class="tab-content">
+            <div class="page-header"><h1>Logs</h1><p class="subtitle">模型运行日志实时查看</p></div>
+            <div class="logs-toolbar">
+                <select id="logModelSelect" class="form-select"><option value="">-- 选择模型 --</option></select>
+                <input type="number" id="logLines" class="form-input" value="100" min="10" max="500">
+                <button id="refreshLogs" class="btn btn-primary">Refresh</button>
+                <label class="checkbox-label"><input type="checkbox" id="autoRefreshLogs" checked> Auto</label>
+            </div>
+            <pre class="log-viewer" id="logViewer">Select a model to view logs...</pre>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="tab-settings" class="tab-content">
+            <div class="page-header"><h1>Settings</h1><p class="subtitle">服务器配置 · 引擎管理 · 版本安装</p></div>
+            <div class="settings-panel" id="settingsPanel">
+                <div class="setting-group">
+                    <h3>Server</h3>
+                    <div class="form-row"><label>API Host:</label><code id="cfgHost">--</code></div>
+                    <div class="form-row"><label>API Port:</label><code id="cfgPort">--</code></div>
+                    <div class="form-row"><label>Models Dir:</label><code id="cfgModelsDir">--</code></div>
+                    <div class="form-row"><label>Logs Dir:</label><code id="cfgLogsDir">--</code></div>
+                </div>
+                <div class="setting-group" id="engineManagementPanel">
+                    <h3>推理引擎管理 (Engine Management)</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+                        混合引擎架构: 可在网页上按需安装、卸载不同版本的推理引擎。安装后即可在 Models 页面为每类模型选择引擎。
+                    </p>
+                    <div class="engine-list" id="engineList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal"><div class="modal-header"><h2 id="modalTitle">Model Detail</h2><button class="modal-close" onclick="closeModal()">&times;</button></div><div class="modal-body" id="modalBody"></div></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span>AMM v2.0 · Hybrid Engine</span>
+        <span>|</span>
+        <span>vLLM · llama.cpp · Diffusers</span>
+        <span>|</span>
+        <span id="lastUpdate">Last update: --</span>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

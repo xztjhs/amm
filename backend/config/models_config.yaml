@@ -1,0 +1,613 @@
+# AMM Model Configuration
+# ==============================================
+# 混合推理引擎架构:
+#   引擎: vllm / llama_cpp / diffusers
+#   每类模型可单独选择引擎和版本
+# ==============================================
+
+server:
+  host: "0.0.0.0"
+  port: 18080
+  models_dir: "/models"
+  logs_dir: "/amm/logs"
+
+# ============================================================
+# 1. Chat / LLM / VLM Model
+# ============================================================
+chat_model:
+  id: "chat"
+  name: "Chat / LLM / VLM"
+  description: "通用对话、文本生成、视觉语言模型"
+  category: "chat"
+  port: 18081
+  engine_type: "llama_cpp"
+  engine_version: ""   # 空 = 使用默认版本
+  available_engines: ["llama_cpp", "vllm"]
+  available_models:
+    - name: "Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M"
+      file: "Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 20.5
+      type: "Q4_K_M"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 32768
+      min: 512
+      max: 131072
+      engine: "llama_cpp"
+    - name: "tensor_parallel_size"
+      label: "GPU 并行数"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "gpu_memory_utilization"
+      label: "GPU 显存利用率"
+      type: "float"
+      default: 0.90
+      min: 0.1
+      max: 1.0
+      step: 0.05
+      engine: "vllm"
+    - name: "max_model_len"
+      label: "最大模型长度"
+      type: "number"
+      default: 32768
+      min: 512
+      max: 131072
+      engine: "vllm"
+    - name: "dtype"
+      label: "推理精度"
+      type: "select"
+      default: "auto"
+      options: ["auto", "float16", "bfloat16", "float32"]
+      engine: "vllm"
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+      engine: "llama_cpp"
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 8
+      min: 1
+      max: 256
+      engine: "llama_cpp"
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 2048
+      min: 256
+      max: 8192
+      engine: "llama_cpp"
+    - name: "temp"
+      label: "温度"
+      type: "float"
+      default: 0.7
+      min: 0.0
+      max: 2.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "top_p"
+      label: "Top-P 采样"
+      type: "float"
+      default: 0.9
+      min: 0.0
+      max: 1.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "top_k"
+      label: "Top-K 采样"
+      type: "number"
+      default: 40
+      min: 1
+      max: 200
+      engine: "llama_cpp"
+    - name: "repeat_penalty"
+      label: "重复惩罚"
+      type: "float"
+      default: 1.1
+      min: 1.0
+      max: 2.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "max_tokens"
+      label: "最大生成Token"
+      type: "number"
+      default: 4096
+      min: 1
+      max: 32768
+      engine: "llama_cpp"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+
+# ============================================================
+# 2. Embedding Model
+# ============================================================
+embedding_model:
+  id: "embedding"
+  name: "Embedding"
+  description: "文本嵌入向量模型"
+  category: "embedding"
+  port: 18082
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp", "vllm"]
+  available_models:
+    - name: "Qwen3-Embedding-8B-Q4_K_M"
+      file: "Qwen3-Embedding-8B-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 4.8
+      type: "Q4_K_M"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 8192
+      min: 512
+      max: 32768
+      engine: "llama_cpp"
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+      engine: "llama_cpp"
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 128
+      engine: "llama_cpp"
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 1024
+      min: 256
+      max: 4096
+      engine: "llama_cpp"
+    - name: "embeddings"
+      label: "嵌入模式"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "tensor_parallel_size"
+      label: "GPU 并行数"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "gpu_memory_utilization"
+      label: "GPU 显存利用率"
+      type: "float"
+      default: 0.90
+      min: 0.1
+      max: 1.0
+      step: 0.05
+      engine: "vllm"
+
+# ============================================================
+# 3. ASR Model
+# ============================================================
+asr_model:
+  id: "asr"
+  name: "ASR (语音识别)"
+  description: "自动语音识别模型"
+  category: "asr"
+  port: 18083
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
+  available_models:
+    - name: "Qwen3-ASR-1.7B-Q8_0"
+      file: "Qwen3-ASR-1.7B-Q8_0.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.8
+      type: "Q8_0"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 16384
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 4. TTS Model
+# ============================================================
+tts_model:
+  id: "tts"
+  name: "TTS (语音合成)"
+  description: "多语言文本转语音模型"
+  category: "tts"
+  port: 18084
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
+  available_models:
+    - name: "Qwen3-1.7B-Multilingual-TTS-Q4_K_M"
+      file: "Qwen3-1.7B-Multilingual-TTS.Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.1
+      type: "Q4_K_M"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 8192
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 5. Reranker Model
+# ============================================================
+reranker_model:
+  id: "reranker"
+  name: "Reranker (重排序)"
+  description: "文档重排序模型，用于 RAG 检索增强"
+  category: "reranker"
+  port: 18085
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
+  available_models:
+    - name: "Qwen3-Reranker-8B-Q4_K_S"
+      file: "Qwen3-Reranker-8B.Q4_K_S.gguf"
+      engine: "llama_cpp"
+      size_gb: 4.6
+      type: "Q4_K_S"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 8192
+      min: 512
+      max: 32768
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 128
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 1024
+      min: 256
+      max: 4096
+    - name: "reranking"
+      label: "重排序模式"
+      type: "boolean"
+      default: true
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 6. OCR Model
+# ============================================================
+ocr_model:
+  id: "ocr"
+  name: "OCR (文字识别)"
+  description: "光学字符识别模型"
+  category: "ocr"
+  port: 18086
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
+  available_models:
+    - name: "DeepSeek-OCR-2-Q4_K_M"
+      file: "deepseek-ocr-2-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.8
+      type: "Q4_K_M"
+  parameters:
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 16384
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "mmproj"
+      label: "MMProj 文件路径"
+      type: "string"
+      default: ""
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 7. Text-to-Image Model (Qwen-Image-2512)
+# ============================================================
+t2i_model:
+  id: "t2i"
+  name: "文生图 (Text-to-Image)"
+  description: "文字生成图片 - Qwen-Image-2512"
+  category: "image"
+  port: 18087
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Qwen/Qwen-Image-2512"
+  available_models:
+    - name: "Qwen-Image-2512"
+      source: "modelscope"
+      model_id: "Qwen/Qwen-Image-2512"
+      size_gb: 15.0
+  parameters:
+    - name: "width"
+      label: "图片宽度"
+      type: "number"
+      default: 1024
+      min: 512
+      max: 2048
+    - name: "height"
+      label: "图片高度"
+      type: "number"
+      default: 1024
+      min: 512
+      max: 2048
+    - name: "num_inference_steps"
+      label: "推理步数"
+      type: "number"
+      default: 28
+      min: 10
+      max: 100
+    - name: "guidance_scale"
+      label: "引导强度"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "seed"
+      label: "随机种子"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "num_images"
+      label: "生成数量"
+      type: "number"
+      default: 1
+      min: 1
+      max: 4
+    - name: "scheduler"
+      label: "调度器"
+      type: "select"
+      default: "flow_match_euler"
+      options: ["flow_match_euler", "flow_match_heun", "euler", "dpm_solver"]
+
+# ============================================================
+# 8. Text-to-Video Model (Wan2.2-T2V-A14B)
+# ============================================================
+t2v_model:
+  id: "t2v"
+  name: "文生视频 (Text-to-Video)"
+  description: "文字生成视频 - Wan2.2-T2V-A14B"
+  category: "video"
+  port: 18088
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Wan-AI/Wan2.2-T2V-A14B"
+  available_models:
+    - name: "Wan2.2-T2V-A14B"
+      source: "modelscope"
+      model_id: "Wan-AI/Wan2.2-T2V-A14B"
+      size_gb: 28.0
+  parameters:
+    - name: "resolution"
+      label: "分辨率"
+      type: "select"
+      default: "480p"
+      options: ["480p", "720p"]
+    - name: "num_frames"
+      label: "帧数"
+      type: "number"
+      default: 81
+      min: 17
+      max: 161
+    - name: "frame_rate"
+      label: "帧率"
+      type: "number"
+      default: 16
+      min: 8
+      max: 30
+    - name: "guidance_scale"
+      label: "引导强度"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "num_inference_steps"
+      label: "推理步数"
+      type: "number"
+      default: 50
+      min: 20
+      max: 200
+    - name: "seed"
+      label: "随机种子"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "flow_shift"
+      label: "流偏移"
+      type: "float"
+      default: 3.0
+      min: 0.0
+      max: 10.0
+      step: 0.5
+
+# ============================================================
+# 9. Image-to-Video Model (Wan2.2-I2V-A14B)
+# ============================================================
+i2v_model:
+  id: "i2v"
+  name: "图生视频 (Image-to-Video)"
+  description: "图片生成视频 - Wan2.2-I2V-A14B"
+  category: "video"
+  port: 18089
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Wan-AI/Wan2.2-I2V-A14B"
+  available_models:
+    - name: "Wan2.2-I2V-A14B"
+      source: "modelscope"
+      model_id: "Wan-AI/Wan2.2-I2V-A14B"
+      size_gb: 28.0
+  parameters:
+    - name: "resolution"
+      label: "分辨率"
+      type: "select"
+      default: "480p"
+      options: ["480p", "720p"]
+    - name: "num_frames"
+      label: "帧数"
+      type: "number"
+      default: 81
+      min: 17
+      max: 161
+    - name: "frame_rate"
+      label: "帧率"
+      type: "number"
+      default: 16
+      min: 8
+      max: 30
+    - name: "guidance_scale"
+      label: "引导强度"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "num_inference_steps"
+      label: "推理步数"
+      type: "number"
+      default: 50
+      min: 20
+      max: 200
+    - name: "seed"
+      label: "随机种子"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "flow_shift"
+      label: "流偏移"
+      type: "float"
+      default: 3.0
+      min: 0.0
+      max: 10.0
+      step: 0.5
