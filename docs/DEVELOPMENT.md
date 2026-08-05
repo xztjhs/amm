@@ -199,6 +199,11 @@ git push origin master
 1. **模型资源**: 尽可能用 ModelScope 替代 Hugging Face
 2. **软件源**: Python 等尽量用国内镜像（阿里云、清华 TUNA 等）
 3. **推理引擎优先级**: vllm > llama.cpp > Diffusers
+4. **⚠️ CUDA 版本铁律（老板 2026-08-05 新增）**: 本机 CUDA 版本为 **13.2**（`/usr/local/cuda-13.2`，nvcc V13.2.86），**严禁使用 cu12 系列**的 PyTorch/依赖。所有需要 CUDA 的推理引擎（vLLM、Diffusers、含 torch）必须安装支持 CUDA 13 或 Blackwell sm_120 的版本：
+   - PyTorch 必须使用 cu13 构建（如 `+cu130`），**禁止 cu124/cu126/cu128**
+   - vLLM 需升级到支持 Blackwell (sm_120 / compute capability 12.0) 的版本（vLLM 0.8.5 锁 torch==2.6.0+cu124，不兼容 CUDA 13，**不可用**）
+   - GPU 为 RTX 6000D，compute capability **12.0 (sm_120)**
+   - 判断依据：`torch.version.cuda` 必须 >= 13，`nvidia-smi --query-gpu=compute_cap` 应为 12.0
 
 ### TTS 集成说明（llama-tts）
 
