@@ -279,12 +279,22 @@ tts_model:
   engine_type: "llama_cpp"
   available_engines: ["llama_cpp"]
   available_models:
-    - name: "Qwen3-1.7B-Multilingual-TTS-Q4_K_M"
-      file: "mradermacher/Qwen3-1.7B-Multilingual-TTS-GGUF/Qwen3-1.7B-Multilingual-TTS.Q4_K_M.gguf"
+    - name: "Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M"
+      file: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M.gguf"
+      mmproj: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
       engine: "llama_cpp"
-      size_gb: 1.1
+      size_gb: 1.0
       type: "Q4_K_M"
   parameters:
+    - name: "mmproj"
+      label: "音频投影 mmproj"
+      type: "string"
+      default: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
+    - name: "tts_lang"
+      label: "语音语言"
+      type: "select"
+      options: ["zh", "en", "de", "it", "pt", "es", "ja", "ko", "fr", "ru"]
+      default: "zh"
     - name: "ctx_size"
       label: "上下文长度"
       type: "number"

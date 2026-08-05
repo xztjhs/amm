@@ -189,9 +189,23 @@ git push origin master
 ### 当前就绪度快照（2026-08-05）
 
 - [x] llama_cpp 引擎 b4727（llama-server 已编译）
-- [ ] vLLM 引擎（目录空，待安装验证）
-- [ ] Diffusers 引擎（目录空，待安装验证）
-- [x] AMM server 运行中
+- [x] **llama-tts 工具已编译**（方案1: TTS 通过 llama-tts CLI 按需生成，非 server 常驻）
+- [x] vLLM 引擎（目录空，待安装验证）
+- [x] Diffusers 引擎（目录空，待安装验证）
+- [x] AMM server 运行中（端口 8080，宿主映射 60008）
+
+### 项目规则（老板 2026-08-05）
+
+1. **模型资源**: 尽可能用 ModelScope 替代 Hugging Face
+2. **软件源**: Python 等尽量用国内镜像（阿里云、清华 TUNA 等）
+3. **推理引擎优先级**: vllm > llama.cpp > Diffusers
+
+### TTS 集成说明（llama-tts）
+
+- AI 引擎支持三种 audio 端点：`/v1/audio/transcriptions`(ASR)、`/v1/audio/speech`(TTS)、`/v1/ocr`(OCR)
+- **TTS 走 llama-tts CLI 按需生成**（非常驻 server）：`/v1/audio/speech` 端点读取 tts 实例的模型+mmproj，调用 `/usr/local/bin/llama-tts` 生成 wav 后返回
+- TTS 模型: `ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF`（ModelScope 下载，backbone Q4_K_M + mmproj bf16）
+- llama-tts 需要 backbone + audio mmproj 两个文件（旧 Multilingual-TTS 缺 mmproj，不可用）
 
 ### 排查/调试入口
 
