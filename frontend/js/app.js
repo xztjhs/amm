@@ -34,6 +34,7 @@
     async function init() {
         setupNavigation();
         setupClock();
+        setupThemeToggle();
         setupRefreshLogsBtn();
         await loadConfig();
         await loadEngines();
@@ -289,6 +290,7 @@
                         <button class="btn btn-primary btn-sm" onclick="saveParameters('${id}')">Save Parameters</button>
                         <button class="btn btn-sm" onclick="viewLogs('${id}')">View Logs</button>
                     </div>
+                    ${currentEngine === 'diffusers' ? renderAdvancedSettings(id) : ''}
                 </div>
             </div>`;
         });
@@ -312,6 +314,87 @@
 
     function toggleDetailBody(id) {
         document.getElementById(id)?.classList.toggle('expanded');
+    }
+
+    // ---- Diffusers Advanced Settings (FP8 quant / CPU offload / boundary) ----
+    // 这些字段不放在 instance.parameters 里, 走 /api/instances/{id}/advanced 写 yaml
+    async function renderAdvancedSettings(modelId) {
+        // 默认值 (从 yaml 读取, 失败则用兜底)
+        const defaults = {
+            quant: '',          // 空 / fp8 / bf16 / none
+            compute_dtype: 'bf16',
+            boundary_ratio: '', // 空 = 自动 (Wan2.2 -> 0.875)
+            cpu_offload: false,
+        };
+        try {
+            const r = await apiGet('/instances/' + modelId + '/advanced');
+            if (r && r.settings) {
+                Object.assign(defaults, {
+                    quant: r.settings.quant || '',
+                    compute_dtype: r.settings.compute_dtype || 'bf16',
+                    boundary_ratio: (r.settings.boundary_ratio === null || r.settings.boundary_ratio === undefined) ? '' : r.settings.boundary_ratio,
+                    cpu_offload: !!r.settings.cpu_offload,
+                });
+            }
+        } catch (e) {
+            console.warn('renderAdvancedSettings load failed', e);
+        }
+        const id = `adv-${modelId}`;
+        return `
+            <div class="advanced-settings" style="margin-top:18px;padding:14px;background:var(--bg-input);border-radius:var(--radius);border:1px solid var(--border);">
+                <h4 style="font-size:13px;margin-bottom:8px;color:var(--text-secondary);">🧠 Advanced (Diffusers / FP8 量化)</h4>
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">
+                    变更后需 Restart 模型生效。FP8 存储 + BF16 计算, 84G 显存可跑 27B MoE (Wan2.2-A14B)
+                </div>
+                <div class="params-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="param-item"><label>Quant 存储精度<span class="param-desc">fp8=降显存(推荐); bf16=全精度; none=关闭</span></label>
+                        <select class="form-select" id="${id}-quant">
+                            <option value="" ${defaults.quant===''?'selected':''}>(自动 - 默认)</option>
+                            <option value="fp8" ${defaults.quant==='fp8'?'selected':''}>fp8 (FP8 存储, BF16 计算) ⭐</option>
+                            <option value="bf16" ${defaults.quant==='bf16'?'selected':''}>bf16 (BF16 全精度)</option>
+                            <option value="none" ${defaults.quant==='none'?'selected':''}>none (禁用量化)</option>
+                        </select>
+                    </div>
+                    <div class="param-item"><label>Compute Dtype<span class="param-desc">前向计算精度</span></label>
+                        <select class="form-select" id="${id}-compute_dtype">
+                            <option value="bf16" ${defaults.compute_dtype==='bf16'?'selected':''}>bf16 ⭐</option>
+                            <option value="fp16" ${defaults.compute_dtype==='fp16'?'selected':''}>fp16</option>
+                            <option value="fp32" ${defaults.compute_dtype==='fp32'?'selected':''}>fp32</option>
+                        </select>
+                    </div>
+                    <div class="param-item"><label>Boundary Ratio<span class="param-desc">Wan2.2 MoE 双专家切换点 (SNR)</span></label>
+                        <input type="number" class="form-input" id="${id}-boundary_ratio" value="${defaults.boundary_ratio}" min="0" max="1" step="0.001" placeholder="(自动 0.875)">
+                    </div>
+                    <div class="param-item"><label>CPU Offload<span class="param-desc">显存仍不够时启用, 按叶子切 CPU/GPU</span></label>
+                        <label style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+                            <input type="checkbox" id="${id}-cpu_offload" ${defaults.cpu_offload?'checked':''} style="accent-color:var(--accent)"> 启用
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button class="btn btn-primary btn-sm" onclick="saveAdvancedSettings('${modelId}')">Save Advanced</button>
+                    <button class="btn btn-sm" onclick="restartModel('${modelId}')">🔄 Restart Now</button>
+                </div>
+            </div>`;
+    }
+
+    async function saveAdvancedSettings(modelId) {
+        const id = `adv-${modelId}`;
+        const settings = {
+            quant: document.getElementById(`${id}-quant`)?.value || '',
+            compute_dtype: document.getElementById(`${id}-compute_dtype`)?.value || '',
+            boundary_ratio: document.getElementById(`${id}-boundary_ratio`)?.value || '',
+            cpu_offload: document.getElementById(`${id}-cpu_offload`)?.checked || false,
+        };
+        // 空字符串转 null (后端会接受并写 None)
+        if (settings.quant === '') settings.quant = '';
+        if (settings.boundary_ratio === '') settings.boundary_ratio = '';
+        const r = await apiPut('/instances/' + modelId + '/advanced', settings);
+        if (r && r.success) {
+            toast('✅ Advanced settings saved for ' + modelId, 'success');
+        } else {
+            toast('❌ ' + (r && r.error || 'Failed'), 'error');
+        }
     }
 
     // ---- Engine Selection ----
@@ -623,6 +706,131 @@
         }
     }
 
+    // ---- T2V (Wan2.2-T2V-A14B) ----
+    async function generateVideo() {
+        const prompt = document.getElementById('pgT2VPrompt').value;
+        const result = document.getElementById('pgT2VResult');
+        const hint = document.getElementById('pgT2VHint');
+        const saveDisk = document.getElementById('pgT2VSaveDisk')?.checked || false;
+
+        const payload = {
+            prompt: prompt,
+            resolution: document.getElementById('pgT2VResolution').value,
+            num_frames: parseInt(document.getElementById('pgT2VFrames').value),
+            num_inference_steps: parseInt(document.getElementById('pgT2VSteps').value),
+            guidance_scale: parseFloat(document.getElementById('pgT2VGuidance').value),
+            guidance_scale_2: parseFloat(document.getElementById('pgT2VGuidance2').value),
+            seed: parseInt(document.getElementById('pgT2VSeed').value),
+            save_to_disk: saveDisk,
+            video_type: 't2v',
+        };
+        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟（依赖 cpu_offload/quant 设置）</div>';
+        hint.textContent = '已发送, 等待推理...';
+        const t0 = Date.now();
+        try {
+            const resp = await fetch('/v1/videos/generations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await resp.json();
+            const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+            if (data.data && data.data[0] && data.data[0].b64_json) {
+                const mime = data.data[0].mime || 'video/mp4';
+                const src = `data:${mime};base64,${data.data[0].b64_json}`;
+                let extra = '';
+                if (data.saved_paths && data.saved_paths.length) {
+                    extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths[0])}</div>`;
+                }
+                result.innerHTML = `<video controls autoplay loop muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">耗时 ${elapsed}s · ${(data.data[0].b64_json.length * 3 / 4 / 1024 / 1024).toFixed(1)} MB</div>${extra}`;
+                hint.textContent = '✅ 完成';
+            } else {
+                result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
+                hint.textContent = '❌ 失败';
+            }
+        } catch (e) {
+            result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
+            hint.textContent = '❌ 异常';
+        }
+    }
+
+    // ---- I2V (Wan2.2-I2V-A14B) ----
+    async function generateI2V() {
+        const prompt = document.getElementById('pgI2VPrompt').value;
+        const fileInput = document.getElementById('pgI2VImage');
+        const result = document.getElementById('pgI2VResult');
+        const saveDisk = document.getElementById('pgI2VSaveDisk')?.checked || false;
+        if (!fileInput.files || !fileInput.files[0]) {
+            result.innerHTML = '<div class="pg-placeholder" style="color:var(--warning)">请先上传首帧图</div>';
+            return;
+        }
+        const file = fileInput.files[0];
+        // base64 编码
+        const b64 = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result.split(',', 2)[1]);
+            r.onerror = reject;
+            r.readAsDataURL(file);
+        });
+        const payload = {
+            prompt: prompt,
+            image: b64,
+            resolution: document.getElementById('pgI2VResolution').value,
+            num_frames: parseInt(document.getElementById('pgI2VFrames').value),
+            num_inference_steps: parseInt(document.getElementById('pgI2VSteps').value),
+            guidance_scale: parseFloat(document.getElementById('pgI2VGuidance').value),
+            seed: parseInt(document.getElementById('pgI2VSeed').value),
+            save_to_disk: saveDisk,
+            video_type: 'i2v',
+        };
+        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟</div>';
+        const t0 = Date.now();
+        try {
+            const resp = await fetch('/v1/videos/generations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await resp.json();
+            const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+            if (data.data && data.data[0] && data.data[0].b64_json) {
+                const mime = data.data[0].mime || 'video/mp4';
+                const src = `data:${mime};base64,${data.data[0].b64_json}`;
+                let extra = '';
+                if (data.saved_paths && data.saved_paths.length) {
+                    extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths[0])}</div>`;
+                }
+                result.innerHTML = `<video controls autoplay loop muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">耗时 ${elapsed}s</div>${extra}`;
+            } else {
+                result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
+            }
+        } catch (e) {
+            result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
+        }
+    }
+
+    // ---- Theme Toggle (light / dark) ----
+    function setupThemeToggle() {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        // 读取上次选择, 默认 dark
+        const saved = localStorage.getItem('amm-theme') || 'dark';
+        applyTheme(saved);
+        btn.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = cur === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('amm-theme', next);
+        });
+    }
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        if (theme === 'light') root.setAttribute('data-theme', 'light');
+        else root.removeAttribute('data-theme');
+        const btn = document.getElementById('themeToggle');
+        if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+    }
+
     function escapeHtml(text) {
         var div = document.createElement('div');
         div.appendChild(document.createTextNode(text));
@@ -643,6 +851,8 @@
     window.toggleDetailBody = toggleDetailBody;
     window.sendChatMessage = sendChatMessage;
     window.generateImage = generateImage;
+    window.generateVideo = generateVideo;
+    window.generateI2V = generateI2V;
     window.callApi = callApi;
 
     // ---- Boot ----

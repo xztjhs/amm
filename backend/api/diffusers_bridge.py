@@ -372,6 +372,28 @@ class DiffusersBridgeHandler:
             "verification_dir_writable": os.access(VERIFICATION_DIR, os.W_OK),
         })
 
+    # ---- /v1/videos/generations (OpenAI 风格统一入口) ----
+    async def videos_generate(self, req):
+        """OpenAI 风格的视频生成入口: 根据请求体 video_type 路由到 t2v / i2v
+
+        请求体示例:
+          { "prompt": "...", "video_type": "t2v", "save_to_disk": true, "seed": 42 }
+          { "prompt": "...", "video_type": "i2v", "image": "<base64>", "save_to_disk": true }
+          不传 video_type 则默认 t2v
+        """
+        try:
+            data = await req.json()
+            video_type = (data.get("video_type") or "t2v").lower()
+            if video_type not in ("t2v", "i2v"):
+                return self._json({"error": f"video_type 必须是 t2v 或 i2v, 收到 {video_type!r}"}, 400)
+            # 转发到对应子 handler
+            if video_type == "t2v":
+                return await self.t2v_generate(req)
+            return await self.i2v_generate(req)
+        except Exception as e:
+            logger.exception("videos_generate error")
+            return self._json({"error": str(e)}, 500)
+
     # ---- T2I: 文生图 ----
     async def t2i_generate(self, req):
         try:
@@ -606,3 +628,6 @@ def setup_routes(app: web.Application, manager):
     app.router.add_post("/api/bridge/diffusers/i2v", h.i2v_generate)
     # OpenAI 兼容路径
     app.router.add_post("/v1/images/generations", h.t2i_generate)
+    # 2026-08-05: 视频生成也加 OpenAI 兼容路径, 路由到 T2V/I2V
+    # video: "t2v" | "i2v" 由请求体里的 video_type 决定, 不提供则默认 t2v
+    app.router.add_post("/v1/videos/generations", h.videos_generate)

@@ -1,9 +1,10 @@
 /* ========================================
    AMM - AI Models Manage
-   Modern Dark Theme UI
+   Modern Dark/Light Theme UI
    ======================================== */
 
 :root {
+    /* 主题变量统一在 :root (默认 dark) / [data-theme="light"] 里重定义 */
     --bg: #0f1119;
     --bg-card: #1a1d2e;
     --bg-card-hover: #222640;
@@ -28,6 +29,24 @@
     --shadow: 0 2px 8px rgba(0,0,0,0.3);
     --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
     --transition: 0.2s ease;
+}
+
+/* 浅色主题 (2026-08-05 新增, 由 topbar theme toggle 切换) */
+[data-theme="light"] {
+    --bg: #f5f7fb;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0f4fa;
+    --bg-input: #ffffff;
+    --border: #e2e6ee;
+    --border-hover: #c6cdda;
+    --text: #1a1d2e;
+    --text-secondary: #4a5066;
+    --text-muted: #8a90a4;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-soft: rgba(37,99,235,0.10);
+    --shadow: 0 2px 8px rgba(15,17,25,0.06);
+    --shadow-lg: 0 8px 32px rgba(15,17,25,0.10);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -105,6 +124,23 @@ body {
     gap: 8px;
     font-size: 12px;
     color: var(--text-muted);
+}
+
+/* 主题切换按钮 (2026-08-05 新增) */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+.theme-toggle:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
 }
 
 .status-dot {

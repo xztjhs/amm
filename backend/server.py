@@ -136,6 +136,25 @@ class APIHandlers:
         except Exception as e:
             return self._json({"error": str(e)}, 400)
 
+    async def update_advanced_settings(self, req):
+        """更新 Diffusers 引擎的高级设置 (FP8 量化 / CPU offload / boundary 等), 写 yaml (2026-08-05)"""
+        model_id = req.match_info["model_id"]
+        try:
+            data = await req.json()
+            self.manager.update_advanced_settings(model_id, data)
+            return self._json({"success": True, "settings": data})
+        except Exception as e:
+            return self._json({"error": str(e)}, 400)
+
+    async def get_advanced_settings(self, req):
+        """读取 Diffusers 高级设置, 直接从 yaml 取 (source of truth)"""
+        model_id = req.match_info["model_id"]
+        try:
+            settings = self.manager.get_advanced_settings(model_id)
+            return self._json({"success": True, "model_id": model_id, "settings": settings})
+        except Exception as e:
+            return self._json({"error": str(e)}, 400)
+
     async def update_model_file(self, req):
         model_id = req.match_info["model_id"]
         try:
@@ -261,6 +280,8 @@ def create_app() -> web.Application:
     app.router.add_post("/api/instances/{model_id}/stop", h.stop_model)
     app.router.add_post("/api/instances/{model_id}/restart", h.restart_model)
     app.router.add_put("/api/instances/{model_id}/parameters", h.update_parameters)
+    app.router.add_put("/api/instances/{model_id}/advanced", h.update_advanced_settings)
+    app.router.add_get("/api/instances/{model_id}/advanced", h.get_advanced_settings)
     app.router.add_put("/api/instances/{model_id}/model-file", h.update_model_file)
     app.router.add_put("/api/instances/{model_id}/engine", h.select_engine)
     app.router.add_get("/api/instances/{model_id}/logs", h.get_model_logs)

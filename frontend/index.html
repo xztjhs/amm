@@ -46,6 +46,7 @@
             </a>
         </nav>
         <div class="topbar-status">
+            <button id="themeToggle" class="theme-toggle" title="切换浅色/深色主题" aria-label="Theme toggle">🌙</button>
             <span id="serverStatus" class="status-dot offline"></span>
             <span id="serverStatusText">Offline</span>
             <span id="clock" class="clock"></span>
@@ -80,6 +81,8 @@
                 <div class="playground-tabs">
                     <button class="pg-tab active" data-pg="chat">💬 Chat</button>
                     <button class="pg-tab" data-pg="image">🖼️ T2I</button>
+                    <button class="pg-tab" data-pg="video">🎬 T2V</button>
+                    <button class="pg-tab" data-pg="i2v">🖌️ I2V</button>
                     <button class="pg-tab" data-pg="api">🔧 API</button>
                 </div>
                 <!-- Chat Playground -->
@@ -98,9 +101,41 @@
                         <div class="pg-form-row"><label>Height</label><input type="number" id="pgT2IHeight" value="1024" min="512" max="2048" step="64"></div>
                         <div class="pg-form-row"><label>Steps</label><input type="number" id="pgT2ISteps" value="28" min="10" max="100"></div>
                         <div class="pg-form-row"><label>Guidance</label><input type="number" id="pgT2IGuidance" value="5.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgT2ISaveDisk"> 同时落盘到 /amm/verification</label></div>
                         <button class="btn btn-primary" onclick="generateImage()">Generate Image</button>
                     </div>
                     <div class="pg-result" id="pgT2IResult"><div class="pg-placeholder">点击 Generate 生成图片</div></div>
+                </div>
+                <!-- T2V Playground (Wan2.2-T2V-A14B) -->
+                <div id="pg-video" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt</label><textarea id="pgT2VPrompt" rows="3" placeholder="Two anthropomorphic cats in comfy boxing gear...">A red panda jumping between bamboo stalks, slow motion, cinematic</textarea></div>
+                        <div class="pg-form-row"><label>Resolution</label><select id="pgT2VResolution" class="form-select"><option value="480p">480p (832×480)</option><option value="720p">720p (1280×720) — 需 ≥96G 显存</option></select></div>
+                        <div class="pg-form-row"><label>Frames</label><input type="number" id="pgT2VFrames" value="81" min="17" max="161" step="4"></div>
+                        <div class="pg-form-row"><label>Steps</label><input type="number" id="pgT2VSteps" value="40" min="10" max="100"></div>
+                        <div class="pg-form-row"><label>Guidance (高噪)</label><input type="number" id="pgT2VGuidance" value="4.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Guidance_2 (低噪, Wan2.2 MoE)</label><input type="number" id="pgT2VGuidance2" value="3.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Seed (-1 随机)</label><input type="number" id="pgT2VSeed" value="-1"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgT2VSaveDisk"> 同时落盘到 /amm/verification</label></div>
+                        <button class="btn btn-primary" onclick="generateVideo()">Generate Video</button>
+                        <span id="pgT2VHint" style="margin-left:12px;color:var(--text-muted);font-size:12px;"></span>
+                    </div>
+                    <div class="pg-result" id="pgT2VResult"><div class="pg-placeholder">点击 Generate 生成 5s 视频 (480P 推荐 5-15 分钟)</div></div>
+                </div>
+                <!-- I2V Playground (Wan2.2-I2V-A14B) -->
+                <div id="pg-i2v" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt</label><textarea id="pgI2VPrompt" rows="3" placeholder="描述动态变化...">The cat slowly turns its head toward the camera and blinks</textarea></div>
+                        <div class="pg-form-row"><label>First Frame (PNG/JPG)</label><input type="file" id="pgI2VImage" accept="image/*"></div>
+                        <div class="pg-form-row"><label>Resolution</label><select id="pgI2VResolution" class="form-select"><option value="480p">480p</option></select></div>
+                        <div class="pg-form-row"><label>Frames</label><input type="number" id="pgI2VFrames" value="81" min="17" max="161" step="4"></div>
+                        <div class="pg-form-row"><label>Steps</label><input type="number" id="pgI2VSteps" value="40" min="10" max="100"></div>
+                        <div class="pg-form-row"><label>Guidance</label><input type="number" id="pgI2VGuidance" value="5.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Seed (-1 随机)</label><input type="number" id="pgI2VSeed" value="-1"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgI2VSaveDisk"> 同时落盘到 /amm/verification</label></div>
+                        <button class="btn btn-primary" onclick="generateI2V()">Generate Video</button>
+                    </div>
+                    <div class="pg-result" id="pgI2VResult"><div class="pg-placeholder">上传首帧图后点击 Generate 生成视频</div></div>
                 </div>
                 <!-- API Debug -->
                 <div id="pg-api" class="pg-content">

@@ -221,6 +221,71 @@ class ModelManager:
         self._save_state()
         logger.info(f"模型 {model_id} 参数已更新: {params}")
 
+    # 哪些 model_cfg 字段会被 UI 当作"FP8 / 显存优化"高级设置透传到 yaml (2026-08-05)
+    # 这些字段不在 instance.parameters 里, 但 UI 也需要能在网页上切换
+    ADVANCED_FIELDS = {"quant", "compute_dtype", "boundary_ratio", "cpu_offload"}
+
+    def update_advanced_settings(self, model_id: str, settings: Dict[str, Any]):
+        """更新 Diffusers 引擎的高级设置 (FP8 量化 / CPU offload / boundary 等) 到 yaml
+
+        支持字段: quant, compute_dtype, boundary_ratio, cpu_offload
+        其他字段会被拒绝 (防止前端误改 category / model_id 等核心字段)
+        """
+        # 找到 yaml key
+        cfg_key = None
+        cfg = None
+        for k, v in self.config.items():
+            if isinstance(v, dict) and v.get("id") == model_id:
+                cfg_key = k
+                cfg = v
+                break
+        if cfg is None:
+            raise ValueError(f"未找到模型 {model_id} 配置")
+
+        # 白名单校验
+        bad = set(settings.keys()) - self.ADVANCED_FIELDS
+        if bad:
+            raise ValueError(f"advanced_settings 不支持字段 {bad}, 仅支持 {self.ADVANCED_FIELDS}")
+
+        # 类型校验
+        for f, v in settings.items():
+            if f == "quant":
+                v = (v or "").lower().strip()
+                if v not in ("fp8", "bf16", "none", "off", ""):
+                    raise ValueError(f"quant 值不合法 {v!r}, 允许: fp8/bf16/none/off/空")
+                cfg["quant"] = v or None
+            elif f == "compute_dtype":
+                v = (v or "").lower().strip()
+                if v not in ("bf16", "fp16", "fp32", ""):
+                    raise ValueError(f"compute_dtype 值不合法 {v!r}")
+                cfg["compute_dtype"] = v or None
+            elif f == "boundary_ratio":
+                if v is None or v == "":
+                    cfg["boundary_ratio"] = None
+                else:
+                    try:
+                        br = float(v)
+                        if not (0.0 < br < 1.0):
+                            raise ValueError("boundary_ratio 必须在 (0,1) 之间")
+                        cfg["boundary_ratio"] = br
+                    except (TypeError, ValueError) as e:
+                        raise ValueError(f"boundary_ratio 必须是 float: {e}")
+            elif f == "cpu_offload":
+                cfg["cpu_offload"] = bool(v)
+
+        # 写回 yaml
+        import yaml as _yaml
+        with open(self.config_path, "w", encoding="utf-8") as f:
+            _yaml.safe_dump(self.config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        logger.info(f"模型 {model_id} 高级设置已写 yaml: {settings}")
+
+    def get_advanced_settings(self, model_id: str) -> Dict[str, Any]:
+        """从 yaml 读取 advanced settings (source of truth, 不用 state.json cache)"""
+        for k, v in self.config.items():
+            if isinstance(v, dict) and v.get("id") == model_id:
+                return {f: v.get(f) for f in self.ADVANCED_FIELDS}
+        raise ValueError(f"未找到模型 {model_id} 配置")
+
     def update_model_file(self, model_id: str, model_file: str):
         inst = self.instances.get(model_id)
         if not inst:
