@@ -7,7 +7,7 @@
 
 server:
   host: "0.0.0.0"
-  port: 18080
+  port: 80
   models_dir: "/models"
   logs_dir: "/amm/logs"
 
