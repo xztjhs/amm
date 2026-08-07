@@ -276,8 +276,6 @@
                 </div>
                 <div class="model-detail-body" id="body-${id}">
                     ${engineSelector}
-                <div class="model-detail-body" id="body-${id}">
-                    ${engineSelector}
                     <div class="model-file-box" style="margin-bottom:14px;">
                         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                             <label style="font-size:12px;color:var(--text-muted);font-weight:500">📁 模型文件 (路径浏览)</label>
@@ -1104,6 +1102,11 @@
 
 
     // ---- Global Exports ----
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(String(text)));
+        return div.innerHTML;
+    }
     window.startModel = startModel;
     window.stopModel = stopModel;
     window.restartModel = restartModel;
