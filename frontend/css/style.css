@@ -922,3 +922,21 @@ body {
 .fb-dir { color: var(--accent); }
 .fb-file { color: var(--text-secondary); font-family: monospace; }
 .fb-dirs { margin-bottom: 8px; }
+
+/* ============ v0.2: File Browser 增强 ============ */
+.fb-crumb {
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 12px;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+.fb-crumb:hover { background: var(--accent-soft); }
+.fb-crumb-root { font-weight: 600; }
+.fb-path-input { font-family: monospace; font-size: 12px; }
+.fb-item.fb-picked {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}

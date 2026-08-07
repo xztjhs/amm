@@ -80,7 +80,8 @@ class FSBridge:
             "root": str(root),
             "current": str(target),
             "relative": str(target.relative_to(root)) if target != root else "",
-            "parent_relative": str(target.parent.relative_to(root)) if target != root and target.parent != root else None,
+            # 上级目录: 回到根时返回空字符串(表示根), 根目录本身无上级(返回 None)
+            "parent_relative": (str(target.parent.relative_to(root)) if target.parent != root else "") if target != root else None,
             "dirs": dirs,
             "files": files,
         })

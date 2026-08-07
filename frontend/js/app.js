@@ -967,37 +967,76 @@
         fbState.curDir = relDir;
         fbState.curPath = data.current || '';
 
-        const ext = fbState.engine === 'llama_cpp' || fbState.engine === 'llama' ? ['.gguf', '.bin'] : ['.safetensors', '.bin', '.gguf'];
+        const ext = (fbState.engine === 'llama_cpp' || fbState.engine === 'llama') ? ['.gguf', '.bin'] : ['.safetensors', '.bin', '.gguf'];
         let html = '';
-        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-            <span style="font-size:12px;color:var(--text-muted)">路径:</span>
-            <input class="form-input" style="flex:1;font-family:monospace;font-size:12px" id="fbPath" value="${escapeHtml(data.current || '')}" readonly>
-            <button class="btn btn-sm" onclick="fbUp()">↑ 上级</button>
+        // 路径输入 + 面包屑导航
+        html += `<div style="margin-bottom:8px;">`;
+        html += `<div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:12px;color:var(--text-muted)">🗂 路径:</span>
+            <input class="form-input fb-path-input" id="fbPathInput" value="${escapeHtml(data.relative || '')}" placeholder="/models 根目录" style="flex:1;font-family:monospace;font-size:12px">
+            <button class="btn btn-sm" onclick="fbGoPath()">前往</button>
+            <button class="btn btn-sm" onclick="fbUp()" title="上级目录">↑ 上级</button>
         </div>`;
-        html += '<div class="fb-dirs"><div style="font-size:11px;color:var(--text-muted);margin:6px 0">目录:</div>';
+        html += `<div style="margin-top:6px;font-size:12px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">`;
+        html += `<span style="color:var(--text-muted);font-size:11px">breadcrumb:</span>` +
+            (_buildBreadcrumb(relDir) || '');
+        html += `</div></div>`;
+        // 当前路径标识
+        html += `<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;padding:4px 8px;background:var(--bg-input);border-radius:4px;word-break:break-all;">📁 /models${data.relative ? '/' + escapeHtml(data.relative) : ''}</div>`;
+        // 目录列表
+        html += '<div class="fb-dirs"><div style="font-size:11px;color:var(--text-muted);margin:4px 0">子目录 (' + (data.dirs || []).length + '):</div>';
         if (data.parent_relative !== null && data.parent_relative !== undefined) {
-            html += `<div class="fb-item fb-dir" onclick="fbGotoDir('${escapeAttr(data.parent_relative)}')">📁 <span>.. (上级)</span></div>`;
+            html += `<div class="fb-item fb-dir" onclick="fbGotoDir('${escapeAttr(data.parent_relative)}')" title="返回上级">📁 <span>.. 上级目录</span></div>`;
         }
         (data.dirs || []).forEach(d => {
             html += `<div class="fb-item fb-dir" onclick="fbGotoDir('${escapeAttr(d.path)}')">📁 ${escapeHtml(d.name)}</div>`;
         });
+        if (!(data.dirs || []).length && data.parent_relative === null) {
+            html += '<div style="font-size:12px;color:var(--text-muted);padding:4px 0">(无子目录)</div>';
+        }
         html += '</div>';
-        html += '<div style="font-size:11px;color:var(--text-muted);margin:2px 0">文件</div>';
-        (data.files || []).forEach(f => {
-            if (ext && ext.length && !f.ext) {}
-        });
-        const modelFiles = (data.files || []).filter(f => ext.includes(f.ext));
+        // 文件
+        html += `<div style="font-size:11px;color:var(--text-muted);margin:4px 0">📄 模型文件 (${modelFilesFor(data, ext).length}):</div>`;
+        const modelFiles = modelFilesFor(data, ext);
         if (!modelFiles.length) {
-            html += '<div style="font-size:12px;color:var(--text-muted);padding:6px 0">(当前目录无匹配模型文件)</div>';
+            html += '<div style="font-size:12px;color:var(--text-muted);padding:4px 0">(当前目录无匹配模型文件，请进入子目录继续浏览)</div>';
         }
         modelFiles.forEach(f => {
-            html += `<div class="fb-item fb-file" onclick="fbPickFile('${fbState.modelId}', '${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)} <span style="float:right;color:var(--text-muted);font-size:11px">${f.size_mb}MB</span></div>`;
+            const curFile = instances[fbState.modelId] && instances[fbState.modelId].selected_model_file;
+            const picked = !!curFile && curFile === f.path;
+            html += `<div class="fb-item fb-file${picked ? ' fb-picked' : ''}" onclick="fbPickFile('${fbState.modelId}', '${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)} <span style="float:right;color:var(--text-muted);font-size:11px">${f.size_mb}MB</span></div>`;
         });
-        // 直接选目录(目录型模型, 如 diffusers/HF)
-        html += '<div style="font-size:11px;color:var(--text-muted);margin:10px 0">或选择整个目录作为模型 (HF/Diffusers 目录型)</div>';
-        if (data.relative) html += `<button class="btn btn-sm btn-primary" onclick="fbPickDir('${fbState.modelId}')">✔ 选此目录 "${escapeHtml(data.relative)}"</button>`;
+        // 选整个目录 (HF/Diffusers 目录型模型)
+        if (data.relative) {
+            html += `<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">`;
+            html += `<button class="btn btn-sm btn-primary" onclick="fbPickDir('${fbState.modelId}')">✔ 选当前整个目录作为模型 "${escapeHtml(data.relative)}"</button>`;
+            html += '</div>';
+        }
         body.innerHTML = html;
     }
+
+    function _buildBreadcrumb(relDir) {
+        if (!relDir) return '<span class="fb-crumb fb-crumb-root" onclick="fbGotoDir(\'\')">/models</span>';
+        const parts = relDir.split('/').filter(Boolean);
+        let html = '';
+        let acc = '';
+        html += '<span class="fb-crumb fb-crumb-root" onclick="fbGotoDir(\'\')">/models</span>';
+        parts.forEach((p, i) => {
+            acc = acc + (acc ? '/' : '') + p;
+            html += ' <span style="color:var(--text-muted)">/</span> ';
+            html += `<span class="fb-crumb" onclick="fbGotoDir('${escapeAttr(acc)}')">${escapeHtml(p)}</span>`;
+        });
+        return html;
+    }
+
+    function fbGoPath() {
+        const v = document.getElementById('fbPathInput')?.value || '';
+        fbLoadDir(v.replace(/^\/models\/?/, ''));
+    }
+
+    // 过滤模型文件
+    function modelFilesFor(data, ext) { return (data.files || []).filter(f => ext.includes(f.ext)); }
+
 
     function fbGotoDir(d) { fbLoadDir(d); }
     function fbUp() {
@@ -1087,6 +1126,7 @@
     window.openFileBrowser = openFileBrowser;
     window.closeFileBrowser = closeFileBrowser;
     window.fbLoadDir = fbLoadDir;
+    window.fbGoPath = fbGoPath;
     window.fbGotoDir = fbGotoDir;
     window.fbUp = fbUp;
     window.fbPickFile = fbPickFile;
