@@ -191,16 +191,98 @@ class QuantizerBridge:
             task.error = str(e)
             task.finished = time.time()
 
-    def _resolve(self, path: str) -> Optional[str]:
+    def _json(self, data, status=200):
+        return web.json_response(data, status=status,
+                                 headers={"Access-Control-Allow-Origin": "*"})
+
+    # ------------------------------------------------------------
+    # vLLM(safetensors/HF) -> GGUF 转换 (v0.5)
+    # 流程: convert_hf_to_gguf.py 转出基础精度 GGUF, 如需量化再用 llama-quantize
+    # ------------------------------------------------------------
+    def _resolve_dir(self, path: str) -> Optional[str]:
+        """解析目录(相对models_dir或绝对), 用于选 HF 模型目录"""
         p = Path(path)
         if p.is_absolute():
             return str(p) if p.exists() else None
         cand = Path(self.models_dir) / path
         return str(cand) if cand.exists() else None
 
-    def _json(self, data, status=200):
-        return web.json_response(data, status=status,
-                                 headers={"Access-Control-Allow-Origin": "*"})
+    async def convert_hf(self, req) -> web.Response:
+        """POST /api/convert/hf  vLLM(HF safetensors) -> GGUF
+        body: { source: vllm模型目录/文件, out_dir: 输出目录, model: 模型名,
+                outtype: f32|f16|bf16 (基础精度, 默认f32),
+                quant: 可选, 转完后再量化的精度(如 q4_k_m/fp16) }
+        """
+        try:
+            body = await req.json()
+        except Exception:
+            return self._json({"error": "无效 JSON"}, 400)
+        src = (body.get("source") or "").strip()
+        if not src:
+            return self._json({"error": "缺少 source"}, 400)
+        src_path = self._resolve_dir(src) or self._resolve(src)
+        if not src_path or not os.path.exists(src_path):
+            return self._json({"error": f"源不存在: {src}"}, 404)
+
+        out_type = (body.get("outtype") or "f32").strip().lower()
+        if out_type not in ("f32", "f16", "bf16", "q8_0"):
+            out_type = "f32"
+        model_name = (body.get("model_name") or "").strip() or "model"
+        # 输出目录
+        out_dir = (body.get("out_dir") or "").strip()
+        if out_dir:
+            op = Path(out_dir)
+            if not op.is_absolute():
+                op = Path(self.models_dir) / out_dir
+            op.mkdir(parents=True, exist_ok=True)
+            dst_dir = op
+        else:
+            # 默认源目录/gguf-converted
+            dst_dir = Path(src_path if os.path.isdir(src_path) else os.path.dirname(src_path)) / "gguf-converted"
+            dst_dir.mkdir(parents=True, exist_ok=True)
+
+        base_name = model_name if model_name.lower().endswith(".gguf") else model_name + ".gguf"
+        base_path = str(dst_dir / base_name)
+        convert_script = "/amm/backend/engines_installed/llama_cpp/b4727/scripts/convert_hf_to_gguf.py"
+        if not os.path.exists(convert_script):
+            return self._json({"error": "convert_hf_to_gguf.py 未部署"}, 503)
+
+        task_id = f"vg_{int(time.time())}"
+        task = QuantizeTask(task_id, src_path, base_path, out_type, base_path)
+        quant = (body.get("quant") or "").strip().lower()
+        task.kind = "convert_hf"
+        task.quant = quant
+        self.tasks[task_id] = task
+        import threading
+        threading.Thread(target=self._run_convert_hf, args=(task, convert_script, out_type), daemon=True).start()
+        return self._json({"ok": True, "task_id": task_id, **task.to_dict()})
+
+    def _run_convert_hf(self, task: QuantizeTask, script: str, out_type: str):
+        try:
+            task.status = "running"
+            task.detail = "HF→GGUF 转换中..."
+            py = "/amm/backend/engines_installed/vllm/0.22.1/venv/bin/python"
+            cmd = [py, script, task.src, "--outfile", task.out_path, "--outtype", out_type]
+            logger.info(f"HF转换命令: {' '.join(cmd)}")
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=7200, cwd="/amm/backend/engines_installed/llama_cpp/b4727/scripts",
+                               env={**os.environ, "NO_LOCAL_GGUF": "1", "PYTHONPATH": "/amm/backend/engines_installed/llama_cpp/b4727/scripts"})
+            if r.returncode != 0:
+                task.status = "failed"; task.error = (r.stderr or r.stdout or "")[-600:]; task.finished = time.time(); return
+            # 若需量化
+            q = getattr(task, "quant", "")
+            if q and q != out_type and q in QUANT_TYPES:
+                task.detail = "GGUF 已生成，正在量化..."
+                qcmd = [self._bin, "--allow-requantize", task.out_path, task.out_path + f".{q}.gguf", QUANT_TYPES[q]]
+                qr = subprocess.run(qcmd, capture_output=True, text=True, timeout=7200)
+                if qr.returncode == 0:
+                    task.out_path = task.out_path + f".{q}.gguf"
+                else:
+                    task.detail = "基础GGUF已生成，量化失败: " + (qr.stderr or "")[-200:]
+            task.status = "done"
+            task.detail += f" 输出: {task.out_path}"
+            task.finished = time.time()
+        except Exception as e:
+            task.status = "failed"; task.error = str(e); task.finished = time.time()
 
 
 def setup_routes(app: web.Application, manager):
@@ -208,3 +290,4 @@ def setup_routes(app: web.Application, manager):
     app.router.add_get("/api/quantize/types", bridge.list_types)
     app.router.add_post("/api/quantize", bridge.quantize)
     app.router.add_get("/api/quantize/status", bridge.status)
+    app.router.add_post("/api/convert/hf", bridge.convert_hf)

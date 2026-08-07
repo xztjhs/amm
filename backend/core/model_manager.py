@@ -394,7 +394,13 @@ class ModelManager:
     # ================================================================
 
     def get_gpu_info(self) -> List[dict]:
-        """获取 GPU 信息。GPUtil 提供基础数据，叠加 nvidia-smi 补充风扇/Utilization 各子项/时钟等。"""
+        """获取 GPU 信息。GPUtil 提供基础数据，叠加 nvidia-smi 补充风扇/Utilization 各子项/时钟等。
+        nvidia-smi 子进程调用有 2s 缓存，避免高频轮询拖阻塞事件循环。"""
+        import time as _t
+        _cache = getattr(self, "_gpu_cache", None)
+        now = _t.time()
+        if _cache and now - _cache[0] < 2.0:
+            return _cache[1]
         gpus = []
         try:
             # nvidia-smi 查询更多字段（风扇、各利用率、时钟、功耗）
@@ -427,6 +433,7 @@ class ModelManager:
                 })
         except Exception as e:
             logger.warning(f"获取 GPU 信息失败: {e}")
+        self._gpu_cache = (now, gpus)
         return gpus
 
     def _nvidia_smi_compute_apps(self) -> dict:

@@ -1462,6 +1462,21 @@
         document.getElementById('fileBrowserTitle').textContent = '📂 选择输出文件夹';
         qLoadDir('');
     }
+    // --- vLLM -> GGUF 源选择 (目录 or safetensors) ---
+    function openVgSrcBrowser() {
+        qState = { mode: 'vsrc', curDir: '' };
+        const m = document.getElementById('fileBrowserModal');
+        m.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 选择 vLLM 模型 (目录/safetensors)';
+        qLoadDir('');
+    }
+    function openVgOutBrowser() {
+        qState = { mode: 'vout', curDir: '' };
+        const m = document.getElementById('fileBrowserModal');
+        m.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 选择 vLLM→GGUF 输出目录 (可新建)';
+        qLoadDir('');
+    }
     async function qLoadDir(relDir) {
         const body = document.getElementById('fileBrowserBody');
         if (!body) return;
@@ -1474,7 +1489,7 @@
             <span style="font-size:12px;color:var(--text-muted)">路径:</span>
             <input class="form-input fb-path-input" value="${escapeHtml(data.current||'')}" readonly style="flex:1;font-family:monospace">
             ${relDir ? '<button class="btn btn-sm" onclick="qUp()">↑ 上级</button>' : ''}
-            ${qState.mode==='out' ? `<button class="btn btn-sm btn-primary" onclick="qPickDir('${escapeHtml(relDir)}')">✔ 选此目录</button>` : ''}
+            ${(qState.mode==='out'||qState.mode==='vout') ? `<button class="btn btn-sm btn-primary" onclick="qPickDirTarget()">✔ 选此目录为输出</button>` : ''}
         </div>`;
         html += '<div style="font-size:11px;color:var(--text-muted);margin:4px 0">目录:</div>';
         if (relDir) html += `<div class="fb-item fb-dir" onclick="qLoadDir('${escapeAttr(qParent(relDir))}')">📁 .. (上级)</div>`;
@@ -1484,6 +1499,18 @@
             const ggs = (data.files||[]).filter(f => /^\\.gguf$/i.test(f.ext));
             ggs.forEach(f => { html += `<div class="fb-item fb-file" onclick="qPickFile('${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)}</div>`; });
             if (!ggs.length) html += '<div style="font-size:12px;color:var(--text-muted);padding:4px 0">(当前目录无 GGUF 文件)</div>';
+        } else if (qState.mode==='vsrc') {
+            html += '<div style="font-size:11px;color:var(--text-muted);margin:6px 0">vLLM 模型(safetensors):</div>';
+            const st = (data.files||[]).filter(f => /\.safetensors$/i.test(f.ext) || /\.bin$/i.test(f.ext));
+            st.forEach(f => { html += `<div class="fb-item fb-file" onclick="vgPickSrc('${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)}</div>`; });
+            html += `<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">`;
+            html += `<button class="btn btn-sm btn-primary" onclick="vgPickSrc('${escapeHtml(relDir)}')">✔ 选当前目录作为模型</button>`;
+            html += `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">HF 模型目录应含 config.json/model_index.json</div></div>`;
+        } else if (qState.mode==='out' || qState.mode==='vout') {
+            html += '<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">';
+            html += `<button class="btn btn-sm btn-primary" onclick="qPickDirTarget()">✔ 选当前目录作输出</button> `;
+            html += `<button class="btn btn-sm" onclick="qNewDir()">➕ 新建子目录</button>`;
+            html += '<div style="font-size:11px;color:var(--text-muted);margin-top:4px">当前: /models/' + escapeHtml(relDir) + '</div></div>';
         } else {
             html += '<div style="font-size:11px;color:var(--text-muted);margin:6px 0">可进入目录后点"✔ 选此目录"作为输出目录</div>';
         }
@@ -1503,6 +1530,67 @@
         closeFileBrowser();
         toast('输出目录: /models/' + (qState.curDir || '') , 'info');
     }
+    // 通用输出目标选择 (quOut 或 vgOut 视当前浏览器来源)
+    async function qPickDirTarget() {
+        const d = qState.curDir || '/';
+        if (qState.mode === 'vout') {
+            document.getElementById('vgOut').value = d;
+            closeFileBrowser();
+            toast('vLLM→GGUF 输出目录: /models/' + d, 'info');
+        } else {
+            document.getElementById('quOut').value = d;
+            closeFileBrowser();
+            toast('输出目录: /models/' + d, 'info');
+        }
+    }
+    // vLLM 源选中 (文件或目录)
+    async function vgPickSrc(path) {
+        document.getElementById('vgSrc').value = path;
+        closeFileBrowser();
+        toast('已选 vLLM 源: ' + path, 'info');
+    }
+    // 新建目录 (输出模式)
+    async function qNewDir() {
+        const name = prompt('新建子目录名:');
+        if (!name || !/^[\w\-.]+$/.test(name)) return toast('目录名非法', 'error');
+        const r = await apiPost('/fs/mkdir', { path: (qState.curDir ? qState.curDir + '/' : '') + name });
+        if (r && r.ok) { qLoadDir(qState.curDir); toast('目录已创建', 'success'); }
+        else toast('❌ ' + ((r && r.error) || '新建失败'), 'error');
+    }
+
+    // --- vLLM -> GGUF ---
+    async function startVllm2Gguf() {
+        const src = document.getElementById('vgSrc')?.value.trim();
+        if (!src) return toast('请选择 vLLM 源模型', 'error');
+        const quant = document.getElementById('vgQuant')?.value || 'q4_k_m';
+        const outDir = document.getElementById('vgOut')?.value.trim() || undefined;
+        const name = document.getElementById('vgName')?.value.trim() || undefined;
+        toast('🧬 转换 ' + src + ' ...');
+        const r = await apiPost('/convert/hf', { source: src, model_name: name, quant: quant, out_dir: outDir });
+        if (r && r.ok) { toast('✅ 已提交 ' + r.task_id, 'success'); setTimeout(refreshVgTask, 3000); }
+        else toast('❌ ' + ((r && r.error) || '提交失败'), 'error');
+    }
+    async function refreshVgTask() {
+        const el = document.getElementById('vgTaskList');
+        if (!el) return;
+        const r = await apiGet('/quantize/status');
+        if (!r || !r.tasks) return;
+        const vg = r.tasks.filter(t => t.task_id.startsWith('vg_'));
+        if (!vg.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:12px">暂无转换任务</p>'; return; }
+        el.innerHTML = vg.map(t => `
+            <div style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:12px;font-weight:600">${escapeHtml(t.quant_type)} ← ${escapeHtml(t.source)}</span>
+                    <span class="version-status ${t.status}">${t.status}</span>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;word-break:break-all">${escapeHtml(t.detail||t.error||t.out_path||'')}</div>
+            </div>`).join('');
+    }
+    window.openVgSrcBrowser = openVgSrcBrowser;
+    window.openVgOutBrowser = openVgOutBrowser;
+    window.startVllm2Gguf = startVllm2Gguf;
+    window.refreshVgTask = refreshVgTask;
+    window.miniVgRefresh = refreshVgTask;
     window.openQuantizeSrcBrowser = openQuantizeSrcBrowser;
     window.openQuantizeOutBrowser = openQuantizeOutBrowser;
     function closeQModal() { closeFileBrowser(); }

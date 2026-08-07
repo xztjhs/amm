@@ -300,6 +300,30 @@ def params_preview(d: Dict, limit: int = 40) -> Dict:
     return {k: v for k, v in list(d.items())[:limit]}
 
 
+async def setup_route_mkdir(bridge, req):
+    """POST /api/fs/mkdir - 在 /models 下新建目录(v0.5 输出目录新建用) """
+    try:
+        body = await req.json()
+    except Exception:
+        return web.json_response({"error": "无效 JSON"}, status=400,
+                                 headers={"Access-Control-Allow-Origin": "*"})
+    rel = (body.get("path") or "").strip().lstrip("/")
+    root = _normalize_root(os.environ.get("MODELS_DIR", "/models"))
+    tgt = (root / rel).resolve() if rel else root
+    try:
+        tgt.relative_to(root)
+    except ValueError:
+        return web.json_response({"error": "路径越界"}, status=400,
+                                 headers={"Access-Control-Allow-Origin": "*"})
+    try:
+        tgt.mkdir(parents=True, exist_ok=True)
+        return web.json_response({"ok": True, "path": str(tgt.relative_to(root)) if tgt != root else ""},
+                                 headers={"Access-Control-Allow-Origin": "*"})
+    except Exception as e:
+        return web.json_response({"ok": False, "error": str(e)}, status=500,
+                                 headers={"Access-Control-Allow-Origin": "*"})
+
+
 def setup_routes(app: web.Application, manager):
     """注册文件浏览 / 预设配置 API 路由"""
     bridge = FSBridge(manager)
@@ -309,6 +333,7 @@ def setup_routes(app: web.Application, manager):
 
     app.router.add_get("/api/fs/list", _m(lambda req: bridge.list_models(req.query.get("path", ""))))
     app.router.add_get("/api/fs/discover", _m(lambda req: bridge.discover(req.query.get("dir", ""), req.query.get("engine", ""))))
+    app.router.add_post("/api/fs/mkdir", _m(lambda req: set_route_mkdir(req)))
     app.router.add_get("/api/instances/preset", _m(lambda req, bridge=bridge: bridge.get_preset(req)))
     app.router.add_post("/api/instances/preset/apply", _m(lambda req, bridge=bridge: bridge.apply_preset(req)))
     app.router.add_post("/api/instances/preset/save", _m(lambda req, bridge=bridge: bridge.save_preset(req)))
