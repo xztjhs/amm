@@ -188,6 +188,6 @@ class QuantizerBridge:
 
 def setup_routes(app: web.Application, manager):
     bridge = QuantizerBridge(manager)
-    app.router.add_get("/api/quantize/types", bridge.list)
+    app.router.add_get("/api/quantize/types", bridge.list_types)
     app.router.add_post("/api/quantize", bridge.quantize)
     app.router.add_get("/api/quantize/status", bridge.status)

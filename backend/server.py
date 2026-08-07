@@ -30,6 +30,7 @@ from backend.api.openai_bridge import setup_routes as setup_openai_routes
 from backend.api.diffusers_bridge import setup_routes as setup_diffusers_routes
 from backend.api.fs_bridge import setup_routes as setup_fs_routes
 from backend.api.download_bridge import setup_routes as setup_download_routes
+from backend.engines.quantizer import setup_routes as setup_quantize_routes
 
 # ============================================================
 # Paths
@@ -320,6 +321,7 @@ def create_app() -> web.Application:
     setup_diffusers_routes(app, manager)
     setup_fs_routes(app, manager)
     setup_download_routes(app, manager)
+    setup_quantize_routes(app, manager)
 
     # Monitor
     async def on_startup(app):

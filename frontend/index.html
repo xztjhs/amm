@@ -288,6 +288,33 @@ AI 用于图像识别与自然语言处理
                     </div>
                     <div class="download-task-list" id="downloadTaskList"><p style="color:var(--text-muted);font-size:12px">暂无下载任务</p></div>
                 </div>
+
+                <div class="setting-group" id="quantizePanel">
+                    <h3>⚗️ GGUF 量化转换 (Convert)</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+                        用 llama-quantize 把 GGUF 转换为不同精度（fp16/bf16/fp8/q4_k_m 等）。
+                    </p>
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;align-items:end;margin-bottom:8px;">
+                        <div><label style="font-size:11px;color:var(--text-muted)">源 GGUF 文件(相对 /models)</label>
+                            <input id="quSrc" class="form-input" placeholder="如 Qwen/xxx/Qwen.gguf"></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">精度类型</label>
+                            <select id="quType" class="form-select">
+                                <option value="q4_k_m">q4_k_m (MoE推荐)</option>
+                                <option value="fp16">fp16</option>
+                                <option value="bf16">bf16</option>
+                                <option value="fp8">fp8 (e4m3)</option>
+                                <option value="fp32">f32</option>
+                                <option value="q8_0">q8_0</option>
+                                <option value="q6_k">q6_k</option>
+                                <option value="q4_0">q4_0</option>
+                            </select></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:10px;">
+                        <button class="btn btn-primary btn-sm" onclick="window.startQuantize()">⚗️ 开始转换</button>
+                        <button class="btn btn-sm" onclick="window.refreshQuantizeStatus()">🔄 刷新任务</button>
+                    </div>
+                    <div class="quantize-task-list" id="quantizeTaskList"><p style="color:var(--text-muted);font-size:12px">暂无转换任务</p></div>
+                </div>
             </div>
         </section>
     </main>
