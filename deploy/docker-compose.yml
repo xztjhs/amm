@@ -45,7 +45,8 @@ services:
     # 容器启动后进入交互模式，手动运行 install.sh
     tty: true
     stdin_open: true
-    command: ["/bin/bash", "-c", "echo 'Container ready. Run: bash /amm/deploy/install.sh && python3.11 /amm/backend/server.py'; exec tail -f /dev/null"]
+    # 容器入口脚本：启动 sshd + AMM Web 服务（替换 sleep infinity）
+    command: ["/bin/bash", "/amm/deploy/docker-entrypoint.sh"]
     deploy:
       resources:
         reservations:
