@@ -113,6 +113,7 @@ class QuantizerBridge:
         src = (body.get("source") or "").strip()
         qtype = (body.get("quant_type") or "q4_k_m").strip().lower()
         out_name = (body.get("out_name") or "").strip()
+        allow_requant = bool(body.get("allow_requantize", True))  # 默认允许从已量化源重转
         if not src:
             return self._json({"error": "缺少 source 模型文件路径"}, 400)
         if qtype not in QUANT_TYPES:
@@ -133,7 +134,8 @@ class QuantizerBridge:
         out_path = str(out_dir / out_name)
 
         task_id = f"q_{int(time.time())}"
-        task = QuantizeTask(task_id, src, out_path, qtype, out_path)
+        task = QuantizeTask(task_id, src_path, out_path, qtype, out_path)
+        task.allow_requantize = allow_requant
         self.tasks[task_id] = task
         # 后台执行
         import threading
@@ -158,6 +160,10 @@ class QuantizerBridge:
             task.detail = "转换中..."
             # llama-quantize <input.gguf> <output.gguf> <type>
             cmd = [self._bin, task.src, task.out_path, QUANT_TYPES[task.qtype]]
+            # 允许从已量化源重转 (默认开启, 否则 q6_K/K 源转 q4 会被拒)
+            allow = getattr(task, "allow_requantize", True)
+            if allow:
+                cmd.insert(1, "--allow-requantize")
             logger.info(f"量化命令: {' '.join(cmd)}")
             task.proc = subprocess.run(cmd, capture_output=True, text=True, timeout=7200)
             task.finished = time.time()
