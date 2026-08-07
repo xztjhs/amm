@@ -190,6 +190,8 @@ git push origin master
 3. **ASR / TTS / Reranker / OCR**（llama_cpp）
 4. **Text-to-Image**（Diffusers，需先装引擎 + 拉取 Qwen-Image-2512）
 5. **Text-to-Video / Image-to-Video**（Diffusers，需 28GB 级模型，最重，最后验证）
+
+> ✅ **v0.1.1/v0.4 已完成**：T2V 冷启动验证通过（峰值 15.9G 显存，FP8+CPU offload）；I2V 模型完整（Wan2.2-I2V-A14B，transformer×13 + vae + text_encoder），加载修复（去掉硬编码 variant=bf16）
 6. **vLLM**（目前引擎目录为空，需先 `install_engine_version` 安装）
 
 ### 当前就绪度快照（2026-08-05）
