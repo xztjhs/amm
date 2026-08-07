@@ -276,12 +276,16 @@
                 </div>
                 <div class="model-detail-body" id="body-${id}">
                     ${engineSelector}
-                    <div style="margin-bottom:14px;">
-                        <label style="font-size:12px;color:var(--text-muted);font-weight:500">Model File</label>
-                        <select class="form-select" style="width:100%" onchange="selectModelFile('${id}', this.value)">
-                            ${models.map(m => `<option value="${m.file || m.model_id || ''}" ${(inst && inst.selected_model_file === (m.file || m.model_id)) ? 'selected' : ''}>${m.name} (${m.type || m.source || ''})</option>`).join('')}
-                        </select>
+                <div class="model-detail-body" id="body-${id}">
+                    ${engineSelector}
+                    <div class="model-file-box" style="margin-bottom:14px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                            <label style="font-size:12px;color:var(--text-muted);font-weight:500">📁 模型文件 (路径浏览)</label>
+                            <button class="btn btn-sm" onclick="window.openFileBrowser('${id}')">📂 浏览 /models</button>
+                        </div>
+                        <div class="model-file-current" style="font-size:12px;font-family:monospace;padding:8px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;word-break:break-all;" id="mfile-cur-${id}">${inst && inst.selected_model_file ? escapeHtml(inst.selected_model_file) : '(未选择)'}</div>
                     </div>
+                    <div id="preset-${id}"></div>
                     <h4 style="font-size:14px;margin-bottom:10px;">Parameters (${currentEngine})</h4>
                     <div class="params-grid">
                         ${relevantParams.map(p => renderParamInput(id, p, inst)).join('')}
@@ -831,11 +835,151 @@
         if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
     }
 
-    function escapeHtml(text) {
-        var div = document.createElement('div');
-        div.appendChild(document.createTextNode(text));
-        return div.innerHTML;
+    async function reloadServerConfig() {
+        toast('重载配置...');
+        const r = await apiPost('/settings/reload', {});
+        toast(r && r.ok ? '✅ 配置已重载' : ('❌ ' + ((r && r.error) || '失败')), r && r.ok ? 'success' : 'error');
+        await refreshAll();
     }
+
+    async function restartServer() {
+        if (!confirm('确认重启 AMM 服务？所有运行中的模型将停止。')) return;
+        toast('正在重启服务...');
+        const r = await apiPost('/settings/restart', {});
+        toast(r && r.ok ? '✅ 服务重启中，页面将刷新' : ('❌ ' + ((r && r.error) || '失败')), r && r.ok ? 'success' : 'error');
+        if (r && r.ok) setTimeout(() => location.reload(), 2500);
+    }
+
+    async function downloadServerLog() {
+        const data = await apiGet('/logs/server?lines=500');
+        if (data && data.logs) {
+            const blob = new Blob([data.logs.join('\n')], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'amm_server.log';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } else { toast('❌ 日志获取失败', 'error'); }
+    }
+
+    let fbState = { modelId: null, engine: '', curPath: '', stack: [] };
+
+    function openFileBrowser(modelId) {
+        const inst = instances[modelId];
+        const engine = (inst && inst.engine_type) || 'llama_cpp';
+        fbState = { modelId: modelId, engine: engine, curPath: '', stack: [], curDir: '' };
+        const modal = document.getElementById('fileBrowserModal');
+        modal.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 浏览模型文件 - ' + modelId + ' (' + engine + ')';
+        fbLoadDir('');
+    }
+    function closeFileBrowser() { document.getElementById('fileBrowserModal')?.classList.remove('active'); }
+
+    async function fbLoadDir(relDir) {
+        const body = document.getElementById('fileBrowserBody');
+        if (!body) return;
+        body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">加载中...</div>';
+        const data = await apiGet('/fs/list?path=' + encodeURIComponent(relDir));
+        if (!data) { body.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">加载失败</div>'; return; }
+        fbState.curDir = relDir;
+        fbState.curPath = data.current || '';
+
+        const ext = fbState.engine === 'llama_cpp' || fbState.engine === 'llama' ? ['.gguf', '.bin'] : ['.safetensors', '.bin', '.gguf'];
+        let html = '';
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:12px;color:var(--text-muted)">路径:</span>
+            <input class="form-input" style="flex:1;font-family:monospace;font-size:12px" id="fbPath" value="${escapeHtml(data.current || '')}" readonly>
+            <button class="btn btn-sm" onclick="fbUp()">↑ 上级</button>
+        </div>`;
+        html += '<div class="fb-dirs"><div style="font-size:11px;color:var(--text-muted);margin:6px 0">目录:</div>';
+        if (data.parent_relative !== null && data.parent_relative !== undefined) {
+            html += `<div class="fb-item fb-dir" onclick="fbGotoDir('${escapeAttr(data.parent_relative)}')">📁 <span>.. (上级)</span></div>`;
+        }
+        (data.dirs || []).forEach(d => {
+            html += `<div class="fb-item fb-dir" onclick="fbGotoDir('${escapeAttr(d.path)}')">📁 ${escapeHtml(d.name)}</div>`;
+        });
+        html += '</div>';
+        html += '<div style="font-size:11px;color:var(--text-muted);margin:2px 0">文件</div>';
+        (data.files || []).forEach(f => {
+            if (ext && ext.length && !f.ext) {}
+        });
+        const modelFiles = (data.files || []).filter(f => ext.includes(f.ext));
+        if (!modelFiles.length) {
+            html += '<div style="font-size:12px;color:var(--text-muted);padding:6px 0">(当前目录无匹配模型文件)</div>';
+        }
+        modelFiles.forEach(f => {
+            html += `<div class="fb-item fb-file" onclick="fbPickFile('${fbState.modelId}', '${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)} <span style="float:right;color:var(--text-muted);font-size:11px">${f.size_mb}MB</span></div>`;
+        });
+        // 直接选目录(目录型模型, 如 diffusers/HF)
+        html += '<div style="font-size:11px;color:var(--text-muted);margin:10px 0">或选择整个目录作为模型 (HF/Diffusers 目录型)</div>';
+        if (data.relative) html += `<button class="btn btn-sm btn-primary" onclick="fbPickDir('${fbState.modelId}')">✔ 选此目录 "${escapeHtml(data.relative)}"</button>`;
+        body.innerHTML = html;
+    }
+
+    function fbGotoDir(d) { fbLoadDir(d); }
+    function fbUp() {
+        const parts = fbState.curDir.split('/').filter(Boolean);
+        parts.pop();
+        fbLoadDir(parts.join('/'));
+    }
+
+    async function fbPickFile(modelId, path) {
+        await selectModelFile(modelId, path);
+        await fbCheckPreset(modelId, path);
+        renderModels();
+        closeFileBrowser();
+    }
+
+    async function fbPickDir(modelId) {
+        const dir = fbState.curDir;
+        await selectModelFile(modelId, dir);
+        await fbCheckPreset(modelId, dir);
+        renderModels();
+        closeFileBrowser();
+    }
+
+    async function fbCheckPreset(modelId, file) {
+        const inst = config[modelId] && instances[modelId] ? instances[modelId] : null;
+        const engine = (inst && inst.engine_type) || fbState.engine || 'llama_cpp';
+        const r = await apiGet('/instances/preset?model_file=' + encodeURIComponent(file) + '&engine=' + encodeURIComponent(engine));
+        const box = document.getElementById('preset-' + modelId);
+        if (!box) return;
+        if (r && r.found) {
+            const dataHtml = '<pre style="max-height:120px;overflow:auto;font-size:11px;background:var(--bg-input);padding:8px;border-radius:6px">' + escapeHtml(JSON.stringify(r.data, null, 2)) + '</pre>';
+            box.innerHTML = `<div class="preset-found" style="margin-bottom:10px;padding:10px;background:var(--bg-input);border:1px solid var(--success);border-radius:6px">
+                <div style="font-size:12px;color:var(--success);font-weight:600;margin-bottom:6px">🎯 检测到预设配置: ${escapeHtml(r.path)}</div>
+                ${dataHtml}
+                <div style="margin-top:8px;display:flex;gap:8px">
+                    <button class="btn btn-sm btn-primary" onclick="applyPresetFile('${modelId}')">📥 加载此预设</button>
+                    <button class="btn btn-sm" onclick="closePresetBox('${modelId}')">忽略</button>
+                </div>
+            </div>`;
+        } else {
+            box.innerHTML = '';
+        }
+    }
+
+    async function applyPresetFile(modelId) {
+        const inst = instances[modelId];
+        const engine = (inst && inst.engine_type) || fbState.engine || 'llama_cpp';
+        const file = (inst && inst.selected_model_file) || '';
+        const r = await apiPost('/instances/preset/apply', { model_id: modelId, model_file: file, engine: engine });
+        if (r && r.ok) {
+            toast('✅ 已应用预设: ' + r.preset_path + ' (' + r.applied.length + ' 参数)', 'success');
+            await refreshAll();
+            renderModels();
+        } else {
+            toast('❌ ' + ((r && r.error) || '应用失败'), 'error');
+        }
+    }
+
+    // 渲染 Models 页 (别名, 保持与现有呼吸一致)
+    async function renderModels() { renderModelsDetail(); }
+
+    function escapeAttr(s) { return escapeHtml(String(s)); }
+    function closePresetBox(modelId) { const b = document.getElementById('preset-' + modelId); if (b) b.innerHTML = ''; }
+
+
 
     // ---- Global Exports ----
     window.startModel = startModel;
@@ -854,6 +998,15 @@
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     window.callApi = callApi;
+    window.openFileBrowser = openFileBrowser;
+    window.closeFileBrowser = closeFileBrowser;
+    window.fbLoadDir = fbLoadDir;
+    window.fbGotoDir = fbGotoDir;
+    window.fbUp = fbUp;
+    window.fbPickFile = fbPickFile;
+    window.fbPickDir = fbPickDir;
+    window.applyPresetFile = applyPresetFile;
+    window.closePresetBox = closePresetBox;
 
     // ---- Boot ----
     document.addEventListener('DOMContentLoaded', init);

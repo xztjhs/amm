@@ -903,3 +903,22 @@ body {
     font-size: 12px;
     color: var(--text-secondary);
 }
+
+/* ============ v0.2: Model File Browser ============ */
+.modal-lg { width: min(720px, 92vw); max-width: 720px; }
+.fb-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .15s;
+    border: 1px solid transparent;
+    margin-bottom: 2px;
+}
+.fb-item:hover { background: var(--accent-soft); }
+.fb-dir { color: var(--accent); }
+.fb-file { color: var(--text-secondary); font-family: monospace; }
+.fb-dirs { margin-bottom: 8px; }

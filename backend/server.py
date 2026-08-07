@@ -71,9 +71,10 @@ class APIHandlers:
         sc = self.manager.config.get("server", {})
         return self._json({
             "host": sc.get("host", "0.0.0.0"),
-            "port": sc.get("port", 18080),
+            "port": sc.get("port", 80),
             "models_dir": sc.get("models_dir", "/models"),
             "logs_dir": sc.get("logs_dir", "/amm/logs"),
+            "version": "v0.2",
         })
 
     # ---- Models Config ----

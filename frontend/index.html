@@ -177,12 +177,23 @@
             <div class="page-header"><h1>Settings</h1><p class="subtitle">服务器配置 · 引擎管理 · 版本安装</p></div>
             <div class="settings-panel" id="settingsPanel">
                 <div class="setting-group">
-                    <h3>Server</h3>
+                    <h3>⚙️ 服务配置 (Server)</h3>
                     <div class="form-row"><label>API Host:</label><code id="cfgHost">--</code></div>
                     <div class="form-row"><label>API Port:</label><code id="cfgPort">--</code></div>
                     <div class="form-row"><label>Models Dir:</label><code id="cfgModelsDir">--</code></div>
                     <div class="form-row"><label>Logs Dir:</label><code id="cfgLogsDir">--</code></div>
+                    <div class="form-row"><label>版本:</label><code id="cfgVersion">--</code></div>
                 </div>
+
+                <div class="setting-group" id="systemActions">
+                    <h3>🔧 运维操作</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                        <button class="btn btn-sm" onclick="window.reloadServerConfig()">🔄 重载配置</button>
+                        <button class="btn btn-sm btn-primary" onclick="window.restartServer()">🔄 重启服务</button>
+                        <button class="btn btn-sm" onclick="window.downloadServerLog()">📥 下载服务日志</button>
+                    </div>
+                </div>
+
                 <div class="setting-group" id="engineManagementPanel">
                     <h3>推理引擎管理 (Engine Management)</h3>
                     <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
@@ -193,6 +204,11 @@
             </div>
         </section>
     </main>
+
+    <!-- Model File Browser Modal -->
+    <div class="modal-overlay" id="fileBrowserModal">
+        <div class="modal modal-lg"><div class="modal-header"><h2 id="fileBrowserTitle">📂 浏览模型文件</h2><button class="modal-close" onclick="closeFileBrowser()">&times;</button></div><div class="modal-body" id="fileBrowserBody"></div></div>
+    </div>
 
     <!-- Modal -->
     <div class="modal-overlay" id="modelModal">
