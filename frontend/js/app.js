@@ -222,7 +222,7 @@
     function renderDashboardModels() {
         const container = document.getElementById('dashboardModels');
         if (!container) return;
-        const ids = ['chat', 'embedding', 'asr', 'tts', 'reranker', 'ocr', 't2i', 't2v', 'i2v'];
+        const ids = ['chat', 'embedding', 'reranker', 'ocr', 'asr', 'tts', 't2i', 't2v', 'i2v'];
         let html = '';
         ids.forEach(id => {
             const inst = instances[id];
