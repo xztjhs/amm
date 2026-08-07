@@ -373,6 +373,31 @@ audio 并返回。模型文件与 mmproj 从 AMM 配置读取。
             return self._json({"error": str(e)}, 500)
 
 
+    async def rerank(self, req):
+        """POST /v1/rerank - 重排序 (llama.cpp --reranking)
+
+        OpenAI 兼容: {query, documents:[...], top_n?}
+        转发到 llama-server 的 /rerank 端点 (llama_cpp 引擎)。
+        """
+        try:
+            body = await req.json()
+            inst = self._get_model_inst("reranker")
+            if not inst or inst.status != "running":
+                return self._json({"error": "Reranker model is not running"}, 503)
+            if inst.engine_type not in ("llama_cpp", "llama"):
+                return self._json({"error": f"rerank 不支持引擎 {inst.engine_type}"}, 400)
+            async with aiohttp.ClientSession() as session:
+                # llama-server 用 /rerank (非 /v1/rerank)
+                url = f"http://127.0.0.1:{inst.port}/rerank"
+                async with session.post(url, json=body,
+                                         timeout=aiohttp.ClientTimeout(total=300)) as resp:
+                    data = await resp.json()
+                    return self._json(data, status=resp.status)
+        except Exception as e:
+            logger.exception("rerank error")
+            return self._json({"error": str(e)}, 500)
+
+
 def setup_routes(app: web.Application, manager):
     """注册 OpenAI 兼容路由"""
     h = OpenAIBridgeHandler(manager)
@@ -383,3 +408,5 @@ def setup_routes(app: web.Application, manager):
     app.router.add_post("/v1/audio/transcriptions", h.asr_transcriptions)
     app.router.add_post("/v1/audio/speech", h.tts_speech)
     app.router.add_post("/v1/ocr", h.ocr_handler)
+    # Rerank (v0.2+)
+    app.router.add_post("/v1/rerank", h.rerank)

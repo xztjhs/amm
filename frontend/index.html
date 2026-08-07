@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMM - AI Models Manage</title>
-    <link rel="stylesheet" href="css/style.css?v=0.2.1">
+    <link rel="stylesheet" href="css/style.css?v=0.3">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b82f6'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='sans'>AI</text></svg>">
 </head>
 <body>
@@ -78,10 +78,14 @@
             <div class="playground-panel">
                 <div class="playground-tabs">
                     <button class="pg-tab active" data-pg="chat">💬 Chat</button>
+                    <button class="pg-tab" data-pg="embedding">🧬 Embedding</button>
+                    <button class="pg-tab" data-pg="asr">🎙️ ASR</button>
+                    <button class="pg-tab" data-pg="tts">🔊 TTS</button>
+                    <button class="pg-tab" data-pg="rerank">📊 Rerank</button>
+                    <button class="pg-tab" data-pg="ocr">👁️ OCR</button>
                     <button class="pg-tab" data-pg="image">🖼️ T2I</button>
                     <button class="pg-tab" data-pg="video">🎬 T2V</button>
                     <button class="pg-tab" data-pg="i2v">🖌️ I2V</button>
-                    <button class="pg-tab" data-pg="api">🔧 API</button>
                 </div>
                 <!-- Chat Playground -->
                 <div id="pg-chat" class="pg-content active">
@@ -104,6 +108,54 @@
                         <textarea id="pgChatInput" placeholder="输入消息..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage()}"></textarea>
                         <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
                     </div>
+                </div>
+                <!-- Embedding Playground -->
+                <div id="pg-embedding" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>文本 (用 | 分隔多条)</label><textarea id="pgEmbInput" rows="3">AMM is an AI model management platform|向量检索测试句子|如何优化推理性能</textarea></div>
+                        <button class="btn btn-primary" onclick="runEmbedding()">⏱ 测试 Embedding</button>
+                    </div>
+                    <div class="pg-perf" id="pgEmbPerf"></div>
+                    <pre class="pg-result-code" id="pgEmbResult"><div class="pg-placeholder">点击测试, 将显示向量维度/耗时/吞吐</div></pre>
+                </div>
+                <!-- ASR Playground -->
+                <div id="pg-asr" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>音频文件 (wav/mp3)</label><input type="file" id="pgAsrFile" accept="audio/*" class="form-input"></div>
+                        <button class="btn btn-primary" onclick="runASR()">⏱ 测试 ASR</button>
+                    </div>
+                    <div class="pg-perf" id="pgAsrPerf"></div>
+                    <div class="pg-result-code" id="pgAsrResult"><div class="pg-placeholder">上传音频点击测试</div></div>
+                </div>
+                <!-- TTS Playground -->
+                <div id="pg-tts" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>文本</label><textarea id="pgTtsInput" rows="2">你好，我是 AMM 平台的声音模型，正在测试语音合成性能。</textarea></div>
+                        <button class="btn btn-primary" onclick="runTTS()">⏱ 测试 TTS</button>
+                    </div>
+                    <div class="pg-perf" id="pgTtsPerf"></div>
+                    <div class="pg-result-code" id="pgTtsResult"><div class="pg-placeholder">点击测试生成语音</div></div>
+                </div>
+                <!-- Rerank Playground -->
+                <div id="pg-rerank" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Query</label><input type="text" id="pgRerankQuery" class="form-input" value="什么是人工智 能"></div>
+                        <div class="pg-form-row"><label>候选文档 (每题一行)</label><textarea id="pgRerankDocs" rows="4">人工智能是计算机科学的分支
+AI 用于图像识别与自然语言处理
+今天天气很好适合出门散步</textarea></div>
+                        <button class="btn btn-primary" onclick="runRerank()">⏱ 测试 Rerank</button>
+                    </div>
+                    <div class="pg-perf" id="pgRerankPerf"></div>
+                    <div class="pg-result-code" id="pgRerankResult"><div class="pg-placeholder">点击测试重排序</div></div>
+                </div>
+                <!-- OCR Playground -->
+                <div id="pg-ocr" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>图片 (含文字)</label><input type="file" id="pgOcrFile" accept="image/*" class="form-input"></div>
+                        <button class="btn btn-primary" onclick="runOCR()">⏱ 测试 OCR</button>
+                    </div>
+                    <div class="pg-perf" id="pgOcrPerf"></div>
+                    <div class="pg-result-code" id="pgOcrResult"><div class="pg-placeholder">上传图片点击测试文字识别</div></div>
                 </div>
                 <!-- T2I Playground -->
                 <div id="pg-image" class="pg-content">
@@ -239,6 +291,6 @@
         <span id="lastUpdate">Last update: --</span>
     </footer>
 
-    <script src="js/app.js?v=0.2.1"></script>
+    <script src="js/app.js?v=0.3"></script>
 </body>
 </html>

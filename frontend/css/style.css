@@ -962,3 +962,19 @@ body {
 .dash-gpu-card .gpu-bar-fill { height: 100%; border-radius: 3px; }
 .dash-gpu-card .gpu-bar-fill.load { background: var(--accent); }
 .dash-gpu-card .gpu-bar-fill.mem { background: var(--purple); }
+
+/* ============ v0.3: Playground 9类测试 + 性能 ============ */
+.pg-perf { margin: 10px 0; }
+.pg-perf-card {
+    padding: 12px 14px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+}
+.pg-perf-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--accent); }
+.pg-perf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.pg-perf-item { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; background: var(--bg-card); border-radius: 6px; }
+.pg-perf-label { font-size: 10px; color: var(--text-muted); }
+.pg-perf-value { font-size: 15px; font-weight: 700; color: var(--text-secondary); }
+.pg-result-code { white-space: pre-wrap; word-break: break-all; }

@@ -743,28 +743,83 @@
         const payload = {
             model: 'chat',
             messages: messages,
+            stream: true,
             temperature: parseFloat(document.getElementById('pgChatTemp')?.value || '0.7'),
             max_tokens: parseInt(document.getElementById('pgChatMaxTokens')?.value || '1024'),
             top_p: parseFloat(document.getElementById('pgChatTopP')?.value || '0.9'),
         };
+        const tStart = performance.now();
+        let ttft = null, tokens = 0;
+        const perfBox = document.createElement('div');
+        perfBox.className = 'pg-chat-perf';
+        container.appendChild(perfBox);
         try {
             const resp = await fetch('/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
-            const data = await resp.json();
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const reader = resp.body.getReader();
+            const dec = new TextDecoder();
+            let buf = '';
+            const botEl = document.getElementById('pgChatLoading');
+            if (botEl) botEl.innerHTML = '<strong>Bot:</strong> <span style="color:var(--text-muted)">Thinking...</span>';
+            let full = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buf += dec.decode(value, { stream: true });
+                let idx;
+                while ((idx = buf.indexOf('\n')) >= 0) {
+                    const line = buf.slice(0, idx).trim();
+                    buf = buf.slice(idx + 1);
+                    if (!line.startsWith('data:')) continue;
+                    const chunk = line.slice(5).trim();
+                    if (chunk === '[DONE]') break;
+                    try {
+                        const j = JSON.parse(chunk);
+                        const c = j.choices && j.choices[0];
+                        if (ttft === null && c && c.delta && c.delta.content) ttft = performance.now() - tStart;
+                        if (c && c.delta && c.delta.content) { full += c.delta.content; tokens++; }
+                        if (c && (c.delta && c.delta.content)) {
+                            if (botEl) botEl.innerHTML = '<strong>Bot:</strong> ' + escapeHtml(full);
+                            perfBox.innerHTML = chatPerfHtml({ ttft: ttft, tokens: tokens, e2e: performance.now() - tStart, running: true });
+                        }
+                    } catch (e) {}
+                }
+            }
             document.getElementById('pgChatLoading')?.remove();
-            const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || JSON.stringify(data);
-            chatHistory.push({ role: 'assistant', content: reply });
-            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> ' + escapeHtml(reply) + '</div>';
+            const finalEl = container.querySelector('#pgChatLoading') ? null : botEl;
+            if (!container.querySelector('.pg-chat-bot[data-final="1"]')) {
+                container.innerHTML += '<div class="pg-chat-bot" data-final="1"><strong>Bot:</strong> ' + escapeHtml(full || '(空回复)') + '</div>';
+            }
+            chatHistory.push({ role: 'assistant', content: full });
+            const e2e = performance.now() - tStart;
+            perfBox.innerHTML = perfCard('Chat 性能', [
+                ['TTFT (首Token)', ttft ? (ttft/1000).toFixed(3)+' s' : '--'],
+                ['总 Token', tokens],
+                ['TPS', tokens>0 ? (tokens/(e2e/1000)).toFixed(2) : '--'],
+                ['端到端', (e2e/1000).toFixed(2)+' s'],
+            ]);
         } catch (e) {
             document.getElementById('pgChatLoading')?.remove();
             container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</span></div>';
+            perfBox.remove();
         }
         container.scrollTop = container.scrollHeight;
         // 会话持久化到 localStorage
         localStorage.setItem('amm-chat-history', JSON.stringify(chatHistory.slice(-50)));
+    }
+
+    function chatPerfHtml(opt) {
+        const ttft = opt.ttft ? (opt.ttft/1000).toFixed(3)+' s' : '--';
+        const e2e = opt.running ? '进行中' : (opt.e2e/1000).toFixed(2)+' s';
+        return perfCard('Chat 性能', [
+            ['TTFT (首Token)', ttft],
+            ['Token', opt.tokens],
+            ['端到端', e2e],
+        ]);
     }
 
     function clearChatHistory() {
@@ -781,6 +836,113 @@
     function loadChatHistory() {
         try { chatHistory = JSON.parse(localStorage.getItem('amm-chat-history') || '[]'); } catch (e) { chatHistory = []; }
         renderChatHistory();
+    }
+
+    // ---- Playground: Embedding / ASR / TTS / Rerank / OCR (v0.3 9类测试+性能) ----
+    function perfCard(title, metrics) {
+        return `<div class="pg-perf-card"><div class="pg-perf-title">⚡ ${title}</div><div class="pg-perf-grid">${metrics.map(m=>`<div class="pg-perf-item"><span class="pg-perf-label">${m[0]}</span><span class="pg-perf-value">${m[1]}</span></div>`).join('')}</div></div>`;
+    }
+
+    async function runEmbedding() {
+        const inp = document.getElementById('pgEmbInput').value.trim();
+        const texts = inp.split('|').map(s=>s.trim()).filter(Boolean);
+        const perfEl = document.getElementById('pgEmbPerf'), resEl = document.getElementById('pgEmbResult');
+        const inst = instances.embedding;
+        if (!inst || inst.status !== 'running') return showNotRun(perfEl, resEl, 'embedding');
+        perfEl.innerHTML = '<div class="pg-placeholder">计算中...</div>';
+        const t0 = performance.now();
+        let t1;
+        try {
+            const r = await fetch('/v1/embeddings', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:'embedding', input: texts.length===1?texts[0]:texts})});
+            t1 = performance.now();
+            const data = await r.json();
+            const e2e = (t1 - t0)/1000;
+            const dim = data.data && data.data[0] ? (data.data[0].embedding||[]).length : 0;
+            const n = data.data ? data.data.length : 0;
+            perfEl.innerHTML = perfCard('Embedding 性能', [['端到端', e2e.toFixed(3)+' s'], ['向量条数', n], ['维度', dim], ['吞吐', (e2e>0?(n/e2e):0).toFixed(1)+' 条/s']]);
+            resEl.textContent = JSON.stringify(data.data ? data.data.map(x=>({index:x.index, dim:(x.embedding||[]).length, preview:(x.embedding||[]).slice(0,3)})) : data, null, 2);
+        } catch(e){ perfEl.innerHTML='<div class="pg-placeholder" style="color:var(--error)">Error: '+escapeHtml(e.message)+'</div>'; }
+    }
+
+    function showToast(msg){ toast(msg, 'info'); }
+
+    async function runASR() {
+        const fi = document.getElementById('pgAsrFile');
+        const perfEl = document.getElementById('pgAsrPerf'), resEl = document.getElementById('pgAsrResult');
+        if (!fi.files || !fi.files[0]) return showToast('请先上传音频');
+        perfEl.innerHTML = '<div class="pg-placeholder">识别中...</div>';
+        const fd = new FormData();
+        fd.append('file', fi.files[0]);
+        fd.append('model','asr');
+        const t0 = performance.now();
+        try {
+            const r = await fetch('/v1/audio/transcriptions', {method:'POST', body: fd});
+            const t1 = performance.now();
+            const text = await r.text();
+            const e2e = (t1 - t0)/1000;
+            perfEl.innerHTML = perfCard('ASR 性能', [['端到端', e2e.toFixed(2)+'s'], ['音频', (fi.files[0].size/1024).toFixed(0)+' KB'], ['RTF', e2e>0?(e2e/ (fi.files[0].size/1024) ).toFixed(3):'--']]);
+            resEl.innerHTML = '<pre style="margin:0">'+esc(text)+'</pre>';
+        }catch(e){ resEl.innerHTML='<div class="pg-placeholder" style="color:var(--error)">'+esc(e.message)+'</div>'; }
+    }
+
+    async function runTTS() {
+        const text = document.getElementById('pgTtsInput').value.trim();
+        const perfEl = document.getElementById('pgTtsPerf'), resEl = document.getElementById('pgTtsResult');
+        if(!text) return showToast('请输入文本');
+        perfEl.innerHTML = '<div class="pg-placeholder">生成中...</div>';
+        const t0 = performance.now();
+        try {
+            const r = await fetch('/v1/audio/speech', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:'tts', input:text})});
+            const blob = await r.blob();
+            const t1 = performance.now();
+            const e2e = (t1-t0)/1000;
+            perfEl.innerHTML = perfCard('TTS 性能', [['端到端', e2e.toFixed(2)+'s'], ['音频大小', (blob.size/1024).toFixed(1)+' KB'], ['RTF', e2e>0?'-' : '--']]);
+            const url = URL.createObjectURL(blob);
+            resEl.innerHTML = '<audio controls src="'+url+'"></audio><div style="margin-top:6px;font-size:11px;color:var(--text-muted)">'+ (blob.size/1024).toFixed(1)+' KB 生成耗时 '+e2e.toFixed(2)+'s</div>';
+        }catch(e){ resEl.innerHTML='<div class="pg-placeholder" style="color:var(--error)">'+esc(e.message)+'</div>'; }
+    }
+
+    async function runRerank() {
+        const query = document.getElementById('pgRerankQuery').value.trim();
+        const docs = document.getElementById('pgRerankDocs').value.split('\n').map(s=>s.trim()).filter(Boolean);
+        const perfEl = document.getElementById('pgRerankPerf'), resEl = document.getElementById('pgRerankResult');
+        if(!query||!docs.length) return showToast('请输入 query 与文档');
+        perfEl.innerHTML = '<div class="pg-placeholder">重排序中...</div>';
+        const t0 = performance.now(); let t1;
+        try {
+            const r = await fetch('/v1/rerank', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({query, documents: docs})});
+            t1 = performance.now();
+            const data = await r.json();
+            const e2e = (t1-t0)/1000;
+            const results = data.results||data.data || [];
+            perfEl.innerHTML = perfCard('重排序', [['端到端', e2e.toFixed(3)+'s'], ['文档数', docs.length], ['吞吐', (e2e>0?(docs.length/e2e):0).toFixed(1)+' doc/s']]);
+            resEl.innerHTML = results.map(x=>`<div style="padding:4px 0;border-bottom:1px solid var(--border)"><b>#${x.index}</b> score=${(x.score||0).toFixed(4)} · ${esc(docs[x.index]||x.document||'')}</div>`).join('') || esc(JSON.stringify(data));
+        }catch(e){ resEl.textContent='Error: '+e.message; }
+    }
+
+    async function runOCR() {
+        const fi = document.getElementById('pgOcrFile');
+        const perfEl = document.getElementById('pgOcrPerf'), resEl = document.getElementById('pgOcrResult');
+        if (!fi.files || !fi.files[0]) return showToast('请先上传图片');
+        perfEl.innerHTML = '<div class="pg-placeholder">识别中...</div>';
+        const b64 = await new Promise((res,rej)=>{const rd=new FileReader();rd.onload=()=>res(rd.result.split(',',2)[1]);rd.onerror=rej;rd.readAsDataURL(fi.files[0]);});
+        const t0 = performance.now();
+        try{
+            const r = await fetch('/v1/ocr', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:'ocr', image:b64})});
+            const t1 = performance.now();
+            const data = await r.json();
+            const text = data.text || data.content || JSON.stringify(data);
+            const e2e = (t1-t0)/1000;
+            perfEl.innerHTML = perfCard('OCR 性能', [['端到端', e2e.toFixed(2)+'s'], ['图片', (fi.files[0].size/1024).toFixed(0)+' KB'], ['字数', (typeof text==='string'?text.length:0)]]);
+            resEl.innerHTML = '<div style="white-space:pre-wrap">'+esc(typeof text==='string'?text:JSON.stringify(text))+'</div>';
+        }catch(e){ resEl.textContent='Error: '+e.message; }
+    }
+
+    function esc(s){ return escapeHtml(String(s)); }
+
+    function showNotRun(perfEl, resEl, name){
+        if(resEl) resEl.innerHTML = '<div class="pg-placeholder" style="color:var(--warning)">模型 ' + name + ' 未运行, 请先在 Models 页启动。</div>';
+        if(perfEl) perfEl.innerHTML = '';
     }
 
     async function generateImage() {
@@ -1150,6 +1312,11 @@
     window.toggleDetailBody = toggleDetailBody;
     window.sendChatMessage = sendChatMessage;
     window.generateImage = generateImage;
+    window.runEmbedding = runEmbedding;
+    window.runASR = runASR;
+    window.runTTS = runTTS;
+    window.runRerank = runRerank;
+    window.runOCR = runOCR;
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     window.callApi = callApi;
