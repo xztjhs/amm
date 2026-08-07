@@ -26,13 +26,12 @@ from aiohttp import web
 logger = logging.getLogger("AMM.Quantizer")
 
 # llama.cpp 量化器支持的类型映射（名称 -> 命令行 type 名）
+# 基于本机 llama.cpp 实测的 ggml_type 枚举；fp8 需 llama.cpp 新版本 GGUF 支持，本版(BF16=30 无 F8)不支持
 QUANT_TYPES = {
     # ---- 精度型 ----
     "f32":    "f32",        # 32 位浮点（无损）
     "fp16":   "f16",        # 16 位浮点
-    "bf16":   "bf16",       # bfloat16（若 build 支持）
-    # ---- fp8 ----
-    "fp8":    "q4_e4m3",    # FP8 存储（llama.cpp fp8 量化）
+    "bf16":   "bf16",       # bfloat16
     # ---- 整数K量化 ----
     "q4_0":   "q4_0",
     "q4_1":   "q4_1",
@@ -47,6 +46,9 @@ QUANT_TYPES = {
     "q5_k":   "q5_k",
     "q6_k":   "q6_k",
     "q8_k":   "q8_k",
+    # ---- 新 IQ 量化 ----
+    "iq4_xs":  "iq4_xs",
+    "iq3_xxs": "iq3_xxs",
 }
 
 

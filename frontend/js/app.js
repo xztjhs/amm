@@ -1354,6 +1354,39 @@
     window.refreshDownloadStatus = refreshDownloadStatus;
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
+    // ---- GGUF Quantize (v0.4) ----
+    async function startQuantize() {
+        const src = document.getElementById('quSrc')?.value.trim();
+        if (!src) return toast('请输入源 GGUF 路径', 'error');
+        const qtype = document.getElementById('quType')?.value || 'q4_k_m';
+        toast('⚗️ 开始量化 ' + src + ' -> ' + qtype + ' ...');
+        const r = await apiPost('/quantize', { source: src, quant_type: qtype });
+        if (r && r.ok) {
+            toast('✅ 已提交转换任务 ' + r.task_id, 'success');
+            setTimeout(refreshQuantize, 2000);
+        } else {
+            toast('❌ ' + ((r && r.error) || '提交失败'), 'error');
+        }
+    }
+    async function refreshQuantize() {
+        const listEl = document.getElementById('quantizeTaskList');
+        if (!listEl) return;
+        const r = await apiGet('/quantize/status');
+        if (!r || !r.tasks) return;
+        if (!r.tasks.length) { listEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px">无转换任务</p>'; return; }
+        listEl.innerHTML = r.tasks.map(t => `
+            <div style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:12px;font-weight:600">${escapeHtml(t.quant_type)} ← ${escapeHtml(t.source)}</span>
+                    <span class="version-status ${t.status}">${t.status}</span>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;word-break:break-all">${escapeHtml(t.out_path || t.error || t.detail || '')}</div>
+            </div>`).join('');
+    }
+    window.startQuantize = startQuantize;
+    window.refreshQuantize = refreshQuantize;
+    window.refreshQuantizeStatus = refreshQuantize;
+
     window.callApi = callApi;
     window.clearChatHistory = clearChatHistory;
     window.clearChatImage = clearChatImage;
