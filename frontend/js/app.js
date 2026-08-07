@@ -518,6 +518,8 @@
             document.getElementById('cfgPort').textContent = data.port || '--';
             document.getElementById('cfgModelsDir').textContent = data.models_dir || '--';
             document.getElementById('cfgLogsDir').textContent = data.logs_dir || '--';
+            const cv = document.getElementById('cfgVersion');
+            if (cv) cv.textContent = data.version || '--';
         }
         await loadEngines();
         renderEngineManagement();
@@ -627,7 +629,11 @@
         setupPlaygroundTabs();
     }
 
-    function setupPlaygroundTabs() {
+    // ---- Playground Chat (v0.2: model select / vision / session params / history) ----
+    let chatHistory = [];
+    let chatModelId = null;
+
+    async function setupPlaygroundTabs() {
         document.querySelectorAll('.pg-tab').forEach(tab => {
             tab.onclick = function() {
                 document.querySelectorAll('.pg-tab').forEach(t => t.classList.remove('active'));
@@ -636,6 +642,36 @@
                 document.getElementById('pg-' + tab.dataset.pg).classList.add('active');
             };
         });
+        // 填充 Playground 模型选择 (chat + vision)
+        await populatePlaygroundModels();
+        // 显示本地会话历史
+        renderChatHistory();
+    }
+
+    async function populatePlaygroundModels() {
+        const sel = document.getElementById('pgChatModel');
+        if (!sel) return;
+        const ids = ['chat'];  // 目前仅 chat 适配对话
+        sel.innerHTML = '<option value="">-- 选择模型 --</option>';
+        ids.forEach(id => {
+            const inst = instances[id];
+            if (!inst) return;
+            const name = (inst.engine_type || '') + ' · ' + (inst.selected_model_file ? inst.selected_model_file.split('/').pop() : inst.name);
+            sel.innerHTML += `<option value="${id}" ${chatModelId === id ? 'selected' : ''}>${id} — ${escapeHtml(name)} ${inst.status === 'running' ? '(运行中)' : '(未启动)'}</option>`;
+        });
+        if (sel.options.length === 1) sel.innerHTML += '<option value="">(无可用模型，请先在 Models 启动)</option>';
+        // 会话参数固化
+        sel.onchange = function() { chatModelId = sel.value; };
+    }
+
+    function renderChatHistory() {
+        const container = document.getElementById('pgChatMessages');
+        if (!container) return;
+        if (!chatHistory.length) return;
+        container.innerHTML = chatHistory.map(m => m.role === 'user'
+            ? '<div class="pg-chat-user"><strong>You:</strong> ' + escapeHtml(m.content) + '</div>'
+            : '<div class="pg-chat-bot"><strong>Bot:</strong> ' + escapeHtml(m.content) + '</div>').join('');
+        container.scrollTop = container.scrollHeight;
     }
 
     async function sendChatMessage() {
@@ -643,33 +679,80 @@
         const msg = input.value.trim();
         if (!msg) return;
         const container = document.getElementById('pgChatMessages');
-        container.innerHTML += '<div class="pg-chat-user"><strong>You:</strong> ' + escapeHtml(msg) + '</div>';
-        input.value = '';
-
-        const chatInst = instances.chat;
-        if (!chatInst || chatInst.status !== 'running') {
-            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">Chat model is not running. Please start it first.</span></div>';
+        const modelSel = document.getElementById('pgChatModel');
+        const modelId = modelSel ? modelSel.value : 'chat';
+        if (!modelId) { toast('请先选择模型', 'error'); return; }
+        const inst = instances[modelId];
+        if (!inst || inst.status !== 'running') {
+            container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">模型未运行, 请先在 Models 页启动。</span></div>';
             return;
         }
 
+        // 构建 user 消息 (含可选图片)
+        const sys = document.getElementById('pgChatSystem')?.value.trim();
+        const imgInput = document.getElementById('pgChatImage');
+        const userMsg = { role: 'user', content: msg };
+        if (imgInput && imgInput.files && imgInput.files[0]) {
+            const b64 = await new Promise((resolve, reject) => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result.split(',', 2)[1]);
+                r.onerror = reject;
+                r.readAsDataURL(imgInput.files[0]);
+            });
+            const mime = imgInput.files[0].type || 'image/png';
+            userMsg.content = [{ type: 'text', text: msg }, { type: 'image_url', image_url: { url: 'data:' + mime + ';base64,' + b64 } }];
+        }
+        chatHistory.push(userMsg);
+        input.value = '';
+
+        container.innerHTML += '<div class="pg-chat-user"><strong>You:</strong> ' + escapeHtml(msg) + (userMsg.image_url ? ' <span class="pg-img-tag">🖼️</span>' : '') + '</div>';
         container.innerHTML += '<div class="pg-chat-bot" id="pgChatLoading"><strong>Bot:</strong> <span style="color:var(--text-muted)">Thinking...</span></div>';
         container.scrollTop = container.scrollHeight;
 
+        const messages = [];
+        if (sys) messages.push({ role: 'system', content: sys });
+        messages.push(...chatHistory);
+        const payload = {
+            model: 'chat',
+            messages: messages,
+            temperature: parseFloat(document.getElementById('pgChatTemp')?.value || '0.7'),
+            max_tokens: parseInt(document.getElementById('pgChatMaxTokens')?.value || '1024'),
+            top_p: parseFloat(document.getElementById('pgChatTopP')?.value || '0.9'),
+        };
         try {
             const resp = await fetch('/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: 'chat', messages: [{ role: 'user', content: msg }], max_tokens: 512 }),
+                body: JSON.stringify(payload),
             });
             const data = await resp.json();
-            document.getElementById('pgChatLoading').remove();
+            document.getElementById('pgChatLoading')?.remove();
             const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || JSON.stringify(data);
+            chatHistory.push({ role: 'assistant', content: reply });
             container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> ' + escapeHtml(reply) + '</div>';
         } catch (e) {
-            document.getElementById('pgChatLoading').remove();
+            document.getElementById('pgChatLoading')?.remove();
             container.innerHTML += '<div class="pg-chat-bot"><strong>Bot:</strong> <span style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</span></div>';
         }
         container.scrollTop = container.scrollHeight;
+        // 会话持久化到 localStorage
+        localStorage.setItem('amm-chat-history', JSON.stringify(chatHistory.slice(-50)));
+    }
+
+    function clearChatHistory() {
+        if (!confirm('确认清空当前会话？')) return;
+        chatHistory = [];
+        localStorage.removeItem('amm-chat-history');
+        document.getElementById('pgChatMessages').innerHTML = '<div class="pg-chat-welcome">会话已清空，开始新对话吧。</div>';
+    }
+    function clearChatImage() {
+        const el = document.getElementById('pgChatImage');
+        if (el) el.value = '';
+        toast('已清除上传图片');
+    }
+    function loadChatHistory() {
+        try { chatHistory = JSON.parse(localStorage.getItem('amm-chat-history') || '[]'); } catch (e) { chatHistory = []; }
+        renderChatHistory();
     }
 
     async function generateImage() {
@@ -998,6 +1081,9 @@
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     window.callApi = callApi;
+    window.clearChatHistory = clearChatHistory;
+    window.clearChatImage = clearChatImage;
+    window.loadChatHistory = loadChatHistory;
     window.openFileBrowser = openFileBrowser;
     window.closeFileBrowser = closeFileBrowser;
     window.fbLoadDir = fbLoadDir;

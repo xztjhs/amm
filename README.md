@@ -13,6 +13,10 @@
 - **OpenAI 兼容 API**: `/v1/chat/completions`, `/v1/embeddings`, `/v1/images/generations`, `/v1/videos/generations`
 - **FP8 量化 (Diffusers)**: Wan2.2-A14B MoE 自动启用 FP8 存储+BF16 计算，84G 显存可跑 27B 视频模型
 - **网页端高级配置**: Quant / CPU Offload / Boundary Ratio / Compute Dtype 一键切换
+- **🔎 模型文件路径浏览 (v0.2)**: 先选引擎 → 浏览 /models 目录选模型文件 → 自动识别可调参数
+- **⚙️ 预设配置 (v0.2)**: 模型旁放 `<model>.vllm` / `<model>.llamacpp`（YAML/JSON）即可一键加载预设参数
+- **💬 Playground 增强 (v0.2)**: 模型选择、会话参数(Temperature/MaxTokens/Top-P/System)、多轮会话持久化、图片视觉上传
+- **🛠 Settings 运维 (v0.2)**: 重载配置、重启服务、下载日志
 - **浅色主题**: 🌙/☀️ 一键切换，localStorage 持久记忆
 - **引擎版本管理**: 网页端安装/卸载不同版本引擎
 - **实时监控**: GPU / CPU / 内存 / 磁盘监控，模型运行状态实时刷新

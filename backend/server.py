@@ -222,6 +222,29 @@ class APIHandlers:
         logs = await self.manager.get_server_logs(lines)
         return self._json({"logs": logs})
 
+    # ---- Settings Actions (v0.2) ----
+    async def reload_config(self, req):
+        """重新加载 models_config.yaml (热更新配置) """
+        try:
+            self.manager._load_config()
+            logger.info("配置已重新加载 (settings/reload)")
+            return self._json({"ok": True, "message": "配置已重载"})
+        except Exception as e:
+            logger.error(f"重载配置失败: {e}")
+            return self._json({"ok": False, "error": str(e)}, 500)
+
+    async def restart_server(self, req):
+        """重启 AMM 服务：先重载配置并刷新实例状态。
+        注意：容器内 server 即 PID1，直接杀进程会终止容器；
+        这里做安全重载(配置+实例刷新)。完整重启请使用 docker restart AMM。"""
+        try:
+            self.manager._load_config()
+            self.manager.refresh_instances()
+            return self._json({"ok": True, "message": "配置已重载并刷新实例; 完整重启请: docker restart AMM"})
+        except Exception as e:
+            logger.error(f"重启/重载失败: {e}")
+            return self._json({"ok": False, "error": str(e)}, 500)
+
     # ---- GPU ----
     async def get_gpu_info(self, req):
         return self._json({"gpus": self.manager.get_gpu_info()})
@@ -274,6 +297,9 @@ def create_app() -> web.Application:
     app.router.add_get("/api/engines/versions", h.get_engine_versions)
     app.router.add_post("/api/engines/install", h.install_engine)
     app.router.add_post("/api/engines/uninstall", h.uninstall_engine)
+    # Settings actions (v0.2)
+    app.router.add_post("/api/settings/reload", h.reload_config)
+    app.router.add_post("/api/settings/restart", h.restart_server)
 
     # Per-model routes
     app.router.add_get("/api/config/models/{model_id}", h.get_model_config_detail)

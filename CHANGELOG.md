@@ -1,5 +1,32 @@
 # AMM Changelog
 
+## v0.2 — 2026-08-07
+
+### 🎨 WebUI 增强
+- **暗/亮主题切换**：顶栏 🌙/☀️ 一键切换，选择持久化至 localStorage，全页面 CSS 变量驱动
+
+### 🧩 模型选择（先引擎 → 路径选文件 → 参数 + 预设）
+- **文件路径浏览**：Models 页新增「📂 浏览 /models」按钮，弹窗浏览容器模型目录树，按引擎过滤模型文件（llama_cpp: .gguf/.bin；vllm: .safetensors/.gguf 等），支持选整个目录（HF/Diffusers 目录型模型）
+- **预设配置加载**：模型文件旁可放 `<model>.vllm` 或 `<model>.llamacpp`（YAML/JSON/key=value），WebUI 自动发现并一键加载为参数
+- **参数识别**：选择模型文件后，按当前引擎展示/保存可调参数（context/GPU/采样/量化等）
+- 新增 API：`/api/fs/list`、`/api/fs/discover`、`/api/instances/preset`、`/api/instances/preset/apply`、`/api/instances/preset/save`
+
+### 💬 Playground 完善
+- **模型选择下拉**：从实例中选择对话模型
+- **会话参数**：Temperature / Max Tokens / Top-P / System Prompt 可调
+- **多轮会话**：自动携带历史上下文，会话持久化到 localStorage
+- **图片(视觉)上传**：对话中可附加图片（vision）
+- **文件下载**：日志下载、生成产物内嵌预览
+
+### ⚙️ Settings 完善
+- 新增**运维操作**：重载配置、重启服务(安全重载+实例刷新)、下载服务日志
+- Settings 显示版本号
+- 新增 API：`/api/settings/reload`、`/api/settings/restart`
+
+### 📋 开发产出
+- 新桥接层 `backend/api/fs_bridge.py`（文件系统浏览 + 预设解析/应用/保存）
+- 部署：统一入口 60006
+
 ## v0.1.1 — 2026-08-07
 
 ### ✅ 遗留问题修复
