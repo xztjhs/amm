@@ -103,7 +103,7 @@ async function run() {
     await send('Runtime.enable'); await send('Page.enable');
     await send('Page.navigate', { url: BASE });
     await new Promise(r => setTimeout(r, 5000));
-    await nodeList(c);
+    await domChecks(c);
     try { await (await fetch(CDP + '/json/close/' + t.id, { method: 'PUT' })); } catch (e) { }
   } catch (e) { fail++; results.push('  ❌ 前端 DOM 测试环境异常: ' + e.message); }
 
