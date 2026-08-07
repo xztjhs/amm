@@ -1,5 +1,12 @@
 # AMM Changelog
 
+## v0.3 — 2026-08-07
+
+### 🧩 Chat/LLM/VLM 运行参数完善
+- **llama.cpp 参数 26 项**：上下文/GPU层/线程/batch/ubatch/FlashAttn/mlock/mmap/KV缓存类型/并行序列/温度/Top-P/Top-K/重复惩罚/窗口/Min-P/Mirostat(模式·学习率·目标困惑度)/频率与存在惩罚/RoPE缩放与基数/最大Token/种子
+- **vLLM 参数 18 项**：TP/PP/DP并行/显存利用率/最大模型长度/最大并发序列/批处理Token/精度/量化(awq·gptq·fp8)/KV缓存精度(fp8)/前缀缓存/Chunked Prefill/CUDA Graph开关/KV Block/CPU卸载/对外模型名/TrustRemoteCode/种子
+- 引擎 `build_command` 同步扩展（vllm.py / llama_cpp.py），参数来源：本机安装的 vLLM 0.22.1 与 llama-server 实测 --help
+
 ## v0.2 — 2026-08-07
 
 ### 🎨 WebUI 增强

@@ -126,24 +126,51 @@ class VllmEngine(BaseEngine):
 
         params = inst.parameters
 
+        # ---- 并行/分布式 ----
         if params.get("tensor_parallel_size", 1) > 1:
             cmd += ["--tensor-parallel-size", str(params["tensor_parallel_size"])]
         if params.get("pipeline_parallel_size", 1) > 1:
             cmd += ["--pipeline-parallel-size", str(params["pipeline_parallel_size"])]
+        if params.get("data_parallel_size", 1) > 1:
+            cmd += ["--data-parallel-size", str(params["data_parallel_size"])]
+
+        # ---- 长度/显存/批处理 ----
         if params.get("max_model_len"):
             cmd += ["--max-model-len", str(params["max_model_len"])]
         if params.get("gpu_memory_utilization"):
             cmd += ["--gpu-memory-utilization", str(params["gpu_memory_utilization"])]
         if params.get("max_num_seqs"):
             cmd += ["--max-num-seqs", str(params["max_num_seqs"])]
+        if params.get("max_num_batched_tokens"):
+            cmd += ["--max-num-batched-tokens", str(params["max_num_batched_tokens"])]
+
+        # ---- 精度 / 量化 ----
         if params.get("dtype"):
             cmd += ["--dtype", params["dtype"]]
         if params.get("quantization"):
             cmd += ["--quantization", params["quantization"]]
+        if params.get("kv_cache_dtype"):
+            cmd += ["--kv-cache-dtype", params["kv_cache_dtype"]]
+
+        # ---- 性能开关 ----
         if params.get("enforce_eager", False):
             cmd += ["--enforce-eager"]
+        if params.get("enable_prefix_caching", False):
+            cmd += ["--enable-prefix-caching"]
+        if params.get("enable_chunked_prefill", False):
+            cmd += ["--enable-chunked-prefill"]
+        if params.get("block_size") and str(params.get("block_size")).lower() != "auto":
+            cmd += ["--block-size", str(params["block_size"])]
+        if params.get("cpu_offload_gb"):
+            cmd += ["--cpu-offload-gb", str(params["cpu_offload_gb"])]
+
+        # ---- 模型 / 其它 ----
         if params.get("trust_remote_code", False):
             cmd += ["--trust-remote-code"]
+        if params.get("served_model_name"):
+            cmd += ["--served-model-name", str(params["served_model_name"])]
+        if params.get("seed") is not None and params.get("seed", 0) != 0:
+            cmd += ["--seed", str(params["seed"])]
 
         return cmd
 

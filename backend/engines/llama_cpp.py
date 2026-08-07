@@ -116,10 +116,22 @@ class LlamaCppEngine(BaseEngine):
             cmd += ["--ctx-size", str(params["ctx_size"])]
         if params.get("batch_size"):
             cmd += ["--batch-size", str(params["batch_size"])]
+        if params.get("ubatch_size"):
+            cmd += ["--ubatch-size", str(params["ubatch_size"])]
         if params.get("flash_attn"):
             cmd += ["--flash-attn", "on"]
         if params.get("mlock"):
             cmd += ["--mlock"]
+        if params.get("mmap") is False:
+            cmd += ["--no-mmap"]
+        if params.get("cache_type_k") and params.get("cache_type_k") != "auto":
+            cmd += ["--cache-type-k", str(params["cache_type_k"])]
+        if params.get("cache_type_v") and params.get("cache_type_v") != "auto":
+            cmd += ["--cache-type-v", str(params["cache_type_v"])]
+        if params.get("parallel"):
+            cmd += ["--parallel", str(params["parallel"])]
+
+        # 采样参数
         if params.get("temp") is not None:
             cmd += ["--temp", str(params["temp"])]
         if params.get("top_p") is not None:
@@ -128,6 +140,26 @@ class LlamaCppEngine(BaseEngine):
             cmd += ["--top-k", str(params["top_k"])]
         if params.get("repeat_penalty") is not None:
             cmd += ["--repeat-penalty", str(params["repeat_penalty"])]
+        if params.get("repeat_last_n") is not None:
+            cmd += ["--repeat-last-n", str(params["repeat_last_n"])]
+        if params.get("min_p") is not None:
+            cmd += ["--min-p", str(params["min_p"])]
+        if params.get("mirostat") is not None and int(params["mirostat"]) > 0:
+            cmd += ["--mirostat", str(params["mirostat"])]
+        if params.get("mirostat_lr") is not None:
+            cmd += ["--mirostat-lr", str(params["mirostat_lr"])]
+        if params.get("mirostat_ent") is not None:
+            cmd += ["--mirostat-ent", str(params["mirostat_ent"])]
+        if params.get("frequency_penalty") is not None:
+            cmd += ["--frequency-penalty", str(params["frequency_penalty"])]
+        if params.get("presence_penalty") is not None:
+            cmd += ["--presence-penalty", str(params["presence_penalty"])]
+        if params.get("rope_freq_scale") is not None:
+            cmd += ["--rope-freq-scale", str(params["rope_freq_scale"])]
+        if params.get("rope_freq_base") is not None:
+            cmd += ["--rope-freq-base", str(params["rope_freq_base"])]
+        if params.get("seed") is not None and params.get("seed", 0) != 0:
+            cmd += ["--seed", str(params["seed"])]
         if params.get("max_tokens") is not None:
             cmd += ["--n-predict", str(params["max_tokens"])]
         if params.get("embeddings"):

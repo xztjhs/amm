@@ -36,6 +36,7 @@ chat_model:
       size_gb: 20.5
       type: "Q4_K_M"
   parameters:
+    # ================= llama.cpp =================
     - name: "ctx_size"
       label: "上下文长度"
       type: "number"
@@ -43,34 +44,6 @@ chat_model:
       min: 512
       max: 131072
       engine: "llama_cpp"
-    - name: "tensor_parallel_size"
-      label: "GPU 并行数"
-      type: "number"
-      default: 1
-      min: 1
-      max: 8
-      engine: "vllm"
-    - name: "gpu_memory_utilization"
-      label: "GPU 显存利用率"
-      type: "float"
-      default: 0.90
-      min: 0.1
-      max: 1.0
-      step: 0.05
-      engine: "vllm"
-    - name: "max_model_len"
-      label: "最大模型长度"
-      type: "number"
-      default: 32768
-      min: 512
-      max: 131072
-      engine: "vllm"
-    - name: "dtype"
-      label: "推理精度"
-      type: "select"
-      default: "auto"
-      options: ["auto", "float16", "bfloat16", "float32"]
-      engine: "vllm"
     - name: "n_gpu_layers"
       label: "GPU 层数"
       type: "number"
@@ -86,11 +59,52 @@ chat_model:
       max: 256
       engine: "llama_cpp"
     - name: "batch_size"
-      label: "批处理大小"
+      label: "批处理大小 (batch)"
       type: "number"
       default: 2048
-      min: 256
+      min: 128
       max: 8192
+      engine: "llama_cpp"
+    - name: "ubatch_size"
+      label: "微批大小 (ubatch)"
+      type: "number"
+      default: 512
+      min: 64
+      max: 4096
+      engine: "llama_cpp"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mlock"
+      label: "内存锁定 (mlock)"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mmap"
+      label: "内存映射 (mmap)"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "cache_type_k"
+      label: "K 缓存类型"
+      type: "select"
+      default: "auto"
+      options: ["auto", "f16", "q8_0", "q4_0", "q4_1"]
+      engine: "llama_cpp"
+    - name: "cache_type_v"
+      label: "V 缓存类型"
+      type: "select"
+      default: "auto"
+      options: ["auto", "f16", "q8_0", "q4_0", "q4_1"]
+      engine: "llama_cpp"
+    - name: "parallel"
+      label: "并发序列数 (parallel)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 64
       engine: "llama_cpp"
     - name: "temp"
       label: "温度"
@@ -119,31 +133,209 @@ chat_model:
       label: "重复惩罚"
       type: "float"
       default: 1.1
-      min: 1.0
+      min: 0.0
       max: 2.0
       step: 0.05
       engine: "llama_cpp"
+    - name: "repeat_last_n"
+      label: "重复惩罚窗口"
+      type: "number"
+      default: 64
+      min: 0
+      max: 4096
+      engine: "llama_cpp"
+    - name: "min_p"
+      label: "Min-P 采样"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 1.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "mirostat"
+      label: "Mirostat 模式"
+      type: "select"
+      default: "0"
+      options: ["0", "1", "2"]
+      engine: "llama_cpp"
+    - name: "mirostat_lr"
+      label: "Mirostat 学习率"
+      type: "float"
+      default: 0.1
+      min: 0.01
+      max: 1.0
+      step: 0.01
+      engine: "llama_cpp"
+    - name: "mirostat_ent"
+      label: "Mirostat 目标困惑度"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 10.0
+      step: 0.5
+      engine: "llama_cpp"
+    - name: "frequency_penalty"
+      label: "频率惩罚"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 2.0
+      step: 0.1
+      engine: "llama_cpp"
+    - name: "presence_penalty"
+      label: "存在惩罚"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 2.0
+      step: 0.1
+      engine: "llama_cpp"
+    - name: "rope_freq_scale"
+      label: "RoPE 频率缩放"
+      type: "float"
+      default: 1.0
+      min: 0.1
+      max: 10.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "rope_freq_base"
+      label: "RoPE 频率基数"
+      type: "number"
+      default: 0
+      min: 0
+      max: 2000000
+      engine: "llama_cpp"
     - name: "max_tokens"
-      label: "最大生成Token"
+      label: "最大生成 Token"
       type: "number"
       default: 4096
       min: 1
       max: 32768
       engine: "llama_cpp"
-    - name: "flash_attn"
-      label: "Flash Attention"
-      type: "boolean"
-      default: true
-      engine: "llama_cpp"
-    - name: "mlock"
-      label: "内存锁定"
-      type: "boolean"
-      default: true
+    - name: "seed"
+      label: "随机种子 (0=随机)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 4294967295
       engine: "llama_cpp"
 
-# ============================================================
-# 2. Embedding Model
-# ============================================================
+    # ================= vLLM =================
+    - name: "tensor_parallel_size"
+      label: "GPU 并行数 (TP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "pipeline_parallel_size"
+      label: "流水线并行数 (PP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "data_parallel_size"
+      label: "数据并行数 (DP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "gpu_memory_utilization"
+      label: "GPU 显存利用率"
+      type: "float"
+      default: 0.90
+      min: 0.1
+      max: 1.0
+      step: 0.05
+      engine: "vllm"
+    - name: "max_model_len"
+      label: "最大模型长度"
+      type: "number"
+      default: 32768
+      min: 512
+      max: 131072
+      engine: "vllm"
+    - name: "max_num_seqs"
+      label: "最大并发序列数"
+      type: "number"
+      default: 256
+      min: 1
+      max: 4096
+      engine: "vllm"
+    - name: "max_num_batched_tokens"
+      label: "批处理最大 Token 数"
+      type: "number"
+      default: 32768
+      min: 256
+      max: 262144
+      engine: "vllm"
+    - name: "dtype"
+      label: "推理精度"
+      type: "select"
+      default: "auto"
+      options: ["auto", "float16", "bfloat16", "float32"]
+      engine: "vllm"
+    - name: "quantization"
+      label: "量化方式"
+      type: "select"
+      default: "auto"
+      options: ["auto", "awq", "gptq", "fp8", "bitsandbytes"]
+      engine: "vllm"
+    - name: "kv_cache_dtype"
+      label: "KV 缓存精度"
+      type: "select"
+      default: "auto"
+      options: ["auto", "fp8", "fp8_e5m2", "fp8_e4m3"]
+      engine: "vllm"
+    - name: "enable_prefix_caching"
+      label: "前缀缓存 (Prefix Caching)"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "enable_chunked_prefill"
+      label: "Chunked Prefill"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "enforce_eager"
+      label: "禁用 CUDA Graph (Eager)"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "block_size"
+      label: "KV Block 大小"
+      type: "select"
+      default: "auto"
+      options: ["auto", "16", "32", "64"]
+      engine: "vllm"
+    - name: "cpu_offload_gb"
+      label: "CPU 卸载 (GB)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 256
+      engine: "vllm"
+    - name: "served_model_name"
+      label: "对外模型名 (Served Name)"
+      type: "text"
+      default: ""
+      engine: "vllm"
+    - name: "trust_remote_code"
+      label: "Trust Remote Code"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "seed"
+      label: "随机种子 (0=随机)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 4294967295
+      engine: "vllm"
+
+
 embedding_model:
   id: "embedding"
   name: "Embedding"
