@@ -172,6 +172,12 @@ git push origin master
 > **Python**: 3.11（`/usr/bin/python3.11`），系统默认 python3 为 3.9
 > **模型目录**: `/models`（7TB 共享盘，已含 HauhauCS/Qwen/ggml-org/mradermacher 等 GGUF）
 > **Web UI**: `http://10.10.10.10:60006/`
+>
+> **统一访问端口（2026-08-07 起）**: 容器仅监听 80，宿主映射 60006，单入口同时承载
+> - WebUI 页面：`http://<host>:60006/`
+> - 管理/推理 API：`http://<host>:60006/api/*`
+> - OpenAI 兼容 API：`http://<host>:60006/v1/*`（base_url 填 `http://<host>:60006/v1`）
+> - 旧 8080/60008、18080 端口迁移自本文历史；不再对外服务。
 
 ### ⚠️ 显存管理铁律（务必遵守）
 
@@ -197,7 +203,7 @@ git push origin master
   - 安装：`--index-url aliyun --extra-index-url https://download.pytorch.org/whl/cu130`（torch 走 cu130 源）
   - ⚠️ vLLM 需 HF safetensors 模型（GGUF 的 qwen35moe 不支持）；gpu_memory_utilization 需调低至 ~0.65（Baseline 显存占用）
 - [x] Diffusers 引擎（目录空，待安装验证）
-- [x] AMM server 运行中（端口 8080，宿主映射 60008）
+- [x] AMM server 运行中（统一端口 80，宿主映射 **60006**；WebUI + /api/* + /v1/* 同一入口）
 
 ### 已知问题（2026-08-05 补充）
 

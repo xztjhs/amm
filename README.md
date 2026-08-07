@@ -74,7 +74,14 @@ bash deploy/container_start.sh
 
 ### 4. 访问 Web 界面
 
-打开浏览器访问: `http://<服务器IP>:18080/`
+打开浏览器访问: `http://<服务器IP>:60006/`
+
+> 统一 Web 入口（容器内 80，宿主映射 60006）：
+> - `http://<host>:60006/` 直接打开 AMM WebUI 管理页面
+> - `http://<host>:60006/api/*` 管理/推理接口
+> - `http://<host>:60006/v1/*` OpenAI 兼容 API（chat/embedding/asr/tts/ocr/images/videos）
+>
+> OpenAI 客户端 base_url 填：`http://<服务器IP>:60006/v1`
 
 ### 5. Docker Compose 部署
 
@@ -86,6 +93,8 @@ docker exec -it amm-server bash
 bash /amm/deploy/install.sh
 python3.11 /amm/backend/server.py
 ```
+
+> 端口映射（`docker-compose.yml`）：`60006->80`(Web/API 统一入口)、`60007->443`(HTTPS 预留)、`62220->22`(SSH)。
 
 ## 目录结构
 

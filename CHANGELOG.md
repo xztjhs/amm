@@ -3,6 +3,10 @@
 ## v0.1.1 — 2026-08-07
 
 ### ✅ 遗留问题修复
+- **统一访问端口：WebUI + OpenAI 兼容 API 均走 80 → 60006**
+  - 单一端口承载三者：`/`(WebUI) + `/api/*`(管理/推理) + `/v1/*`(OpenAI 兼容)
+  - Web 访问：`http://<host>:60006/`；API base_url：`http://<host>:60006/v1`
+  - 容器内仅剩一个监听端口 80，移除废弃的 8080/60008 映射
 - **Wan2.2-T2V 冷启动验证通过** 🎉
   - 模型完整下载 118G（transformer×12 + transformer_2×12 MoE 双专家 + VAE + text_encoder + tokenizer）
   - FP8 layerwise_casting (storage=fp8, compute=bf16) + enable_model_cpu_offload 生效
