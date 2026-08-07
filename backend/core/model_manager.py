@@ -394,23 +394,81 @@ class ModelManager:
     # ================================================================
 
     def get_gpu_info(self) -> List[dict]:
+        """获取 GPU 信息。GPUtil 提供基础数据，叠加 nvidia-smi 补充风扇/Utilization 各子项/时钟等。"""
         gpus = []
         try:
+            # nvidia-smi 查询更多字段（风扇、各利用率、时钟、功耗）
+            smi_extra = self._nvidia_smi_query()
             for gpu in GPUtil.getGPUs():
+                ext = smi_extra.get(gpu.id, {})
                 gpus.append({
                     "id": gpu.id,
                     "name": gpu.name,
                     "load": round(gpu.load * 100, 1),
+                    # Utilization 各子项 (%)
+                    "util_sm": ext.get("util_gpu", round(gpu.load * 100, 1)),  # 计算单元利用率
+                    "util_mem": ext.get("util_mem", None),
+                    "util_enc": ext.get("util_enc", None),
+                    "util_dec": ext.get("util_dec", None),
                     "memory_used_mb": gpu.memoryUsed,
                     "memory_total_mb": gpu.memoryTotal,
                     "memory_percent": round(gpu.memoryUtil * 100, 1),
                     "temperature": gpu.temperature,
-                    "power_draw": getattr(gpu, 'powerDraw', 0),
-                    "power_limit": getattr(gpu, 'powerLimit', 0),
+                    "fan_speed": ext.get("fan", None),
+                    "power_draw": getattr(gpu, 'powerDraw', 0) or ext.get("power_draw", 0),
+                    "power_limit": getattr(gpu, 'powerLimit', 0) or ext.get("power_limit", 0),
+                    "clocks_sm": ext.get("clocks_sm", None),
+                    "clocks_mem": ext.get("clocks_mem", None),
+                    "pcie": ext.get("pcie_gen", None),
+                    "gpu_uuid": ext.get("gpu_uuid", None),
                 })
         except Exception as e:
             logger.warning(f"获取 GPU 信息失败: {e}")
         return gpus
+
+    def _nvidia_smi_query(self) -> dict:
+        """调用 nvidia-smi 获取 GPU 序号 -> 字段 映射。失败返回空 dict。"""
+        import subprocess as _sp
+        result = {}
+        try:
+            query = ("index,name,temperature.gpu,utilization.gpu,utilization.memory,"
+                     "utilization.encoder,utilization.decoder,fan.speed,power.draw,"
+                     "power.limit,clocks.sm,clocks.mem,pcie.link.gen.gpucurrent,gpu_uuid")
+            out = _sp.check_output(
+                ["nvidia-smi", "--query-gpu=" + query, "--format=csv,noheader,nounits"],
+                stderr=_sp.DEVNULL, timeout=5, text=True,
+            )
+            for line in out.strip().splitlines():
+                parts = [p.strip() for p in line.split(",")]
+                if len(parts) < 13:
+                    continue
+                try:
+                    gid = int(parts[0])
+                except ValueError:
+                    continue
+                def _f(s):
+                    try:
+                        return round(float(s), 1) if s and s.lower() not in ("n/a", "", "[n/a]") else None
+                    except Exception:
+                        return None
+                result[gid] = {
+                    "name_full": parts[1],
+                    "temp": _f(parts[2]),
+                    "util_gpu": _f(parts[3]),
+                    "util_mem": _f(parts[4]),
+                    "util_enc": _f(parts[5]),
+                    "util_dec": _f(parts[6]),
+                    "fan": _f(parts[7]),
+                    "power_draw": _f(parts[8]),
+                    "power_limit": _f(parts[9]),
+                    "clocks_sm": _f(parts[10]),
+                    "clocks_mem": _f(parts[11]),
+                    "pcie_gen": _f(parts[12]),
+                    "gpu_uuid": parts[13],
+                }
+        except Exception as e:
+            logger.debug(f"nvidia-smi 查询失败(降级): {e}")
+        return result
 
     def get_system_info(self) -> Dict:
         cpu_percent = psutil.cpu_percent(interval=1)

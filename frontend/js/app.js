@@ -175,8 +175,38 @@
     // ---- Dashboard ----
     function renderDashboard() {
         renderSystemCards();
+        renderDashboardGPU();
         renderDashboardModels();
     }
+
+    function renderDashboardGPU() {
+        const container = document.getElementById('dashboardGPU');
+        if (!container) return;
+        if (!systemInfo || !systemInfo.gpus || !systemInfo.gpus.length) {
+            container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">No GPU detected</div>';
+            return;
+        }
+        container.innerHTML = systemInfo.gpus.map(g => `
+            <div class="gpu-card dash-gpu-card">
+                <div class="gpu-card-name"><span style="color:var(--success);font-size:16px">⬛</span>${escapeHtml(g.name)} <span style="color:var(--text-muted);font-size:11px">GPU#${g.id}</span></div>
+                <div class="dash-gpu-grid">
+                    <div class="gpu-metric"><span class="gpu-metric-label">计算利用率</span><span class="gpu-metric-value" style="color:var(--accent)">${g.util_sm ?? g.load ?? '--'}%</span><div class="gpu-bar"><div class="gpu-bar-fill load" style="width:${g.util_sm ?? g.load ?? 0}%"></div></div></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">显存带宽</span><span class="gpu-metric-value" style="color:var(--cyan)">${fmtPct(g.util_mem)}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">编码器</span><span class="gpu-metric-value">${fmtPct(g.util_enc)}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">解码器</span><span class="gpu-metric-value">${fmtPct(g.util_dec)}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">显存占用</span><span class="gpu-metric-value" style="color:var(--purple)">${g.memory_percent}%</span><div class="gpu-bar"><div class="gpu-bar-fill mem" style="width:${g.memory_percent}%"></div></div><span style="font-size:10px;color:var(--text-muted)">${g.memory_used_mb.toFixed(0)}/${g.memory_total_mb} MB</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">温度</span><span class="gpu-metric-value" style="color:var(--error)">${g.temperature!=null?g.temperature+'°C':'--'}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">风扇转速</span><span class="gpu-metric-value">${g.fan_speed!=null?g.fan_speed+'%':'—'}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">功耗</span><span class="gpu-metric-value">${g.power_draw?(g.power_draw||0).toFixed(0)+'W':'--'}${g.power_limit?' / '+(g.power_limit||0).toFixed(0)+'W':''}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">SM时钟</span><span class="gpu-metric-value">${g.clocks_sm!=null?g.clocks_sm+'MHz':'--'}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">显存时钟</span><span class="gpu-metric-value">${g.clocks_mem!=null?g.clocks_mem+'MHz':'--'}</span></div>
+                    <div class="gpu-metric"><span class="gpu-metric-label">PCIe</span><span class="gpu-metric-value">Gen${g.pcie||'--'}</span></div>
+                </div>
+            </div>`).join('');
+    }
+
+    function fmtPct(v) { return v==null ? '--' : (v+'%'); }
+
 
     function renderSystemCards() {
         if (!systemInfo) return;

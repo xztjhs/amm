@@ -940,3 +940,25 @@ body {
     color: var(--accent);
     font-weight: 600;
 }
+
+/* ============ v0.2: Dashboard GPU 多列 ============ */
+.dashboard-gpu { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 8px; }
+.dash-gpu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.dash-gpu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+.dash-gpu-card .gpu-metric {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 8px;
+    background: var(--bg-input);
+    border-radius: 6px;
+}
+.dash-gpu-card .gpu-metric-label { font-size: 11px; color: var(--text-muted); }
+.dash-gpu-card .gpu-metric-value { font-size: 15px; font-weight: 600; }
+.dash-gpu-card .gpu-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.dash-gpu-card .gpu-bar-fill { height: 100%; border-radius: 3px; }
+.dash-gpu-card .gpu-bar-fill.load { background: var(--accent); }
+.dash-gpu-card .gpu-bar-fill.mem { background: var(--purple); }
