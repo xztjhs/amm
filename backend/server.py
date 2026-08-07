@@ -325,24 +325,21 @@ async def main():
         sys.exit(1)
 
     host = config.get("server", {}).get("host", "0.0.0.0")
-    # WebUI 端口 (容器内 80, 宿主机映射 60006): 承载页面 + /api 管理 + /v1 调用
-    web_port = config.get("server", {}).get("web_port", 80)
-    # OpenAI 兼容 API 端口 (容器内 8080, 宿主机映射 60008): 供外部调用
-    api_port = config.get("server", {}).get("api_port", 8080)
+    # 统一监听端口 (容器内 80, 宿主机映射 60006):
+    #   同时承载 WebUI 页面(/、/api管理、/static) 与 OpenAI 兼容 API(/v1/*)
+    #   前端与外部客户端均通过 http://host:60006 访问 (相对路径同源)
+    port = config.get("server", {}).get("port", 80)
 
     app = create_app()
-    logger.info(f"AMM 启动: WebUI http://{host}:{web_port}  |  OpenAI 兼容 API http://{host}:{api_port}")
+    logger.info(f"AMM 启动: http://{host}:{port}  (WebUI + OpenAI 兼容 API, 宿主机映射 60006)")
 
     runner = web.AppRunner(app, handle_signals=False)
     await runner.setup()
-    site_web = web.TCPSite(runner, host, web_port)
-    await site_web.start()
-    logger.info(f"[AMM] WebUI 已监听 0.0.0.0:{web_port} (宿主机映射 60006)")
-    site_api = web.TCPSite(runner, host, api_port)
-    await site_api.start()
-    logger.info(f"[AMM] OpenAI 兼容 API 已监听 0.0.0.0:{api_port} (宿主机映射 60008)")
+    site = web.TCPSite(runner, host, port)
+    await site.start()
+    logger.info(f"[AMM] 已监听 0.0.0.0:{port} (宿主机映射 60006): WebUI + OpenAI API /v1/* + 管理 /api/*")
 
-    # 同源多站点共享同一 app: 监控循环由 app.on_startup 启动一次即可
+    # 监控循环由 app.on_startup 启动一次即可
     try:
         while True:
             await asyncio.sleep(3600)

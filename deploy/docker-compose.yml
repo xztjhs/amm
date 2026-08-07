@@ -16,12 +16,11 @@ services:
     container_name: amm-server
     runtime: nvidia
     ports:
-      # WebUI: 容器内 80（页面 + /api + /v1 同源调用），宿主映射 60006
+      # 统一 Web 入口: 容器内 80，宿主映射 60006
+      #   WebUI 页面 + /api/* + OpenAI 兼容 /v1/* (http://host:60006)
       - "60006:80"
       # HTTPS 预留
       - "60007:443"
-      # OpenAI 兼容 API: 容器内 8080（/v1/*），宿主映射 60008
-      - "60008:8080"
       # 模型推理服务端口（容器内部使用）
       - "18081:18081"
       - "18082:18082"

@@ -7,12 +7,13 @@
 
 server:
   host: "0.0.0.0"
-  # WebUI 端口：容器内 80，宿主机映射 60006（访问管理页面 + 调 /api + /v1）
+  # 统一对外端口：容器内 80，宿主机映射 60006
+  #   访问 http://host:60006 直接打开 WebUI；
+  #   访问 http://host:60006/v1/* 或 /api/* 为模型调用（OpenAI 兼容 /v1/*）
+  port: 80
+  # 兼容保留字段（旧版双端口 web_port/api_port 已废弃，统一由 port=80 承载）
   web_port: 80
-  # OpenAI 兼容 API 端口：容器内 8080，宿主机映射 60008（所有 OpenAI /v1 请求统一走此端口）
-  api_port: 8080
-  # 兼容保留字段（旧版单一端口入口，已由 web_port/api_port 取代）
-  port: 8080
+  api_port: 80
   models_dir: "/models"
   logs_dir: "/amm/logs"
 
