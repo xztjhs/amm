@@ -28,6 +28,7 @@ for _p in (_AMM_PROJECT, str(Path(__file__).resolve().parent.parent)):
 from backend.core.model_manager import ModelManager, AMM_ROOT, LOGS_DIR
 from backend.api.openai_bridge import setup_routes as setup_openai_routes
 from backend.api.diffusers_bridge import setup_routes as setup_diffusers_routes
+from backend.api.fs_bridge import setup_routes as setup_fs_routes
 
 # ============================================================
 # Paths
@@ -289,6 +290,7 @@ def create_app() -> web.Application:
     # OpenAI / Diffusers bridges
     setup_openai_routes(app, manager)
     setup_diffusers_routes(app, manager)
+    setup_fs_routes(app, manager)
 
     # Monitor
     async def on_startup(app):
