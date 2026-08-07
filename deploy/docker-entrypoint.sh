@@ -36,7 +36,12 @@ fi
 # [2/3] 启动 sshd (远程 SSH 登录)
 # ---------------------------------------------------------------
 echo "[sshd] 检查 SSH host key..."
-ssh-keygen -q -A -f /etc/ssh 2>/dev/null || ssh-keygen -A 2>/dev/null || echo "[sshd] host key 已存在或生成失败(继续)"
+# 仅当不存在任何 host key 时才生成（避免容器重启后 known_hosts 指纹变化）
+if ! ls /etc/ssh/ssh_host_*_key >/dev/null 2>&1; then
+    ssh-keygen -A 2>/dev/null && echo "[sshd] 已生成缺失的 host key" || echo "[sshd] host key 生成失败(继续)"
+else
+    echo "[sshd] host key 已存在, 跳过生成"
+fi
 
 # 若 root 密码未设或为空, 用预设 (可选: 通过环境变量 AMM_ROOT_PASSWORD 覆盖)
 if [ -n "${AMM_ROOT_PASSWORD:-}" ]; then
