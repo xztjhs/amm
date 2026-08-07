@@ -1,5 +1,26 @@
 # AMM Changelog
 
+## v0.4 — 2026-08-07
+
+### 📥 模型自动下载 (Task 2)
+- 后端 `download_bridge`：ModelScope / HuggingFace 双源下载 API
+  - `POST /api/models/download` 触发下载；`GET /api/models/download/status` 查进度
+  - 独立子进程执行，状态 pending/downloading/done/failed
+- WebUI Settings 新增「模型自动下载」面板，支持选择源/模型ID/类别
+- 实测：ModelScope 下载 Qwen1.5-0.5B 全流程跑通
+
+### ⚗️ GGUF 量化转换工具 (Task 3)
+- 补编译 `llama-quantize`（复用已有构建树 /tmp/llama_build_cuda13）
+- 后端 `quantizer.py`：`GET /api/quantize/types`、`POST /api/quantize`、`GET /api/quantize/status`
+- 支持 17 种类型：f32/fp16/bf16/q4_0/q4_1/q5_0/q5_1/q8_0/q2_k/q3_k/q4_k/**q4_k_m**/q5_k/q6_k/q8_k/iq4_xs/iq3_xxs
+- WebUI Settings 新增「量化转换」面板
+- 实测：q4_0、q4_k_m 转换成功；fp16/bf16 需 F32/F16 源（重量化已量化模型被 llama.cpp 拒绝 - 官方规则）
+- 注：当前 llama.cpp 版本无 FP8 类型（BF16=30 无 F8），fp8 需新版本 GGUF 支持
+
+### 🎬 Diffusers T2V/I2V 验证修复 (Task 1)
+- I2V 加载修复：移除硬编码 `variant="bf16"`（I2V 模型无 bf16 变体文件）→ 自动检测
+- 模型完整性确认：T2V/I2V 均含 transformer/transformer_2×13 碎片 + vae + text_encoder
+
 ## v0.3 — 2026-08-07
 
 ### 🧩 Chat/LLM/VLM 运行参数完善
