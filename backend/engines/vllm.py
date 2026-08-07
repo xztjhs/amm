@@ -175,15 +175,26 @@ class VllmEngine(BaseEngine):
         return cmd
 
     def _resolve_python(self, inst: ModelInstance) -> str:
-        """根据 engine_version 解析 vLLM venv 的 python 解释器路径"""
-        ver = inst.engine_version
+        """根据 engine_version 解析 vLLM venv 的 python 解释器路径
+        纠正: 安装目录带版本子目录(vllm/<ver>/venv/bin/python), engine_version 为空时需遍历查找。"""
+        ver = (inst.engine_version or "").strip()
+        probes = []
         if ver:
-            venv_py = f"/amm/backend/engines_installed/vllm/{ver}/venv/bin/python"
-            if os.path.isfile(venv_py):
-                return venv_py
-        # 兜底：在默认安装路径查找
-        for probe in ["/amm/backend/engines_installed/vllm/venv/bin/python"]:
-            if os.path.isfile(probe):
+            probes.append(f"/amm/backend/engines_installed/vllm/{ver}/venv/bin/python")
+        probes.append("/amm/backend/engines_installed/vllm/venv/bin/python")
+        # 遍历已安装版本的 venv (v0.6 fix)
+        try:
+            vroot = "/amm/backend/engines_installed/vllm"
+            import os as _os
+            if _os.path.isdir(vroot):
+                for sub in sorted(_os.listdir(vroot)):
+                    cand = _os.path.join(vroot, sub, "venv", "bin", "python3")
+                    if _os.path.isfile(cand):
+                        probes.append(cand)
+        except Exception:
+            pass
+        for probe in probes:
+            if probe and os.path.isfile(probe):
                 return probe
         # 最后 fallback：系统 python3
         return "python3"
