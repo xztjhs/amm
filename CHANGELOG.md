@@ -17,9 +17,13 @@
 - 实测：q4_0、q4_k_m 转换成功；fp16/bf16 需 F32/F16 源（重量化已量化模型被 llama.cpp 拒绝 - 官方规则）
 - 注：当前 llama.cpp 版本无 FP8 类型（BF16=30 无 F8），fp8 需新版本 GGUF 支持
 
-### 🎬 Diffusers T2V/I2V 验证修复 (Task 1)
-- I2V 加载修复：移除硬编码 `variant="bf16"`（I2V 模型无 bf16 变体文件）→ 自动检测
+### 🎬 Diffusers T2V/I2V 验证 (Task 1)
+- **I2V 完全验证通过** 🎉：Wan22-I2V-A14B 加载 90s + 推理 2分07秒(20步) + 成功导出 mp4（`generated in 167.1s, SUCCESS`）
+  - I2V 加载修复：移除硬编码 `variant="bf16"`（I2V 模型无 bf16 变体文件）→ 自动检测
+  - 帧导出修复：验证脚本兼容 WanPipelineOutput(.frames) + 通道规范化（对齐生产 `_extract_video_frames`）
+- **T2V 已早验证**：`wan_t2v_480p_16steps_17frames_20260807-1121.mp4`（峰值 15.9G 显存，FP8+CPU offload）
 - 模型完整性确认：T2V/I2V 均含 transformer/transformer_2×13 碎片 + vae + text_encoder
+- 生产代码 diffusers_bridge 的 `_extract_video_frames` 已正确处理 5D→4D 帧（非临时脚本）
 
 ## v0.3 — 2026-08-07
 
