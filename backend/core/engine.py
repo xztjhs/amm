@@ -143,20 +143,128 @@ class BaseEngine(ABC):
         logger.info(f"[{self.engine_type}] 进程启动 PID={process.pid}: {' '.join(cmd[:5])}...")
         return process
 
+    def _descendant_pids(self, root_pid: int) -> List[int]:
+        """递归收集 root_pid 的所有后代 PID（含脱离原进程组的子进程）。
+
+        背景：vLLM 的 EngineCore / ray worker 等子进程可能调用 setsid
+        脱离父进程组，仅用 killpg 会遗留子进程。这里通过 /proc/<pid>/stat
+        的 PPID 关系遍历整棵进程树。
+        """
+        try:
+            import psutil
+        except Exception:
+            psutil = None
+
+        pids: List[int] = []
+        try:
+            if psutil is not None:
+                try:
+                    parent = psutil.Process(root_pid)
+                except Exception:
+                    return []
+                stack = list(parent.children(recursive=True))
+                while stack:
+                    child = stack.pop()
+                    try:
+                        if child.is_running():
+                            pids.append(child.pid)
+                            stack.extend(child.children(recursive=False))
+                    except Exception:
+                        continue
+                return pids
+        except Exception as e:
+            logger.warning(f"[{self.engine_type}] psutil 遍历进程树失败，回退 /proc: {e}")
+
+        # 兜底：用 /proc 手工解析 PPID 关系（无 psutil 环境）
+        try:
+            children_map: Dict[int, List[int]] = {}
+            for entry in os.listdir("/proc"):
+                if not entry.isdigit():
+                    continue
+                try:
+                    with open(f"/proc/{entry}/stat") as f:
+                        parts = f.read().split()
+                    ppid = int(parts[3])
+                    children_map.setdefault(ppid, []).append(int(entry))
+                except Exception:
+                    continue
+            stack = list(children_map.get(root_pid, []))
+            seen = set()
+            while stack:
+                pid = stack.pop()
+                if pid in seen:
+                    continue
+                seen.add(pid)
+                pids.append(pid)
+                stack.extend(children_map.get(pid, []))
+            return pids
+        except Exception as e:
+            logger.warning(f"[{self.engine_type}] /proc 过程树遍历失败: {e}")
+            return []
+
     async def stop_process(self, inst: ModelInstance):
-        """停止引擎子进程"""
+        """停止引擎子进程（递归清理整棵进程树，含脱离进程组的 vLLM EngineCore）"""
         if not inst.process:
             return
+        root_pid = inst.process.pid
         try:
-            os.killpg(os.getpgid(inst.process.pid), signal.SIGTERM)
+            # 收集整棵进程树（含脱离子进程）
+            tree = self._descendant_pids(root_pid)
+
+            # 1) 先 SIGTERM 整棵进程树（从叶到根）
+            for pid in reversed(tree):
+                try:
+                    os.kill(pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+            try:
+                os.killpg(os.getpgid(root_pid), signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+
+            # 2) 等待优雅退出
             await asyncio.sleep(2)
+
+            # 3) 仍有存活则 SIGKILL 兜底
+            surviving = [pid for pid in tree
+                         if self._pid_alive(pid)]
             if inst.process.returncode is None:
-                os.killpg(os.getpgid(inst.process.pid), signal.SIGKILL)
-            logger.info(f"[{self.engine_type}] 进程停止 PID={inst.process.pid}")
-        except ProcessLookupError:
-            pass
+                surviving.append(root_pid)
+            for pid in surviving:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            try:
+                if inst.process.returncode is None:
+                    os.killpg(os.getpgid(root_pid), signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+
+            # 4) 回收 root，避免僵尸
+            try:
+                inst.process.kill()
+            except Exception:
+                pass
+            try:
+                await inst.process.wait()
+            except Exception:
+                pass
+
+            logger.info(f"[{self.engine_type}] 进程树已停止 root={root_pid}, 回收节点={len(tree)+1} (含{len(surviving)}个SIGKILL)")
         except Exception as e:
             logger.warning(f"[{self.engine_type}] 停止进程异常: {e}")
+
+    @staticmethod
+    def _pid_alive(pid: int) -> bool:
+        """检查 pid 是否存活（/proc 方式，无 psutil 依赖）"""
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+        return True
 
     async def is_process_alive(self, inst: ModelInstance) -> bool:
         """检查进程是否存活"""

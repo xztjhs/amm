@@ -1,5 +1,19 @@
 # AMM Changelog
 
+## v0.1.1 — 2026-08-07
+
+### ✅ 遗留问题修复
+- **Wan2.2-T2V 冷启动验证通过** 🎉
+  - 模型完整下载 118G（transformer×12 + transformer_2×12 MoE 双专家 + VAE + text_encoder + tokenizer）
+  - FP8 layerwise_casting (storage=fp8, compute=bf16) + enable_model_cpu_offload 生效
+  - 480p×832 / 17帧 / 16步生成成功，推理 116s，**峰值显存 15.9G**（FP8 显著降显存）
+  - 输出视频已落盘 `verification/wan_t2v_480p_16steps_17frames_20260807-1121.mp4`
+- **vLLM stop/restart 子进程残留修复**
+  - 根因：vLLM 的 `VLLM::EngineCore` / multiprocessing resource_tracker 会 setsid 脱离父进程组，旧的 killpg 只会父进程，导致子进程残留
+  - 修复：`engine.stop_process` 重构为**递归进程树清理**（psutil.children 递归，/proc 兜底），SIGTERM 后 SIGKILL 整棵回收
+  - 实测：stop 后残留进程数 = 0（原会残留 EngineCore）
+- **mmdc（Mermaid CLI）安装完成**：v11.16.0，复用已有 Chromium 148，思维导图渲染不再降级为纯文本
+
 ## v0.1 — 2026-08-05
 
 ### 🎯 核心能力
