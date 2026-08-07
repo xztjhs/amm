@@ -1006,7 +1006,7 @@ body {
     overflow: hidden;
 }
 .gpu-proc-pid { color: var(--accent); font-family: monospace; flex-shrink: 0; }
-.gpu-proc-name { color: var(--text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+.gpu-proc-name { color: var(--text-secondary); flex: 1; overflow-wrap: break-word; word-break: break-all; white-space: pre-wrap; font-family: monospace; font-size: 10px; line-height: 1.3; }
 .gpu-proc-mem { color: var(--text-muted); flex-shrink: 0; }
 .gpu-proc-empty { font-size: 11px; color: var(--text-muted); padding: 4px 8px; }
 

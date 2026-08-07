@@ -232,7 +232,7 @@
                 </div>
                 <div class="dash-gpu-procs">
                     <div class="gpu-procs-title">🖥️ 正在运行的程序 (${(g.running_processes||[]).length})</div>
-                    ${(g.running_processes||[]).length ? g.running_processes.map(p=>`<div class="gpu-proc-item" title="${escapeHtml(p.command||p.name)}"><span class="gpu-proc-pid">PID ${escapeHtml(p.pid)}</span><span class="gpu-proc-name">${escapeHtml(short(p.command||p.name))}</span><span class="gpu-proc-mem">${p.gpu_memory_mb!=null?escapeHtml(p.gpu_memory_mb)+' MB':''}</span></div>`).join('') : '<div class="gpu-proc-empty">无运行程序</div>'}
+                    ${(g.running_processes||[]).length ? g.running_processes.map(p=>`<div class="gpu-proc-item" title="${escapeHtml(p.command||p.name)}"><span class="gpu-proc-pid">PID ${escapeHtml(p.pid)}</span><span class="gpu-proc-name">${escapeHtml(p.command||p.name)}</span><span class="gpu-proc-mem">${p.gpu_memory_mb!=null?escapeHtml(p.gpu_memory_mb)+' MB':''}</span></div>`).join('') : '<div class="gpu-proc-empty">无运行程序</div>'}
                 </div>
             </div>`).join('');
     }
@@ -281,9 +281,9 @@
                     <span>Uptime</span><span>${inst.uptime_seconds ? formatUptime(inst.uptime_seconds) : '--'}</span>
                 </div>
                 <div class="model-card-actions">
-                    <button class="btn btn-sm btn-success" onclick="event.stopPropagation();window.startModel('${id}')" ${sc === 'running' ? 'disabled' : ''}>Start</button>
-                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window.stopModel('${id}')" ${sc !== 'running' ? 'disabled' : ''}>Stop</button>
-                    <button class="btn btn-sm" onclick="event.stopPropagation();window.restartModel('${id}')">Restart</button>
+                    <button data-mid="${id}" data-action="start" data-label="Start" class="btn btn-sm btn-success" onclick="event.stopPropagation();window.startModel('${id}')" ${sc === 'running' ? 'disabled' : ''}>Start</button>
+                    <button data-mid="${id}" data-action="stop" data-label="Stop" class="btn btn-sm btn-danger" onclick="event.stopPropagation();window.stopModel('${id}')" ${sc !== 'running' ? 'disabled' : ''}>Stop</button>
+                    <button data-mid="${id}" data-action="restart" data-label="Restart" class="btn btn-sm" onclick="event.stopPropagation();window.restartModel('${id}')">Restart</button>
                 </div>
             </div>`;
         });
@@ -334,8 +334,8 @@
                     <div class="model-detail-controls">
                         <span class="status-indicator ${sc}"></span>
                         <span style="font-size:12px;color:var(--text-muted)">${currentEngine} :${cfg.port}</span>
-                        <button class="btn btn-sm btn-success" onclick="event.stopPropagation();window.startModel('${id}')" ${sc === 'running' ? 'disabled' : ''}>Start</button>
-                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();window.stopModel('${id}')" ${sc !== 'running' ? 'disabled' : ''}>Stop</button>
+                        <button data-mid="${id}" data-action="start" data-label="Start" class="btn btn-sm btn-success" onclick="event.stopPropagation();window.startModel('${id}')" ${sc === 'running' ? 'disabled' : ''}>Start</button>
+                        <button data-mid="${id}" data-action="stop" data-label="Stop" class="btn btn-sm btn-danger" onclick="event.stopPropagation();window.stopModel('${id}')" ${sc !== 'running' ? 'disabled' : ''}>Stop</button>
                     </div>
                 </div>
                 <div class="model-detail-body" id="body-${id}">
@@ -477,24 +477,76 @@
 
     // ---- Model Actions ----
     async function startModel(modelId) {
+        setModelBusy(modelId, true);
         toast('Starting ' + modelId + '...');
-        const r = await apiPost('/instances/' + modelId + '/start');
-        if (r) toast(r.error ? ('❌ ' + r.error) : ('✅ ' + modelId + ' started (' + (r.engine || '') + ')'), r.error ? 'error' : 'success');
+        try {
+            const r = await apiPost('/instances/' + modelId + '/start');
+            if (r && r.error) { toast('❌ ' + r.error, 'error'); }
+            else if (r && r.success) {
+                toast('✅ ' + modelId + ' started (' + (r.engine || '') + ')', 'success');
+                // 启动后轮询等待进入 running, 并抓取实时 GPU/CPU
+                await waitModelStatus(modelId, 'running', 60000);
+            }
+        } finally { setModelBusy(modelId, false); }
         await refreshAll();
     }
 
     async function stopModel(modelId) {
-        toast('Stopping ' + modelId + '...');
-        const r = await apiPost('/instances/' + modelId + '/stop');
-        if (r) toast(r.error ? ('❌ ' + r.error) : ('⏹ ' + modelId + ' stopped'), r.error ? 'error' : 'success');
+        setModelBusy(modelId, true);
+        toast('⏹ Stopping ' + modelId + '...');
+        try {
+            const r = await apiPost('/instances/' + modelId + '/stop');
+            if (r && r.error) { toast('❌ ' + r.error, 'error'); }
+            else {
+                toast('✅ ' + modelId + ' stopped', 'success');
+            }
+            await fastRefresh();
+        } finally { setModelBusy(modelId, false); }
         await refreshAll();
     }
 
     async function restartModel(modelId) {
-        toast('Restarting ' + modelId + '...');
-        const r = await apiPost('/instances/' + modelId + '/restart');
-        if (r) toast(r.error ? ('❌ ' + r.error) : ('🔄 ' + modelId + ' restarted'), r.error ? 'error' : 'success');
+        setModelBusy(modelId, true);
+        toast('🔄 Restarting ' + modelId + '...');
+        try {
+            const r = await apiPost('/instances/' + modelId + '/restart');
+            if (r && r.error) toast('❌ ' + r.error, 'error');
+            else toast('🔄 ' + modelId + ' restarted', 'success');
+        } finally { setModelBusy(modelId, false); }
         await refreshAll();
+    }
+
+    // 按钮 loading 态: 禁用该模型所有操作按钮, 防止重复点击/无双反馈
+    function setModelBusy(modelId, busy) {
+        document.querySelectorAll('[data-mid="' + modelId + '"]').forEach(b => {
+            b.disabled = busy;
+            b.textContent = busy ? (b.dataset.action === 'stop' ? '⏳停止中' : '⏳' + (b.dataset.action||'').toUpperCase()) : b.dataset.label;
+        });
+        if (busy) toast('⏳ ' + modelId + ' 处理中...');
+    }
+
+    // 轮询等待模型进入指定状态 (start 用); 拒绝状态返回 false
+    async function waitModelStatus(modelId, want, timeoutMs) {
+        const timeout = timeoutMs || 60000;
+        const start = Date.now();
+        while (Date.now() - start < timeout) {
+            const inst = (await apiGet('/instances')) || {};
+            const it = inst[modelId];
+            if (it && it.status === want) return true;
+            if (it && (it.status === 'error' || it.status === 'failed')) { toast('❌ ' + modelId + ' 启动失败: ' + (it.error || ''), 'error'); return false; }
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        toast('⏱ ' + modelId + ' 状态等待超时', 'info');
+        return false;
+    }
+
+    // 快速轮询一次 (force 重新拉取 instances+system 以刷新 GPU/CPU)
+    async function fastRefresh() {
+        try {
+            instances = (await apiGet('/instances')) || instances;
+            systemInfo = (await apiGet('/system')) || systemInfo;
+        } catch (e) {}
+        renderDashboard();
     }
 
     async function selectModelFile(modelId, file) {
