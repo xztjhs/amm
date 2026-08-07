@@ -531,40 +531,66 @@ class ModelManager:
         return result
 
     def get_system_info(self) -> Dict:
-        cpu_percent = psutil.cpu_percent(interval=1)
-        mem = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
+        # 非阻塞采样: interval=None 返回自上次调用以来均值, 不阻塞事件循环
+        try:
+            cpu_percent = psutil.cpu_percent(interval=None)
+        except Exception:
+            cpu_percent = 0.0
+        try:
+            mem = psutil.virtual_memory()
+        except Exception:
+            mem = None
+        try:
+            disk = psutil.disk_usage('/')
+        except Exception:
+            disk = None
         return {
-            "cpu_percent": cpu_percent,
-            "cpu_count": psutil.cpu_count(),
-            "memory_total_gb": round(mem.total / (1024**3), 2),
-            "memory_used_gb": round(mem.used / (1024**3), 2),
-            "memory_percent": mem.percent,
-            "disk_total_gb": round(disk.total / (1024**3), 2),
-            "disk_used_gb": round(disk.used / (1024**3), 2),
-            "disk_percent": disk.percent,
+            "cpu_percent": round(cpu_percent, 1) if cpu_percent is not None else 0.0,
+            "cpu_count": psutil.cpu_count() or 0,
+            "memory_total_gb": round(mem.total / (1024**3), 2) if mem else 0.0,
+            "memory_used_gb": round(mem.used / (1024**3), 2) if mem else 0.0,
+            "memory_percent": round(mem.percent, 1) if mem else 0.0,
+            "disk_total_gb": round(disk.total / (1024**3), 2) if disk else 0.0,
+            "disk_used_gb": round(disk.used / (1024**3), 2) if disk else 0.0,
+            "disk_percent": round(disk.percent, 1) if disk else 0.0,
             "gpus": self.get_gpu_info(),
             "uptime_seconds": time.time() - psutil.boot_time(),
         }
 
     def refresh_instances(self):
+        # 节流: 最近 0.5s 内已刷新则跳过，防 monitor_loop + 前端高频并发叠加
+        import time as _t
+        now = _t.time()
+        _last = getattr(self, "_last_refresh", 0)
+        if now - _last < 0.5:
+            return
+        self._last_refresh = now
+        # 非阻塞刷新: 避免 interval=0.1 的 sync sleep 拖死事件循环
         for inst in self.instances.values():
-            if inst.process:
+            if not inst.process:
+                continue
+            try:
                 retcode = inst.process.returncode
-                if retcode is not None:
-                    inst.status = "error" if retcode != 0 else "stopped"
-                    inst.process = None
-                else:
-                    inst.status = "running"
-                    if inst.start_time:
-                        inst.uptime_seconds = time.time() - inst.start_time
+            except Exception:
+                retcode = None
+            if retcode is not None:
+                inst.status = "error" if retcode != 0 else "stopped"
+                inst.process = None
+                continue
+            inst.status = "running"
+            if inst.start_time:
+                inst.uptime_seconds = int(time.time() - inst.start_time)
+            try:
+                if inst.pid and inst.pid > 0:
+                    proc = psutil.Process(inst.pid)
+                    inst.memory_mb = proc.memory_info().rss / (1024**2)
+                    # 瞬时采样(基于上次快照) 不阻塞
                     try:
-                        if inst.pid and inst.pid > 0:
-                            proc = psutil.Process(inst.pid)
-                            inst.cpu_percent = proc.cpu_percent(interval=0.1)
-                            inst.memory_mb = proc.memory_info().rss / (1024**2)
-                    except (psutil.NoSuchProcess, Exception):
-                        pass
+                        inst.cpu_percent = round(proc.cpu_percent(interval=None), 1)
+                    except Exception:
+                        inst.cpu_percent = 0.0
+            except (psutil.NoSuchProcess, Exception):
+                inst.cpu_percent = 0.0
 
     async def get_model_logs(self, model_id: str, lines: int = 100) -> List[str]:
         log_file = Path(LOGS_DIR) / f"{model_id}_server.log"
