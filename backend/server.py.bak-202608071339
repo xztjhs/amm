@@ -300,7 +300,6 @@ def create_app() -> web.Application:
 
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
-    app['manager_state'] = manager
     return app
 
 
@@ -316,7 +315,7 @@ async def monitor_loop(manager):
 # ============================================================
 # Main
 # ============================================================
-async def main():
+if __name__ == "__main__":
     try:
         with open(CONFIG_PATH, 'r') as f:
             config = yaml.safe_load(f)
@@ -325,33 +324,7 @@ async def main():
         sys.exit(1)
 
     host = config.get("server", {}).get("host", "0.0.0.0")
-    # WebUI 端口 (容器内 80, 宿主机映射 60006): 承载页面 + /api 管理 + /v1 调用
-    web_port = config.get("server", {}).get("web_port", 80)
-    # OpenAI 兼容 API 端口 (容器内 8080, 宿主机映射 60008): 供外部调用
-    api_port = config.get("server", {}).get("api_port", 8080)
-
+    port = config.get("server", {}).get("port", 18080)
     app = create_app()
-    logger.info(f"AMM 启动: WebUI http://{host}:{web_port}  |  OpenAI 兼容 API http://{host}:{api_port}")
-
-    runner = web.AppRunner(app, handle_signals=False)
-    await runner.setup()
-    site_web = web.TCPSite(runner, host, web_port)
-    await site_web.start()
-    logger.info(f"[AMM] WebUI 已监听 0.0.0.0:{web_port} (宿主机映射 60006)")
-    site_api = web.TCPSite(runner, host, api_port)
-    await site_api.start()
-    logger.info(f"[AMM] OpenAI 兼容 API 已监听 0.0.0.0:{api_port} (宿主机映射 60008)")
-
-    # 同源多站点共享同一 app: 监控循环由 app.on_startup 启动一次即可
-    try:
-        while True:
-            await asyncio.sleep(3600)
-    finally:
-        await runner.cleanup()
-
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
+    logger.info(f"AMM 启动: http://{host}:{port}")
+    web.run_app(app, host=host, port=port, handle_signals=True)
