@@ -265,6 +265,29 @@ AI 用于图像识别与自然语言处理
                     </p>
                     <div class="engine-list" id="engineList"></div>
                 </div>
+
+                <div class="setting-group" id="modelDownloadPanel">
+                    <h3>📥 模型自动下载 (Model Download)</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+                        从 ModelScope 或 HuggingFace 下载模型到 /models。
+                    </p>
+                    <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:end;margin-bottom:8px;">
+                        <div><label style="font-size:11px;color:var(--text-muted)">源</label>
+                            <select id="dlSource" class="form-select">
+                                <option value="modelscope">ModelScope (国内优先)</option>
+                                <option value="huggingface">HuggingFace</option>
+                            </select></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">模型 ID (如 Qwen/Qwen-Image-2512)</label>
+                            <input id="dlModelId" class="form-input" placeholder="组织/模型名"></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">类别(可选)</label>
+                            <select id="dlCategory" class="form-select"><option value="">—</option><option>chat</option><option>embedding</option><option>asr</option><option>tts</option><option>t2i</option><option>t2v</option><option>i2v</option></select></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:10px;">
+                        <button class="btn btn-primary btn-sm" onclick="window.startModelDownload()">⬇️ 开始下载</button>
+                        <button class="btn btn-sm" onclick="window.refreshDownloadStatus()">🔄 刷新任务</button>
+                    </div>
+                    <div class="download-task-list" id="downloadTaskList"><p style="color:var(--text-muted);font-size:12px">暂无下载任务</p></div>
+                </div>
             </div>
         </section>
     </main>

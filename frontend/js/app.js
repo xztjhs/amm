@@ -1293,7 +1293,40 @@
 
 
 
-    // ---- Global Exports ----
+    // ---- Model Download (v0.4) ----
+    async function startModelDownload() {
+        const modelId = document.getElementById('dlModelId')?.value.trim();
+        if (!modelId) return toast('请输入模型 ID', 'error');
+        const source = document.getElementById('dlSource')?.value || 'modelscope';
+        const category = document.getElementById('dlCategory')?.value || '';
+        toast('⬇️ 开始下载 ' + modelId + ' ...');
+        const r = await apiPost('/models/download', { model_id: modelId, source: source, category: category });
+        if (r && r.ok) {
+            toast('✅ 已提交下载任务 ' + r.task_id, 'success');
+            await refreshDownloadStatus();
+            // 轮询状态
+            setTimeout(refreshDownloadStatus, 3000);
+        } else {
+            toast('❌ ' + ((r && r.error) || '提交失败'), 'error');
+        }
+    }
+
+    async function refreshDownloadStatus() {
+        const listEl = document.getElementById('downloadTaskList');
+        if (!listEl) return;
+        const r = await apiGet('/models/download/status');
+        if (!r || !r.tasks) return;
+        if (!r.tasks.length) { listEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px">暂无下载任务</p>'; return; }
+        listEl.innerHTML = r.tasks.map(t => `
+            <div class="dl-task" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:12px;font-weight:600">${t.source} · ${escapeHtml(t.model_id)}</span>
+                    <span class="version-status ${t.status}">${t.status}</span>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;word-break:break-all">${escapeHtml(t.detail || t.error || '')}</div>
+            </div>`).join('');
+    }
+
     function escapeHtml(text) {
         var div = document.createElement('div');
         div.appendChild(document.createTextNode(String(text)));
@@ -1317,6 +1350,8 @@
     window.runTTS = runTTS;
     window.runRerank = runRerank;
     window.runOCR = runOCR;
+    window.startModelDownload = startModelDownload;
+    window.refreshDownloadStatus = refreshDownloadStatus;
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     window.callApi = callApi;
