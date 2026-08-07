@@ -136,7 +136,17 @@ class VllmEngine(BaseEngine):
 
         # ---- 长度/显存/批处理 ----
         if params.get("max_model_len"):
-            cmd += ["--max-model-len", str(params["max_model_len"])]
+            ml = int(params["max_model_len"])
+            # 读模型 config.json 的 max_position_embeddings, 超限自动 clamp 防 vLLM 报错
+            cap = self._read_max_position(model_path)
+            if cap and ml > cap:
+                cap = int(cap)
+                # 取 cap 与 4096 的倍数对齐(留余量)
+                safe = max(int(cap / 1024) * 1024, min(ml, cap))
+                if safe <= 0: safe = min(ml, cap)
+                logger.warning(f"[vllm] max_model_len={ml} 超过模型上限 {cap}, 已自动调整为 {safe}")
+                ml = int(safe)
+            cmd += ["--max-model-len", str(ml)]
         if params.get("gpu_memory_utilization"):
             cmd += ["--gpu-memory-utilization", str(params["gpu_memory_utilization"])]
         if params.get("max_num_seqs"):
@@ -173,6 +183,26 @@ class VllmEngine(BaseEngine):
             cmd += ["--seed", str(params["seed"])]
 
         return cmd
+
+    def _read_max_position(self, model_path: str) -> Optional[int]:
+        """读取模型目录 config.json 的 max_position_embeddings(或 model_max_length), 用于max_model_len上限校验(v0.6)
+        目录型模型: <dir>/config.json; 找不到/解析失败返回 None。"""
+        try:
+            import json as _json
+            # 目录型
+            cfg = os.path.join(model_path, "config.json")
+            if not os.path.isfile(cfg):
+                d = os.path.dirname(model_path)
+                cfg = os.path.join(d, "config.json")
+            if not os.path.isfile(cfg):
+                return None
+            with open(cfg, encoding="utf-8") as f:
+                data = _json.load(f)
+            v = data.get("max_position_embeddings") or data.get("model_max_length")
+            return int(v) if v else None
+        except Exception as e:
+            logger.debug(f"读模型 config.json 失败: {e}")
+            return None
 
     def _resolve_python(self, inst: ModelInstance) -> str:
         """根据 engine_version 解析 vLLM venv 的 python 解释器路径
