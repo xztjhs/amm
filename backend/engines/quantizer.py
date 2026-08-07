@@ -129,8 +129,17 @@ class QuantizerBridge:
         out_name = out_name or (Path(src_path).stem + f"-{qtype}")
         if not out_name.lower().endswith(".gguf"):
             out_name += ".gguf"
-        out_dir = Path(src_path).parent / "gguf-converted"
-        out_dir.mkdir(parents=True, exist_ok=True)
+        # 输出目录：优先 out_dir 请求参数(相对 /models 或绝对)，默认源同目录/gguf-converted
+        req_out = (body.get("out_dir") or "").strip()
+        if req_out:
+            op = Path(req_out)
+            if not op.is_absolute():
+                op = Path(self.models_dir) / req_out
+            op.mkdir(parents=True, exist_ok=True)
+            out_dir = op
+        else:
+            out_dir = Path(src_path).parent / "gguf-converted"
+            out_dir.mkdir(parents=True, exist_ok=True)
         out_path = str(out_dir / out_name)
 
         task_id = f"q_{int(time.time())}"

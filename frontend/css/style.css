@@ -992,3 +992,33 @@ body {
 @media (max-width: 720px) {
     .dashboard-models { grid-template-columns: 1fr; }
 }
+
+/* ============ v0.5: Dashboard GPU 运行程序 ============ */
+.dash-gpu-procs { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
+.gpu-procs-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+.gpu-proc-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px;
+    padding: 4px 8px;
+    background: var(--bg-input);
+    border-radius: 4px;
+    margin-bottom: 3px;
+    overflow: hidden;
+}
+.gpu-proc-pid { color: var(--accent); font-family: monospace; flex-shrink: 0; }
+.gpu-proc-name { color: var(--text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+.gpu-proc-mem { color: var(--text-muted); flex-shrink: 0; }
+.gpu-proc-empty { font-size: 11px; color: var(--text-muted); padding: 4px 8px; }
+
+/* ============ v0.5: 刷新间隔选择 ============ */
+.refresh-select {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 3px 6px;
+    margin-right: 6px;
+    cursor: pointer;
+}
+.refresh-select:hover { border-color: var(--border-hover); }

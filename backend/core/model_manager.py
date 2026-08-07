@@ -399,6 +399,7 @@ class ModelManager:
         try:
             # nvidia-smi 查询更多字段（风扇、各利用率、时钟、功耗）
             smi_extra = self._nvidia_smi_query()
+            compute_apps = self._nvidia_smi_compute_apps() if len(smi_extra) > 0 else {}
             for gpu in GPUtil.getGPUs():
                 ext = smi_extra.get(gpu.id, {})
                 gpus.append({
@@ -421,10 +422,62 @@ class ModelManager:
                     "clocks_mem": ext.get("clocks_mem", None),
                     "pcie": ext.get("pcie_gen", None),
                     "gpu_uuid": ext.get("gpu_uuid", None),
+                    # 当前在此 GPU 上运行的进程(完整命令) (v0.5)
+                    "running_processes": compute_apps.get(gpu.id, []),
                 })
         except Exception as e:
             logger.warning(f"获取 GPU 信息失败: {e}")
         return gpus
+
+    def _nvidia_smi_compute_apps(self) -> dict:
+        """调用 nvidia-smi --query-compute-apps 获取各 GPU 上运行的进程(pid+完整命令+显存)。
+        返回: {gpu_index: [{pid, process_name, used_memory_mb, command}]}，失败返回空 dict。"""
+        import subprocess as _sp
+        result = {}
+        try:
+            # 先用 gpu_bus_id 拿到 gpu_id -> uuid 映射（注意 -g 只对 compute-apps 有效）
+            out = _sp.check_output(
+                ["nvidia-smi", "--query-compute-apps=gpu_uuid,pid,used_gpu_memory,process_name",
+                 "--format=csv,noheader,nounits"],
+                stderr=_sp.DEVNULL, timeout=5, text=True,
+            )
+            # gpu_uuid -> index 映射（用于对应到 gpus）
+            uuid_to_idx = {}
+            q = _sp.check_output(
+                ["nvidia-smi", "--query-gpu=index,uuid", "--format=csv,noheader,nounits"],
+                stderr=_sp.DEVNULL, timeout=5, text=True,
+            )
+            for line in q.strip().splitlines():
+                parts = [p.strip() for p in line.split(",")]
+                if len(parts) >= 2:
+                    try:
+                        uuid_to_idx[parts[1]] = int(parts[0])
+                    except ValueError:
+                        pass
+            for line in out.strip().splitlines():
+                parts = [p.strip() for p in line.split(",")]
+                if len(parts) < 4:
+                    continue
+                gpu_uuid, pid, mem, name = parts[0], parts[1], parts[2], parts[3]
+                gid = uuid_to_idx.get(gpu_uuid)
+                if gid is None:
+                    continue
+                # 进程完整命令行
+                cmdline = ""
+                try:
+                    import psutil
+                    cmdline = " ".join(psutil.Process(int(pid)).cmdline())
+                except Exception:
+                    cmdline = name
+                result.setdefault(gid, []).append({
+                    "pid": pid,
+                    "name": name,
+                    "gpu_memory_mb": mem,
+                    "command": cmdline or name,
+                })
+        except Exception as e:
+            logger.debug(f"compute-apps 查询失败(降级): {e}")
+        return result
 
     def _nvidia_smi_query(self) -> dict:
         """调用 nvidia-smi 获取 GPU 序号 -> 字段 映射。失败返回空 dict。"""

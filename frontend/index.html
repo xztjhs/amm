@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMM - AI Models Manage</title>
-    <link rel="stylesheet" href="css/style.css?v=0.4">
+    <link rel="stylesheet" href="css/style.css?v=0.5">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b82f6'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='sans'>AI</text></svg>">
 </head>
 <body>
@@ -42,6 +42,18 @@
             </a>
         </nav>
         <div class="topbar-status">
+            <select id="refreshInterval" class="refresh-select" title="页面刷新间隔" aria-label="刷新间隔">
+                <option value="100">0.1s</option>
+                <option value="250">0.25s</option>
+                <option value="500" selected>0.5s</option>
+                <option value="1000">1s</option>
+                <option value="2000">2s</option>
+                <option value="5000">5s</option>
+                <option value="10000">10s</option>
+                <option value="30000">30s</option>
+                <option value="60000">1min</option>
+                <option value="300000">5min</option>
+            </select>
             <button id="themeToggle" class="theme-toggle" title="切换浅色/深色主题" aria-label="Theme toggle">🌙</button>
             <span id="serverStatus" class="status-dot offline"></span>
             <span id="serverStatusText">Offline</span>
@@ -294,9 +306,10 @@ AI 用于图像识别与自然语言处理
                     <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
                         用 llama-quantize 把 GGUF 转换为不同精度（fp16/bf16/fp8/q4_k_m 等）。
                     </p>
-                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;align-items:end;margin-bottom:8px;">
-                        <div><label style="font-size:11px;color:var(--text-muted)">源 GGUF 文件(相对 /models)</label>
-                            <input id="quSrc" class="form-input" placeholder="如 Qwen/xxx/Qwen.gguf"></div>
+                    <div style="display:grid;grid-template-columns:2fr auto 1fr;gap:8px;align-items:end;margin-bottom:8px;">
+                        <div><label style="font-size:11px;color:var(--text-muted)">源 GGUF 文件</label>
+                            <div style="display:flex;gap:6px;"><input id="quSrc" class="form-input" placeholder="如 Qwen/xxx/Qwen.gguf" readonly>
+                            <button class="btn btn-sm" type="button" onclick="openQuantSrcBrowser()">📂 浏览</button></div></div>
                         <div><label style="font-size:11px;color:var(--text-muted)">精度类型</label>
                             <select id="quType" class="form-select">
                                 <option value="q4_k_m">q4_k_m (MoE推荐)</option>
@@ -309,6 +322,10 @@ AI 用于图像识别与自然语言处理
                                 <option value="q4_0">q4_0</option>
                                 <option value="iq4_xs">iq4_xs</option>
                             </select></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">输出文件夹 (默认源同目录)</label>
+                            <div style="display:flex;gap:6px;"><input id="quOut" class="form-input" placeholder="/models/...">
+                            <button class="btn btn-sm" type="button" onclick="openQuantizeOutBrowser()">📂</button></div></div>
+                    </div>
                     </div>
                     <div style="display:flex;gap:8px;margin-bottom:10px;">
                         <button class="btn btn-primary btn-sm" onclick="window.startQuantize()">⚗️ 开始转换</button>
@@ -342,6 +359,6 @@ AI 用于图像识别与自然语言处理
         <span id="lastUpdate">Last update: --</span>
     </footer>
 
-    <script src="js/app.js?v=0.4"></script>
+    <script src="js/app.js?v=0.5"></script>
 </body>
 </html>

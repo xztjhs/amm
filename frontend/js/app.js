@@ -35,6 +35,7 @@
         setupNavigation();
         setupClock();
         setupThemeToggle();
+        setupRefreshInterval();
         setupRefreshLogsBtn();
         await loadConfig();
         await loadEngines();
@@ -167,9 +168,36 @@
         if (el) el.textContent = 'Last update: ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
     }
 
+    // ---- 动态刷新间隔 (v0.5) ----
+    function currentRefreshMs() {
+        const el = document.getElementById('refreshInterval');
+        let v = el ? parseInt(el.value) : NaN;
+        if (isNaN(v)) return REFRESH_INTERVAL;
+        return Math.max(100, Math.min(300000, v)); // 100ms ~ 5min
+    }
     function startAutoRefresh() {
         if (refreshTimer) clearInterval(refreshTimer);
-        refreshTimer = setInterval(refreshAll, REFRESH_INTERVAL);
+        refreshTimer = setInterval(refreshAll, currentRefreshMs());
+    }
+    function setupRefreshInterval() {
+        const sel = document.getElementById('refreshInterval');
+        if (!sel) return;
+        const saved = localStorage.getItem('amm-refresh-ms');
+        if (saved && Array.from(sel.options).some(o => o.value === saved)) sel.value = saved;
+        else sel.value = '500';
+        sel.addEventListener('change', () => {
+            localStorage.setItem('amm-refresh-ms', sel.value);
+            if (refreshTimer) {
+                clearInterval(refreshTimer);
+                refreshTimer = setInterval(refreshAll, currentRefreshMs());
+            }
+            toast('刷新间隔已设为 ' + labelMs(currentRefreshMs()), 'success');
+        });
+    }
+    function labelMs(ms) {
+        if (ms < 1000) return ms + 'ms';
+        if (ms < 60000) return (ms/1000) + 's';
+        return Math.round(ms/60000) + 'min';
     }
 
     // ---- Dashboard ----
@@ -202,8 +230,14 @@
                     <div class="gpu-metric"><span class="gpu-metric-label">显存时钟</span><span class="gpu-metric-value">${g.clocks_mem!=null?g.clocks_mem+'MHz':'--'}</span></div>
                     <div class="gpu-metric"><span class="gpu-metric-label">PCIe</span><span class="gpu-metric-value">Gen${g.pcie||'--'}</span></div>
                 </div>
+                <div class="dash-gpu-procs">
+                    <div class="gpu-procs-title">🖥️ 正在运行的程序 (${(g.running_processes||[]).length})</div>
+                    ${(g.running_processes||[]).length ? g.running_processes.map(p=>`<div class="gpu-proc-item" title="${escapeHtml(p.command||p.name)}"><span class="gpu-proc-pid">PID ${escapeHtml(p.pid)}</span><span class="gpu-proc-name">${escapeHtml(short(p.command||p.name))}</span><span class="gpu-proc-mem">${p.gpu_memory_mb!=null?escapeHtml(p.gpu_memory_mb)+' MB':''}</span></div>`).join('') : '<div class="gpu-proc-empty">无运行程序</div>'}
+                </div>
             </div>`).join('');
     }
+
+    function short(a, n) { n = n||70; return a.length>n ? a.slice(0,n)+'…' : a; }
 
     function fmtPct(v) { return v==null ? '--' : (v+'%'); }
 
@@ -1355,12 +1389,79 @@
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     // ---- GGUF Quantize (v0.4) ----
+    // ---- GGUF Quantize (v0.4/v0.5) ----
+    let qState = { mode: 'src', curDir: '' };
+
+    function qParent(relDir) {
+        const p = relDir.split('/').filter(Boolean); p.pop(); return p.join('/');
+    }
+
+    function openQuantizeSrcBrowser() {
+        qState = { mode: 'src', curDir: '' };
+        const m = document.getElementById('fileBrowserModal');
+        m.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 选择源 GGUF 文件';
+        qLoadDir('');
+    }
+    function openQuantizeOutBrowser() {
+        qState = { mode: 'out', curDir: '' };
+        const m = document.getElementById('fileBrowserModal');
+        m.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 选择输出文件夹';
+        qLoadDir('');
+    }
+    async function qLoadDir(relDir) {
+        const body = document.getElementById('fileBrowserBody');
+        if (!body) return;
+        body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">加载中...</div>';
+        const data = await apiGet('/fs/list?path=' + encodeURIComponent(relDir));
+        if (!data) { body.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">加载失败</div>'; return; }
+        qState.curDir = relDir;
+        let html = '';
+        html += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+            <span style="font-size:12px;color:var(--text-muted)">路径:</span>
+            <input class="form-input fb-path-input" value="${escapeHtml(data.current||'')}" readonly style="flex:1;font-family:monospace">
+            ${relDir ? '<button class="btn btn-sm" onclick="qUp()">↑ 上级</button>' : ''}
+            ${qState.mode==='out' ? `<button class="btn btn-sm btn-primary" onclick="qPickDir('${escapeHtml(relDir)}')">✔ 选此目录</button>` : ''}
+        </div>`;
+        html += '<div style="font-size:11px;color:var(--text-muted);margin:4px 0">目录:</div>';
+        if (relDir) html += `<div class="fb-item fb-dir" onclick="qLoadDir('${escapeAttr(qParent(relDir))}')">📁 .. (上级)</div>`;
+        (data.dirs||[]).forEach(d => { html += `<div class="fb-item fb-dir" onclick="qLoadDir('${escapeAttr(d.path)}')">📁 ${escapeHtml(d.name)}</div>`; });
+        if (qState.mode==='src') {
+            html += '<div style="font-size:11px;color:var(--text-muted);margin:6px 0">GGUF 文件:</div>';
+            const ggs = (data.files||[]).filter(f => /^\\.gguf$/i.test(f.ext));
+            ggs.forEach(f => { html += `<div class="fb-item fb-file" onclick="qPickFile('${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)}</div>`; });
+            if (!ggs.length) html += '<div style="font-size:12px;color:var(--text-muted);padding:4px 0">(当前目录无 GGUF 文件)</div>';
+        } else {
+            html += '<div style="font-size:11px;color:var(--text-muted);margin:6px 0">可进入目录后点"✔ 选此目录"作为输出目录</div>';
+        }
+        body.innerHTML = html;
+    }
+    function qUp() { const p = qState.curDir.split('/').filter(Boolean); p.pop(); qLoadDir(p.join('/')); }
+    async function qPickFile(path) {
+        document.getElementById('quSrc').value = path;
+        // 输出目录默认取源所在目录
+        const dir = path.split('/').slice(0,-1).join('/');
+        document.getElementById('quOut').value = dir || '/';
+        closeFileBrowser();
+        toast('已选源: ' + path + '；输出目录默认同目录', 'info');
+    }
+    async function qPickDir() {
+        document.getElementById('quOut').value = qState.curDir || '/';
+        closeFileBrowser();
+        toast('输出目录: /models/' + (qState.curDir || '') , 'info');
+    }
+    window.openQuantizeSrcBrowser = openQuantizeSrcBrowser;
+    window.openQuantizeOutBrowser = openQuantizeOutBrowser;
+    function closeQModal() { closeFileBrowser(); }
+
     async function startQuantize() {
         const src = document.getElementById('quSrc')?.value.trim();
-        if (!src) return toast('请输入源 GGUF 路径', 'error');
+        if (!src) return toast('请选择源 GGUF 文件', 'error');
         const qtype = document.getElementById('quType')?.value || 'q4_k_m';
+        const outDir = document.getElementById('quOut')?.value.trim() || undefined;
         toast('⚗️ 开始量化 ' + src + ' -> ' + qtype + ' ...');
-        const r = await apiPost('/quantize', { source: src, quant_type: qtype });
+        const r = await apiPost('/quantize', { source: src, quant_type: qtype, out_dir: outDir });
         if (r && r.ok) {
             toast('✅ 已提交转换任务 ' + r.task_id, 'success');
             setTimeout(refreshQuantize, 2000);
