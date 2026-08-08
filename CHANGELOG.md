@@ -1,5 +1,27 @@
 # AMM Changelog
 
+## v0.7.1 — 2026-08-08（容器 supervisor 化 + diffusers 推理独立启停）
+
+### 🐳 1. server.py 不再是 PID1 —— kill 容器不死
+- **根因**：`docker-entrypoint.sh` 用 `exec python server.py`，server 成容器 PID1 → `kill server` 直接杀容器。
+- **修复**：entrypoint 改 **supervisor 模式**（PID1 = 监控 wrapper）：
+  - `trap` 转发 TERM/INT/HUP，优雅退出；
+  - server 作为后台子进程，`wait` 检测退出 → 自动重启（`AMM_RESTART_DELAY` 可调）；
+  - 容器内 `kill -TERM <pid>` 只重启 server，容器不退出。
+
+### 🎨 2. t2i/t2v/i2v 推理与容器自启动解耦（解决 GPU 显存常驻）
+- **根因**：diffusers pipeline 缓存进 server 进程后常驻 GPU，无独立启停；停推理=杀 server=现 死容器。
+- **修复**：新增独立启停机制（伴装 supervisor 之后）：
+  - `POST /api/bridge/diffusers/preload`：手动预加载模型到 GPU（warm-up，避免冷启动延迟）；
+  - `POST /api/bridge/diffusers/unload`：卸载指定/全部 pipeline + `gc` + `torch.cuda.empty_cache()` 释放显存；
+  - `deploy/diffusers_ctl.sh <t2i|t2v|i2v|all> <start|stop|restart|status>`：独立启停脚本；
+  - `/status` 新增 `pipeline_cache` + `gpu_allocated_mb` 诊断字段。
+
+### 涉及文件
+- `deploy/docker-entrypoint.sh`：supervisor 化
+- `deploy/diffusers_ctl.sh`：新增，diffusers 推理独立启停脚本
+- `backend/api/diffusers_bridge.py`：`preload` / `unload` 接口 + status 增强
+
 ## v0.7 — 2026-08-08（Diffusers bug 修复 + 任务实时计时/落盘/下载）
 
 针对 AMM 反馈 4 项问题修复：

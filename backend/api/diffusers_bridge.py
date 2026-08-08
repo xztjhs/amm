@@ -542,7 +542,91 @@ class DiffusersBridgeHandler:
 
     async def status(self, req):
         """活动任务状态 (供 Dashboard / 前端轮询, 实时耗时)"""
-        return self._json({"tasks": list_active_tasks()})
+        # 附带已加载的 pipeline 缓存情况 (显存占用诊断)
+        loaded = [{"key": k, "loaded": True} for k in _pipeline_cache.keys()]
+        total_mb = 0
+        try:
+            import torch
+            if torch.cuda.is_available():
+                total_mb = round(torch.cuda.memory_allocated() / 1024 ** 2, 1)
+        except Exception:
+            pass
+        return self._json({"tasks": list_active_tasks(), "pipeline_cache": loaded, "gpu_allocated_mb": total_mb})
+
+    async def unload(self, req):
+        """卸载指定/所有 diffusers pipeline, 释放 GPU 显存 (推理服务 stop)
+
+        请求体: { model: "t2i" | "t2v" | "i2v" | "all" (默认 all) }
+        对进行中的推理任务无影响(已完成/失败的任务已不在 pipeline 缓存依赖内)。
+        """
+        try:
+            data = await req.json()
+        except Exception:
+            data = {}
+        model = str(data.get("model", "all") or "all").lower().strip()
+
+        before = len(_pipeline_cache)
+        removed = []
+        if model == "all":
+            removed = list(_pipeline_cache.keys())
+            _pipeline_cache.clear()
+        else:
+            # 按 model 前缀/名匹配 (cache_key 形如 video:xxx:quant=..)
+            for k in list(_pipeline_cache.keys()):
+                if model in k or k.startswith(model + ":"):
+                    removed.append(k)
+                    del _pipeline_cache[k]
+
+        # 释放 GPU 显存
+        freed_mb = 0
+        try:
+            import gc, torch
+            gc.collect()
+            if torch.cuda.is_available():
+                freed_mb = round(torch.cuda.memory_allocated() / 1024 ** 2, 1)
+                torch.cuda.empty_cache()
+                freed_mb = round(freed_mb - torch.cuda.memory_allocated() / 1024 ** 2, 1)
+        except Exception as e:
+            logger.warning(f"unload 释放显存异常: {e}")
+
+        _model_log(model, f"[unload] 卸载 {len(removed)} 个 pipeline, 释放显存约 {freed_mb} MB")
+        logger.info(f"diffusers unload model={model}: {len(removed)} 个 pipeline 卸载 (cache {before}->{len(_pipeline_cache)}), gpu freed ~{freed_mb} MB")
+        return self._json({
+            "ok": True,
+            "model": model,
+            "removed": removed,
+            "before": before,
+            "after": len(_pipeline_cache),
+            "gpu_freed_mb": freed_mb,
+        })
+
+    async def preload(self, req):
+        """预加载指定 diffusers 模型到 GPU (v0.7.1: 手动 warm-up, 不随容器自启)
+
+        请求体: { model: "t2i" | "t2v" | "i2v" }
+        用于提前加载模型, 避免首次请求的冷启动延迟。
+        """
+        try:
+            data = await req.json()
+        except Exception:
+            data = {}
+        model = str(data.get("model", "") or "").lower().strip()
+        if model not in ("t2i", "t2v", "i2v"):
+            return self._json({"error": "model 必须是 t2i/t2v/i2v"}, 400)
+
+        try:
+            t0 = time.time()
+            model_cfg = self.manager.config.get(f"{model}_model")
+            if not model_cfg:
+                return self._json({"error": f"{model} 模型未配置"}, 404)
+            pipe = await _load_pipeline(model_cfg)
+            el = round(time.time() - t0, 1)
+            _model_log(model, f"[preload] 预加载完成, 耗时 {el}s")
+            return self._json({"ok": True, "model": model, "loaded_in_s": el})
+        except Exception as e:
+            logger.exception(f"preload {model} failed")
+            _model_log(model, f"[model] 预加载失败: {e}")
+            return self._json({"error": str(e)}, 500)
 
     async def download(self, req):
         """下载保存的产物文件 (PNG / MP4), 限定在 VERIFICATION_DIR 内防目录穿越"""
@@ -836,6 +920,8 @@ def setup_routes(app: web.Application, manager):
     app.router.add_get("/api/bridge/diffusers/health", h.health)
     app.router.add_get("/api/bridge/diffusers/status", h.status)
     app.router.add_get("/api/bridge/diffusers/download", h.download)
+    app.router.add_post("/api/bridge/diffusers/unload", h.unload)
+    app.router.add_post("/api/bridge/diffusers/preload", h.preload)
     app.router.add_post("/api/bridge/diffusers/t2i", h.t2i_generate)
     app.router.add_post("/api/bridge/diffusers/t2v", h.t2v_generate)
     app.router.add_post("/api/bridge/diffusers/i2v", h.i2v_generate)
