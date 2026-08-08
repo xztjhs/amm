@@ -157,7 +157,7 @@ class QuantizerBridge:
             t = self.tasks.get(task_id)
             return self._json(t.to_dict() if t else {"error": "任务不存在"}, 200 if t else 404)
         tasks = sorted([t.to_dict() for t in self.tasks.values()],
-                       key=lambda x: x["created"], reverse=True)
+                       key=lambda x: x.get("created_at", 0), reverse=True)
         return self._json({"tasks": tasks[:20], "count": len(tasks)})
 
     # ------------------------------------------------------------
@@ -201,6 +201,14 @@ class QuantizerBridge:
     # ------------------------------------------------------------
     def _resolve_dir(self, path: str) -> Optional[str]:
         """解析目录(相对models_dir或绝对), 用于选 HF 模型目录"""
+        p = Path(path)
+        if p.is_absolute():
+            return str(p) if p.exists() else None
+        cand = Path(self.models_dir) / path
+        return str(cand) if cand.exists() else None
+
+    def _resolve(self, path: str) -> Optional[str]:
+        """解析文件路径(相对 /models 或绝对路径), 返回存在路径或 None"""
         p = Path(path)
         if p.is_absolute():
             return str(p) if p.exists() else None
@@ -265,7 +273,7 @@ class QuantizerBridge:
             cmd = [py, script, task.src, "--outfile", task.out_path, "--outtype", out_type]
             logger.info(f"HF转换命令: {' '.join(cmd)}")
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=7200, cwd="/amm/backend/engines_installed/llama_cpp/b4727/scripts",
-                               env={**os.environ, "NO_LOCAL_GGUF": "1", "PYTHONPATH": "/amm/backend/engines_installed/llama_cpp/b4727/scripts"})
+                               env={**os.environ, "PYTHONPATH": "/amm/backend/engines_installed/llama_cpp/b4727/scripts"})
             if r.returncode != 0:
                 task.status = "failed"; task.error = (r.stderr or r.stdout or "")[-600:]; task.finished = time.time(); return
             # 若需量化

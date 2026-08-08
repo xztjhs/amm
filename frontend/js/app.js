@@ -1587,7 +1587,7 @@
         (data.dirs||[]).forEach(d => { html += `<div class="fb-item fb-dir" onclick="qLoadDir('${escapeAttr(d.path)}')">📁 ${escapeHtml(d.name)}</div>`; });
         if (qState.mode==='src') {
             html += '<div style="font-size:11px;color:var(--text-muted);margin:6px 0">GGUF 文件:</div>';
-            const ggs = (data.files||[]).filter(f => /^\\.gguf$/i.test(f.ext));
+            const ggs = (data.files||[]).filter(f => /^\.gguf$/i.test(f.ext));
             ggs.forEach(f => { html += `<div class="fb-item fb-file" onclick="qPickFile('${escapeAttr(f.path)}')">🧩 ${escapeHtml(f.name)}</div>`; });
             if (!ggs.length) html += '<div style="font-size:12px;color:var(--text-muted);padding:4px 0">(当前目录无 GGUF 文件)</div>';
         } else if (qState.mode==='vsrc') {
@@ -1684,6 +1684,14 @@
     window.miniVgRefresh = refreshVgTask;
     window.openQuantizeSrcBrowser = openQuantizeSrcBrowser;
     window.openQuantizeOutBrowser = openQuantizeOutBrowser;
+    // GGUF 量化 / vLLM→GGUF 文件浏览器内部回调（HTML onclick 直接引用，必须暴露到 window）
+    window.qLoadDir = qLoadDir;
+    window.qPickFile = qPickFile;
+    window.qPickDir = qPickDir;
+    window.qPickDirTarget = qPickDirTarget;
+    window.qUp = qUp;
+    window.qNewDir = qNewDir;
+    window.vgPickSrc = vgPickSrc;
     function closeQModal() { closeFileBrowser(); }
 
     async function startQuantize() {
