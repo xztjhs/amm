@@ -6,6 +6,11 @@
 [![Python](https://img.shields.io/badge/python-3.11-blue)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+## 项目信息
+
+- **负责人（撞强）**：xt@pcd.name ｜ 微信：13808230006
+- **MaaS 服务供应商**：北京积算（icompify）— <https://www.icompify.com/>
+
 ## 特性
 
 - **混合推理引擎**: 支持 llama.cpp (GGUF) / vLLM / Diffusers 三种后端，可自由切换
