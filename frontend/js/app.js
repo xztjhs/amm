@@ -502,7 +502,7 @@
         } else {
             input = `<input type="${param.type === 'number' ? 'number' : 'text'}" class="form-input" id="param-${modelId}-${param.name}" value="${val}" ${param.min != null ? 'min="' + param.min + '"' : ''} ${param.max != null ? 'max="' + param.max + '"' : ''}>`;
         }
-        return `<div class="param-item"><label>${param.label}${param.description ? '<span class="param-desc">' + param.description + '</span>' : ''}</label>${input}</div>`;
+        return `<div class="param-item"><label>${param.label}${param.label_en && param.label_en !== param.label ? ' <span style="opacity:.6">(' + param.label_en + ')</span>' : ''}${param.description ? '<span class="param-desc">' + param.description + '</span>' : ''}</label>${input}</div>`;
     }
 
     function toggleDetailBody(id) {

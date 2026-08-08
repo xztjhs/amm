@@ -1,878 +1,870 @@
+# AMM Model Configuration
+# ==============================================
+# 混合推理引擎架构:
+#   引擎: vllm / llama_cpp / diffusers
+#   每类模型可单独选择引擎和版本
+# ==============================================
+
 server:
-  host: 0.0.0.0
+  host: "0.0.0.0"
+  # 统一对外端口：容器内 80，宿主机映射 60006
+  #   访问 http://host:60006 直接打开 WebUI；
+  #   访问 http://host:60006/v1/* 或 /api/* 为模型调用（OpenAI 兼容 /v1/*）
   port: 80
+  # 兼容保留字段（旧版双端口 web_port/api_port 已废弃，统一由 port=80 承载）
   web_port: 80
   api_port: 80
-  models_dir: /models
-  logs_dir: /amm/logs
+  models_dir: "/models"
+  logs_dir: "/amm/logs"
+
+# ============================================================
+# 1. Chat / LLM / VLM Model
+# ============================================================
 chat_model:
-  id: chat
-  name: Chat / LLM / VLM
-  description: 通用对话、文本生成、视觉语言模型
-  category: chat
+  id: "chat"
+  name: "Chat / LLM / VLM"
+  description: "通用对话、文本生成、视觉语言模型"
+  category: "chat"
   port: 18081
-  engine_type: llama_cpp
-  engine_version: ''
-  available_engines:
-  - llama_cpp
-  - vllm
+  engine_type: "llama_cpp"
+  engine_version: ""   # 空 = 使用默认版本
+  available_engines: ["llama_cpp", "vllm"]
   available_models:
-  - name: Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M
-    file: HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf
-    engine: llama_cpp
-    size_gb: 20.5
-    type: Q4_K_M
+    - name: "Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M"
+      file: "HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 20.5
+      type: "Q4_K_M"
   parameters:
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 32768
-    min: 512
-    max: 131072
-    engine: llama_cpp
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-    engine: llama_cpp
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 8
-    min: 1
-    max: 256
-    engine: llama_cpp
-  - name: batch_size
-    label: 批处理大小 (batch)
-    type: number
-    default: 2048
-    min: 128
-    max: 8192
-    engine: llama_cpp
-  - name: ubatch_size
-    label: 微批大小 (ubatch)
-    type: number
-    default: 512
-    min: 64
-    max: 4096
-    engine: llama_cpp
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: mlock
-    label: 内存锁定 (mlock)
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: mmap
-    label: 内存映射 (mmap)
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: cache_type_k
-    label: K 缓存类型
-    type: select
-    default: auto
-    options:
-    - auto
-    - f16
-    - q8_0
-    - q4_0
-    - q4_1
-    engine: llama_cpp
-  - name: cache_type_v
-    label: V 缓存类型
-    type: select
-    default: auto
-    options:
-    - auto
-    - f16
-    - q8_0
-    - q4_0
-    - q4_1
-    engine: llama_cpp
-  - name: parallel
-    label: 并发序列数 (parallel)
-    type: number
-    default: 1
-    min: 1
-    max: 64
-    engine: llama_cpp
-  - name: temp
-    label: 温度
-    type: float
-    default: 0.7
-    min: 0.0
-    max: 2.0
-    step: 0.05
-    engine: llama_cpp
-  - name: top_p
-    label: Top-P 采样
-    type: float
-    default: 0.9
-    min: 0.0
-    max: 1.0
-    step: 0.05
-    engine: llama_cpp
-  - name: top_k
-    label: Top-K 采样
-    type: number
-    default: 40
-    min: 1
-    max: 200
-    engine: llama_cpp
-  - name: repeat_penalty
-    label: 重复惩罚
-    type: float
-    default: 1.1
-    min: 0.0
-    max: 2.0
-    step: 0.05
-    engine: llama_cpp
-  - name: repeat_last_n
-    label: 重复惩罚窗口
-    type: number
-    default: 64
-    min: 0
-    max: 4096
-    engine: llama_cpp
-  - name: min_p
-    label: Min-P 采样
-    type: float
-    default: 0.0
-    min: 0.0
-    max: 1.0
-    step: 0.05
-    engine: llama_cpp
-  - name: mirostat
-    label: Mirostat 模式
-    type: select
-    default: '0'
-    options:
-    - '0'
-    - '1'
-    - '2'
-    engine: llama_cpp
-  - name: mirostat_lr
-    label: Mirostat 学习率
-    type: float
-    default: 0.1
-    min: 0.01
-    max: 1.0
-    step: 0.01
-    engine: llama_cpp
-  - name: mirostat_ent
-    label: Mirostat 目标困惑度
-    type: float
-    default: 5.0
-    min: 1.0
-    max: 10.0
-    step: 0.5
-    engine: llama_cpp
-  - name: frequency_penalty
-    label: 频率惩罚
-    type: float
-    default: 0.0
-    min: 0.0
-    max: 2.0
-    step: 0.1
-    engine: llama_cpp
-  - name: presence_penalty
-    label: 存在惩罚
-    type: float
-    default: 0.0
-    min: 0.0
-    max: 2.0
-    step: 0.1
-    engine: llama_cpp
-  - name: rope_freq_scale
-    label: RoPE 频率缩放
-    type: float
-    default: 1.0
-    min: 0.1
-    max: 10.0
-    step: 0.05
-    engine: llama_cpp
-  - name: rope_freq_base
-    label: RoPE 频率基数
-    type: number
-    default: 0
-    min: 0
-    max: 2000000
-    engine: llama_cpp
-  - name: max_tokens
-    label: 最大生成 Token
-    type: number
-    default: 4096
-    min: 1
-    max: 32768
-    engine: llama_cpp
-  - name: seed
-    label: 随机种子 (0=随机)
-    type: number
-    default: 0
-    min: 0
-    max: 4294967295
-    engine: llama_cpp
-  - name: reasoning_budget_enabled
-    label: 限制思考 Token (--reasoning-budget)
-    description: 开启后给 Qwen 等思考模型设定思考过程 token 上限，避免思考把回复预算占满导致空回复。
-    type: boolean
-    default: false
-    engine: llama_cpp
-  - name: reasoning_budget
-    label: 思考预算值 (token)
-    type: number
-    default: 8192
-    min: 0
-    max: 131072
-    engine: llama_cpp
-  - name: tensor_parallel_size
-    label: GPU 并行数 (TP)
-    type: number
-    default: 1
-    min: 1
-    max: 8
-    engine: vllm
-  - name: pipeline_parallel_size
-    label: 流水线并行数 (PP)
-    type: number
-    default: 1
-    min: 1
-    max: 8
-    engine: vllm
-  - name: data_parallel_size
-    label: 数据并行数 (DP)
-    type: number
-    default: 1
-    min: 1
-    max: 8
-    engine: vllm
-  - name: gpu_memory_utilization
-    label: GPU 显存利用率
-    type: float
-    default: 0.9
-    min: 0.1
-    max: 1.0
-    step: 0.05
-    engine: vllm
-  - name: max_model_len
-    label: 最大模型长度
-    type: number
-    default: 32768
-    min: 512
-    max: 131072
-    engine: vllm
-  - name: max_num_seqs
-    label: 最大并发序列数
-    type: number
-    default: 256
-    min: 1
-    max: 4096
-    engine: vllm
-  - name: max_num_batched_tokens
-    label: 批处理最大 Token 数
-    type: number
-    default: 32768
-    min: 256
-    max: 262144
-    engine: vllm
-  - name: dtype
-    label: 推理精度
-    type: select
-    default: auto
-    options:
-    - auto
-    - float16
-    - bfloat16
-    - float32
-    engine: vllm
-  - name: quantization
-    label: 量化方式
-    type: select
-    default: auto
-    options:
-    - auto
-    - awq
-    - gptq
-    - fp8
-    - bitsandbytes
-    engine: vllm
-  - name: kv_cache_dtype
-    label: KV 缓存精度
-    type: select
-    default: auto
-    options:
-    - auto
-    - fp8
-    - fp8_e5m2
-    - fp8_e4m3
-    engine: vllm
-  - name: enable_prefix_caching
-    label: 前缀缓存 (Prefix Caching)
-    type: boolean
-    default: false
-    engine: vllm
-  - name: enable_chunked_prefill
-    label: Chunked Prefill
-    type: boolean
-    default: false
-    engine: vllm
-  - name: enforce_eager
-    label: 禁用 CUDA Graph (Eager)
-    type: boolean
-    default: false
-    engine: vllm
-  - name: block_size
-    label: KV Block 大小
-    type: select
-    default: auto
-    options:
-    - auto
-    - '16'
-    - '32'
-    - '64'
-    engine: vllm
-  - name: cpu_offload_gb
-    label: CPU 卸载 (GB)
-    type: number
-    default: 0
-    min: 0
-    max: 256
-    engine: vllm
-  - name: served_model_name
-    label: 对外模型名 (Served Name)
-    type: text
-    default: ''
-    engine: vllm
-  - name: trust_remote_code
-    label: Trust Remote Code
-    type: boolean
-    default: false
-    engine: vllm
-  - name: seed
-    label: 随机种子 (0=随机)
-    type: number
-    default: 0
-    min: 0
-    max: 4294967295
-    engine: vllm
+    # ================= llama.cpp =================
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 32768
+      min: 512
+      max: 131072
+      engine: "llama_cpp"
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+      engine: "llama_cpp"
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 8
+      min: 1
+      max: 256
+      engine: "llama_cpp"
+    - name: "batch_size"
+      label: "批处理大小 (batch)"
+      type: "number"
+      default: 2048
+      min: 128
+      max: 8192
+      engine: "llama_cpp"
+    - name: "ubatch_size"
+      label: "微批大小 (ubatch)"
+      type: "number"
+      default: 512
+      min: 64
+      max: 4096
+      engine: "llama_cpp"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mlock"
+      label: "内存锁定 (mlock)"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mmap"
+      label: "内存映射 (mmap)"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "cache_type_k"
+      label: "K 缓存类型"
+      type: "select"
+      default: "auto"
+      options: ["auto", "f16", "q8_0", "q4_0", "q4_1"]
+      engine: "llama_cpp"
+    - name: "cache_type_v"
+      label: "V 缓存类型"
+      type: "select"
+      default: "auto"
+      options: ["auto", "f16", "q8_0", "q4_0", "q4_1"]
+      engine: "llama_cpp"
+    - name: "parallel"
+      label: "并发序列数 (parallel)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 64
+      engine: "llama_cpp"
+    - name: "temp"
+      label: "温度"
+      type: "float"
+      default: 0.7
+      min: 0.0
+      max: 2.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "top_p"
+      label: "Top-P 采样"
+      type: "float"
+      default: 0.9
+      min: 0.0
+      max: 1.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "top_k"
+      label: "Top-K 采样"
+      type: "number"
+      default: 40
+      min: 1
+      max: 200
+      engine: "llama_cpp"
+    - name: "repeat_penalty"
+      label: "重复惩罚"
+      type: "float"
+      default: 1.1
+      min: 0.0
+      max: 2.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "repeat_last_n"
+      label: "重复惩罚窗口"
+      type: "number"
+      default: 64
+      min: 0
+      max: 4096
+      engine: "llama_cpp"
+    - name: "min_p"
+      label: "Min-P 采样"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 1.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "mirostat"
+      label: "Mirostat 模式"
+      type: "select"
+      default: "0"
+      options: ["0", "1", "2"]
+      engine: "llama_cpp"
+    - name: "mirostat_lr"
+      label: "Mirostat 学习率"
+      type: "float"
+      default: 0.1
+      min: 0.01
+      max: 1.0
+      step: 0.01
+      engine: "llama_cpp"
+    - name: "mirostat_ent"
+      label: "Mirostat 目标困惑度"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 10.0
+      step: 0.5
+      engine: "llama_cpp"
+    - name: "frequency_penalty"
+      label: "频率惩罚"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 2.0
+      step: 0.1
+      engine: "llama_cpp"
+    - name: "presence_penalty"
+      label: "存在惩罚"
+      type: "float"
+      default: 0.0
+      min: 0.0
+      max: 2.0
+      step: 0.1
+      engine: "llama_cpp"
+    - name: "rope_freq_scale"
+      label: "RoPE 频率缩放"
+      type: "float"
+      default: 1.0
+      min: 0.1
+      max: 10.0
+      step: 0.05
+      engine: "llama_cpp"
+    - name: "rope_freq_base"
+      label: "RoPE 频率基数"
+      type: "number"
+      default: 0
+      min: 0
+      max: 2000000
+      engine: "llama_cpp"
+    - name: "max_tokens"
+      label: "最大生成 Token"
+      type: "number"
+      default: 4096
+      min: 1
+      max: 32768
+      engine: "llama_cpp"
+    - name: "seed"
+      label: "随机种子 (0=随机)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 4294967295
+      engine: "llama_cpp"
+    - name: "reasoning_budget_enabled"
+      label: "限制思考 Token (--reasoning-budget)"
+      description: "开启后给 Qwen 等思考模型设定思考过程 token 上限，避免思考把回复预算占满导致空回复。"
+      type: "boolean"
+      default: false
+      engine: "llama_cpp"
+    - name: "reasoning_budget"
+      label: "思考预算值 (token)"
+      type: "number"
+      default: 8192
+      min: 0
+      max: 131072
+      engine: "llama_cpp"
+
+    # ================= vLLM =================
+    - name: "tensor_parallel_size"
+      label: "GPU 并行数 (TP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "pipeline_parallel_size"
+      label: "流水线并行数 (PP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "data_parallel_size"
+      label: "数据并行数 (DP)"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "gpu_memory_utilization"
+      label: "GPU 显存利用率"
+      type: "float"
+      default: 0.90
+      min: 0.1
+      max: 1.0
+      step: 0.05
+      engine: "vllm"
+    - name: "max_model_len"
+      label: "最大模型长度"
+      type: "number"
+      default: 32768
+      min: 512
+      max: 131072
+      engine: "vllm"
+    - name: "max_num_seqs"
+      label: "最大并发序列数"
+      type: "number"
+      default: 256
+      min: 1
+      max: 4096
+      engine: "vllm"
+    - name: "max_num_batched_tokens"
+      label: "批处理最大 Token 数"
+      type: "number"
+      default: 32768
+      min: 256
+      max: 262144
+      engine: "vllm"
+    - name: "dtype"
+      label: "推理精度"
+      type: "select"
+      default: "auto"
+      options: ["auto", "float16", "bfloat16", "float32"]
+      engine: "vllm"
+    - name: "quantization"
+      label: "量化方式"
+      type: "select"
+      default: "auto"
+      options: ["auto", "awq", "gptq", "fp8", "bitsandbytes"]
+      engine: "vllm"
+    - name: "kv_cache_dtype"
+      label: "KV 缓存精度"
+      type: "select"
+      default: "auto"
+      options: ["auto", "fp8", "fp8_e5m2", "fp8_e4m3"]
+      engine: "vllm"
+    - name: "enable_prefix_caching"
+      label: "前缀缓存 (Prefix Caching)"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "enable_chunked_prefill"
+      label: "Chunked Prefill"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "enforce_eager"
+      label: "禁用 CUDA Graph (Eager)"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "block_size"
+      label: "KV Block 大小"
+      type: "select"
+      default: "auto"
+      options: ["auto", "16", "32", "64"]
+      engine: "vllm"
+    - name: "cpu_offload_gb"
+      label: "CPU 卸载 (GB)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 256
+      engine: "vllm"
+    - name: "served_model_name"
+      label: "对外模型名 (Served Name)"
+      type: "text"
+      default: ""
+      engine: "vllm"
+    - name: "trust_remote_code"
+      label: "Trust Remote Code"
+      type: "boolean"
+      default: false
+      engine: "vllm"
+    - name: "seed"
+      label: "随机种子 (0=随机)"
+      type: "number"
+      default: 0
+      min: 0
+      max: 4294967295
+      engine: "vllm"
+
+
 embedding_model:
-  id: embedding
-  name: Embedding
-  description: 文本嵌入向量模型
-  category: embedding
+  id: "embedding"
+  name: "Embedding"
+  description: "文本嵌入向量模型"
+  category: "embedding"
   port: 18082
-  engine_type: llama_cpp
-  available_engines:
-  - llama_cpp
-  - vllm
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp", "vllm"]
   available_models:
-  - name: Qwen3-Embedding-8B-Q4_K_M
-    file: Qwen/Qwen3-Embedding-8B-GGUF/Qwen3-Embedding-8B-Q4_K_M.gguf
-    engine: llama_cpp
-    size_gb: 4.8
-    type: Q4_K_M
+    - name: "Qwen3-Embedding-8B-Q4_K_M"
+      file: "Qwen/Qwen3-Embedding-8B-GGUF/Qwen3-Embedding-8B-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 4.8
+      type: "Q4_K_M"
   parameters:
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 8192
-    min: 512
-    max: 32768
-    engine: llama_cpp
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-    engine: llama_cpp
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 4
-    min: 1
-    max: 128
-    engine: llama_cpp
-  - name: batch_size
-    label: 批处理大小
-    type: number
-    default: 1024
-    min: 256
-    max: 4096
-    engine: llama_cpp
-  - name: embeddings
-    label: 嵌入模式
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: mlock
-    label: 内存锁定
-    type: boolean
-    default: true
-    engine: llama_cpp
-  - name: tensor_parallel_size
-    label: GPU 并行数
-    type: number
-    default: 1
-    min: 1
-    max: 8
-    engine: vllm
-  - name: gpu_memory_utilization
-    label: GPU 显存利用率
-    type: float
-    default: 0.9
-    min: 0.1
-    max: 1.0
-    step: 0.05
-    engine: vllm
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 8192
+      min: 512
+      max: 32768
+      engine: "llama_cpp"
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+      engine: "llama_cpp"
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 128
+      engine: "llama_cpp"
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 1024
+      min: 256
+      max: 4096
+      engine: "llama_cpp"
+    - name: "embeddings"
+      label: "嵌入模式"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+      engine: "llama_cpp"
+    - name: "tensor_parallel_size"
+      label: "GPU 并行数"
+      type: "number"
+      default: 1
+      min: 1
+      max: 8
+      engine: "vllm"
+    - name: "gpu_memory_utilization"
+      label: "GPU 显存利用率"
+      type: "float"
+      default: 0.90
+      min: 0.1
+      max: 1.0
+      step: 0.05
+      engine: "vllm"
+
+# ============================================================
+# 3. ASR Model
+# ============================================================
 asr_model:
-  id: asr
-  name: ASR (语音识别)
-  description: 自动语音识别模型
-  category: asr
+  id: "asr"
+  name: "ASR (语音识别)"
+  description: "自动语音识别模型"
+  category: "asr"
   port: 18083
-  engine_type: llama_cpp
-  available_engines:
-  - llama_cpp
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
   available_models:
-  - name: Qwen3-ASR-1.7B-Q8_0
-    file: ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf
-    engine: llama_cpp
-    size_gb: 1.8
-    type: Q8_0
+    - name: "Qwen3-ASR-1.7B-Q8_0"
+      file: "ggml-org/Qwen3-ASR-1.7B-GGUF/Qwen3-ASR-1.7B-Q8_0.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.8
+      type: "Q8_0"
   parameters:
-  - name: mmproj
-    label: 音频投影 mmproj
-    type: string
-    default: ggml-org/Qwen3-ASR-1.7B-GGUF/mmproj-Qwen3-ASR-1.7B-bf16.gguf
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 4096
-    min: 512
-    max: 16384
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 4
-    min: 1
-    max: 64
-  - name: batch_size
-    label: 批处理大小
-    type: number
-    default: 512
-    min: 128
-    max: 2048
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-  - name: mlock
-    label: 内存锁定
-    type: boolean
-    default: true
+    - name: "mmproj"
+      label: "音频投影 mmproj"
+      type: "string"
+      default: "ggml-org/Qwen3-ASR-1.7B-GGUF/mmproj-Qwen3-ASR-1.7B-bf16.gguf"
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 16384
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 4. TTS Model
+# ============================================================
 tts_model:
-  id: tts
-  name: TTS (语音合成)
-  description: 多语言文本转语音模型
-  category: tts
+  id: "tts"
+  name: "TTS (语音合成)"
+  description: "多语言文本转语音模型"
+  category: "tts"
   port: 18084
-  engine_type: llama_cpp
-  available_engines:
-  - llama_cpp
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
   available_models:
-  - name: Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M
-    file: ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M.gguf
-    mmproj: ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf
-    engine: llama_cpp
-    size_gb: 1.0
-    type: Q4_K_M
+    - name: "Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M"
+      file: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M.gguf"
+      mmproj: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.0
+      type: "Q4_K_M"
   parameters:
-  - name: mmproj
-    label: 音频投影 mmproj
-    type: string
-    default: ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf
-  - name: tts_lang
-    label: 语音语言
-    type: select
-    options:
-    - zh
-    - en
-    - de
-    - it
-    - pt
-    - es
-    - ja
-    - ko
-    - fr
-    - ru
-    default: zh
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 4096
-    min: 512
-    max: 8192
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 4
-    min: 1
-    max: 64
-  - name: batch_size
-    label: 批处理大小
-    type: number
-    default: 512
-    min: 128
-    max: 2048
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-  - name: mlock
-    label: 内存锁定
-    type: boolean
-    default: true
+    - name: "mmproj"
+      label: "音频投影 mmproj"
+      type: "string"
+      default: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
+    - name: "tts_lang"
+      label: "语音语言"
+      type: "select"
+      options: ["zh", "en", "de", "it", "pt", "es", "ja", "ko", "fr", "ru"]
+      default: "zh"
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 8192
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 5. Reranker Model
+# ============================================================
 reranker_model:
-  id: reranker
-  name: Reranker (重排序)
-  description: 文档重排序模型，用于 RAG 检索增强
-  category: reranker
+  id: "reranker"
+  name: "Reranker (重排序)"
+  description: "文档重排序模型，用于 RAG 检索增强"
+  category: "reranker"
   port: 18085
-  engine_type: llama_cpp
-  available_engines:
-  - llama_cpp
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
   available_models:
-  - name: Qwen3-Reranker-8B-Q4_K_S
-    file: mradermacher/Qwen3-Reranker-8B-GGUF/Qwen3-Reranker-8B.Q4_K_S.gguf
-    engine: llama_cpp
-    size_gb: 4.6
-    type: Q4_K_S
+    - name: "Qwen3-Reranker-8B-Q4_K_S"
+      file: "mradermacher/Qwen3-Reranker-8B-GGUF/Qwen3-Reranker-8B.Q4_K_S.gguf"
+      engine: "llama_cpp"
+      size_gb: 4.6
+      type: "Q4_K_S"
   parameters:
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 8192
-    min: 512
-    max: 32768
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 4
-    min: 1
-    max: 128
-  - name: batch_size
-    label: 批处理大小
-    type: number
-    default: 1024
-    min: 256
-    max: 4096
-  - name: reranking
-    label: 重排序模式
-    type: boolean
-    default: true
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-  - name: mlock
-    label: 内存锁定
-    type: boolean
-    default: true
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 8192
+      min: 512
+      max: 32768
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 128
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 1024
+      min: 256
+      max: 4096
+    - name: "reranking"
+      label: "重排序模式"
+      type: "boolean"
+      default: true
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 6. OCR Model
+# ============================================================
 ocr_model:
-  id: ocr
-  name: OCR (文字识别)
-  description: 光学字符识别模型
-  category: ocr
+  id: "ocr"
+  name: "OCR (文字识别)"
+  description: "光学字符识别模型"
+  category: "ocr"
   port: 18086
-  engine_type: llama_cpp
-  available_engines:
-  - llama_cpp
+  engine_type: "llama_cpp"
+  available_engines: ["llama_cpp"]
   available_models:
-  - name: DeepSeek-OCR-2-Q4_K_M
-    file: sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf
-    engine: llama_cpp
-    size_gb: 1.8
-    type: Q4_K_M
+    - name: "DeepSeek-OCR-2-Q4_K_M"
+      file: "sabafallah/DeepSeek-OCR-2-GGUF/deepseek-ocr-2-Q4_K_M.gguf"
+      engine: "llama_cpp"
+      size_gb: 1.8
+      type: "Q4_K_M"
   parameters:
-  - name: ctx_size
-    label: 上下文长度
-    type: number
-    default: 4096
-    min: 512
-    max: 16384
-  - name: n_gpu_layers
-    label: GPU 层数
-    type: number
-    default: -1
-    min: -1
-    max: 256
-  - name: threads
-    label: CPU 线程数
-    type: number
-    default: 4
-    min: 1
-    max: 64
-  - name: batch_size
-    label: 批处理大小
-    type: number
-    default: 512
-    min: 128
-    max: 2048
-  - name: mmproj
-    label: MMProj 文件路径
-    type: string
-    default: sabafallah/DeepSeek-OCR-2-GGUF/mmproj-deepseek-ocr-2-bf16.gguf
-  - name: flash_attn
-    label: Flash Attention
-    type: boolean
-    default: true
-  - name: mlock
-    label: 内存锁定
-    type: boolean
-    default: true
+    - name: "ctx_size"
+      label: "上下文长度"
+      type: "number"
+      default: 4096
+      min: 512
+      max: 16384
+    - name: "n_gpu_layers"
+      label: "GPU 层数"
+      type: "number"
+      default: -1
+      min: -1
+      max: 256
+    - name: "threads"
+      label: "CPU 线程数"
+      type: "number"
+      default: 4
+      min: 1
+      max: 64
+    - name: "batch_size"
+      label: "批处理大小"
+      type: "number"
+      default: 512
+      min: 128
+      max: 2048
+    - name: "mmproj"
+      label: "MMProj 文件路径"
+      type: "string"
+      default: "sabafallah/DeepSeek-OCR-2-GGUF/mmproj-deepseek-ocr-2-bf16.gguf"
+    - name: "flash_attn"
+      label: "Flash Attention"
+      type: "boolean"
+      default: true
+    - name: "mlock"
+      label: "内存锁定"
+      type: "boolean"
+      default: true
+
+# ============================================================
+# 7. Text-to-Image Model (Qwen-Image-2512)
+# ============================================================
 t2i_model:
-  id: t2i
-  name: 文生图 (Text-to-Image)
-  description: 文字生成图片 - Qwen-Image-2512
-  category: image
+  id: "t2i"
+  name: "文生图 (Text-to-Image)"
+  description: "文字生成图片 - Qwen-Image-2512"
+  category: "image"
   port: 18087
-  engine_type: diffusers
-  available_engines:
-  - diffusers
-  model_source: modelscope
-  model_id: Qwen/Qwen-Image-2512
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Qwen/Qwen-Image-2512"
   available_models:
-  - name: Qwen-Image-2512
-    source: modelscope
-    model_id: Qwen/Qwen-Image-2512
-    size_gb: 15.0
+    - name: "Qwen-Image-2512"
+      source: "modelscope"
+      model_id: "Qwen/Qwen-Image-2512"
+      size_gb: 15.0
   parameters:
-  - name: width
-    label: 图片宽度 (Width)
-    label_en: Width
-    type: number
-    default: 1024
-    min: 512
-    max: 2048
-  - name: height
-    label: 图片高度 (Height)
-    label_en: Height
-    type: number
-    default: 1024
-    min: 512
-    max: 2048
-  - name: num_inference_steps
-    label: 推理步数 (Steps)
-    label_en: Inference Steps
-    type: number
-    default: 28
-    min: 10
-    max: 100
-  - name: guidance_scale
-    label: 引导强度 (Guidance)
-    label_en: Guidance Scale
-    type: float
-    default: 5.0
-    min: 1.0
-    max: 20.0
-    step: 0.5
-  - name: seed
-    label: 随机种子 (Seed)
-    label_en: Seed
-    type: number
-    default: -1
-    min: -1
-    max: 4294967295
-  - name: num_images
-    label: 生成数量 (Count)
-    label_en: Number of Images
-    type: number
-    default: 1
-    min: 1
-    max: 4
-  - name: scheduler
-    label: 调度器 (Scheduler)
-    label_en: Scheduler
-    type: select
-    default: flow_match_euler
-    options:
-    - flow_match_euler
-    - flow_match_heun
-    - euler
-    - dpm_solver
+    - name: "width"
+      label: "图片宽度 (Width)"
+      label_en: "Width"
+      type: "number"
+      default: 1024
+      min: 512
+      max: 2048
+    - name: "height"
+      label: "图片高度 (Height)"
+      label_en: "Height"
+      type: "number"
+      default: 1024
+      min: 512
+      max: 2048
+    - name: "num_inference_steps"
+      label: "推理步数 (Steps)"
+      label_en: "Inference Steps"
+      type: "number"
+      default: 28
+      min: 10
+      max: 100
+    - name: "guidance_scale"
+      label: "引导强度 (Guidance)"
+      label_en: "Guidance Scale"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "seed"
+      label: "随机种子 (Seed)"
+      label_en: "Seed"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "num_images"
+      label: "生成数量 (Count)"
+      label_en: "Number of Images"
+      type: "number"
+      default: 1
+      min: 1
+      max: 4
+    - name: "scheduler"
+      label: "调度器 (Scheduler)"
+      label_en: "Scheduler"
+      type: "select"
+      default: "flow_match_euler"
+      options: ["flow_match_euler", "flow_match_heun", "euler", "dpm_solver"]
+
+# ============================================================
+# 8. Text-to-Video Model (Wan2.2-T2V-A14B)
+# ============================================================
 t2v_model:
-  id: t2v
-  name: 文生视频 (Text-to-Video)
-  description: 文字生成视频 - Wan2.2-T2V-A14B
-  category: video
+  id: "t2v"
+  name: "文生视频 (Text-to-Video)"
+  description: "文字生成视频 - Wan2.2-T2V-A14B"
+  category: "video"
   port: 18088
-  engine_type: diffusers
-  available_engines:
-  - diffusers
-  model_source: modelscope
-  model_id: Wan-AI/Wan2.2-T2V-A14B-Diffusers
-  quant: fp8
-  compute_dtype: bf16
-  boundary_ratio: 0.875
-  cpu_offload: false
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Wan-AI/Wan2.2-T2V-A14B-Diffusers"
+  # 量化与显存优化 (2026-08-05)
+  # Wan2.2 MoE 27B, BF16 静态 ~75G OOM, 必须 FP8 存储 + BF16 计算
+  quant: "fp8"               # fp8 | bf16 | none ; 空则自动 (video+A14B -> fp8)
+  compute_dtype: "bf16"      # 前向计算精度
+  boundary_ratio: 0.875      # Wan2.2 MoE 官方默认, SNR=-1.5 分界
+  cpu_offload: false         # 默认靠 enable_model_cpu_offload ; OOM 时改 true
   available_models:
-  - name: Wan2.2-T2V-A14B-Diffusers
-    source: modelscope
-    model_id: Wan-AI/Wan2.2-T2V-A14B-Diffusers
-    size_gb: 28.0
+    - name: "Wan2.2-T2V-A14B-Diffusers"
+      source: "modelscope"
+      model_id: "Wan-AI/Wan2.2-T2V-A14B-Diffusers"
+      size_gb: 28.0
   parameters:
-  - name: resolution
-    label: 分辨率 (Resolution)
-    type: select
-    default: 480p
-    options:
-    - 480p
-    - 720p
-    label_en: Resolution
-  - name: num_frames
-    label: 帧数 (Frames)
-    type: number
-    default: 81
-    min: 17
-    max: 161
-    label_en: Frames
-  - name: frame_rate
-    label: 帧率 (FPS)
-    type: number
-    default: 16
-    min: 8
-    max: 30
-    label_en: Frame Rate
-  - name: guidance_scale
-    label: 引导强度 (Guidance)
-    type: float
-    default: 5.0
-    min: 1.0
-    max: 20.0
-    step: 0.5
-    label_en: Guidance Scale
-  - name: num_inference_steps
-    label: 推理步数 (Steps)
-    type: number
-    default: 50
-    min: 20
-    max: 200
-    label_en: Inference Steps
-  - name: seed
-    label: 随机种子 (Seed)
-    type: number
-    default: -1
-    min: -1
-    max: 4294967295
-    label_en: Seed
-  - name: flow_shift
-    label: 流偏移 (Flow Shift)
-    type: float
-    default: 3.0
-    min: 0.0
-    max: 10.0
-    step: 0.5
-    label_en: Flow Shift
+    - name: "resolution"
+      label: "分辨率"
+      label_en: "Resolution"
+      type: "select"
+      default: "480p"
+      options: ["480p", "720p"]
+    - name: "num_frames"
+      label: "帧数"
+      label_en: "Frames"
+      type: "number"
+      default: 81
+      min: 17
+      max: 161
+    - name: "frame_rate"
+      label: "帧率"
+      label_en: "Frame Rate"
+      type: "number"
+      default: 16
+      min: 8
+      max: 30
+    - name: "guidance_scale"
+      label: "引导强度"
+      label_en: "Guidance Scale"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "num_inference_steps"
+      label: "推理步数"
+      label_en: "Inference Steps"
+      type: "number"
+      default: 50
+      min: 20
+      max: 200
+    - name: "seed"
+      label: "随机种子"
+      label_en: "Seed"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "flow_shift"
+      label: "流偏移"
+      label_en: "Flow Shift"
+      type: "float"
+      default: 3.0
+      min: 0.0
+      max: 10.0
+      step: 0.5
+
+# ============================================================
+# 9. Image-to-Video Model (Wan2.2-I2V-A14B)
+# ============================================================
 i2v_model:
-  id: i2v
-  name: 图生视频 (Image-to-Video)
-  description: 图片生成视频 - Wan2.2-I2V-A14B
-  category: video
+  id: "i2v"
+  name: "图生视频 (Image-to-Video)"
+  description: "图片生成视频 - Wan2.2-I2V-A14B"
+  category: "video"
   port: 18089
-  engine_type: diffusers
-  available_engines:
-  - diffusers
-  model_source: modelscope
-  model_id: Wan-AI/Wan2.2-I2V-A14B-Diffusers
-  quant: fp8
-  compute_dtype: bf16
+  engine_type: "diffusers"
+  available_engines: ["diffusers"]
+  model_source: "modelscope"
+  model_id: "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
+  # 量化与显存优化 (2026-08-05)
+  quant: "fp8"
+  compute_dtype: "bf16"
   boundary_ratio: 0.875
   cpu_offload: false
   available_models:
-  - name: Wan2.2-I2V-A14B-Diffusers
-    source: modelscope
-    model_id: Wan-AI/Wan2.2-I2V-A14B-Diffusers
-    size_gb: 28.0
+    - name: "Wan2.2-I2V-A14B-Diffusers"
+      source: "modelscope"
+      model_id: "Wan-AI/Wan2.2-I2V-A14B-Diffusers"
+      size_gb: 28.0
   parameters:
-  - name: resolution
-    label: 分辨率 (Resolution)
-    type: select
-    default: 480p
-    options:
-    - 480p
-    - 720p
-    label_en: Resolution
-  - name: num_frames
-    label: 帧数 (Frames)
-    type: number
-    default: 81
-    min: 17
-    max: 161
-    label_en: Frames
-  - name: frame_rate
-    label: 帧率 (FPS)
-    type: number
-    default: 16
-    min: 8
-    max: 30
-    label_en: Frame Rate
-  - name: guidance_scale
-    label: 引导强度 (Guidance)
-    type: float
-    default: 5.0
-    min: 1.0
-    max: 20.0
-    step: 0.5
-    label_en: Guidance Scale
-  - name: num_inference_steps
-    label: 推理步数 (Steps)
-    type: number
-    default: 50
-    min: 20
-    max: 200
-    label_en: Inference Steps
-  - name: seed
-    label: 随机种子 (Seed)
-    type: number
-    default: -1
-    min: -1
-    max: 4294967295
-    label_en: Seed
-  - name: flow_shift
-    label: 流偏移 (Flow Shift)
-    type: float
-    default: 3.0
-    min: 0.0
-    max: 10.0
-    step: 0.5
-    label_en: Flow Shift
+    - name: "resolution"
+      label: "分辨率"
+      label_en: "Resolution"
+      type: "select"
+      default: "480p"
+      options: ["480p", "720p"]
+    - name: "num_frames"
+      label: "帧数"
+      label_en: "Frames"
+      type: "number"
+      default: 81
+      min: 17
+      max: 161
+    - name: "frame_rate"
+      label: "帧率"
+      label_en: "Frame Rate"
+      type: "number"
+      default: 16
+      min: 8
+      max: 30
+    - name: "guidance_scale"
+      label: "引导强度"
+      label_en: "Guidance Scale"
+      type: "float"
+      default: 5.0
+      min: 1.0
+      max: 20.0
+      step: 0.5
+    - name: "num_inference_steps"
+      label: "推理步数"
+      label_en: "Inference Steps"
+      type: "number"
+      default: 50
+      min: 20
+      max: 200
+    - name: "seed"
+      label: "随机种子"
+      label_en: "Seed"
+      type: "number"
+      default: -1
+      min: -1
+      max: 4294967295
+    - name: "flow_shift"
+      label: "流偏移"
+      label_en: "Flow Shift"
+      type: "float"
+      default: 3.0
+      min: 0.0
+      max: 10.0
+      step: 0.5
