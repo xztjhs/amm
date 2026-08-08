@@ -1,5 +1,27 @@
 # AMM Changelog
 
+## v0.7.3 — 2026-08-08（diffusers 高级参数/自动释放/Playground 三能力）
+
+### 🧠 1. Models 页 diffusers 高级参数（t2i/t2v/i2v）
+- Advanced 区支持 **Quant / Compute Dtype / Offload / Boundary Ratio / CPU Offload** 设置并回写 yaml，start/推理按参数生效；修复 offload 下拉不读模型实际值的 bug。
+- t2i/t2v/i2v 参数 label 中英对照（label + label_en）。
+
+### 💾 2. 每次推理后自动释放 GPU
+- `t2i/t2v/i2v` 完成/异常共 6 处自动释放：`del pipe` → `gc` → 清 pipeline cache → `torch.cuda.empty_cache()`。
+- 实测：推理时 55.9G → 完成后 **655M**（`[auto-release] keep_pipeline=否`）。
+- 开关：`AMM_AUTO_RELEASE=full`(默认，彻底释放) / `cache`(保留模型)；`AMM_START_PRELOAD=1` 时 start 按参数预加载。
+
+### 🎛 3. Playground 只读高级参数 + 显存估算（T2I/T2V/I2V）
+- 三类模型 Playground 均新增「🎛 模型高级参数（模型级·推理只读）」展示当前 Quant/Compute/Offload/Boundary/CPU-Offload；可改的请求参数（尺寸/步数/数量/种子等）仍可改。
+- 显存估算（`estimateT2iVram` / `estimateVideoVram`）：权重(存储精度) + 激活(latent tokens·分辨率·数量/帧数·步数) + 固定，随参数实时变化。
+
+### 涉及文件
+- `backend/core/model_manager.py`：start 可选预加载（AMM_START_PRELOAD）
+- `backend/api/diffusers_bridge.py`：自动释放\(del pipe + unload + empty_cache\)，`_release_gpu`/`_maybe_release_gpu`
+- `backend/config/models_config.yaml`：t2i/t2v/i2v 参数中英 label
+- `frontend/js/app.js`：estimateVideoVram、refreshPgVram 泛化、双语 label
+- `frontend/index.html` / `frontend/css/style.css`：pgVram/pgAdv 展示
+
 ## v0.7.1 — 2026-08-08（容器 supervisor 化 + diffusers 推理独立启停）
 
 ### 🐳 1. server.py 不再是 PID1 —— kill 容器不死
