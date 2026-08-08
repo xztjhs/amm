@@ -199,7 +199,9 @@ class DownloadBridge:
             task.started = time.time()
             py = self._resolve_python()
             cache = CACHE_MAP.get(task.source, CACHE_MAP["modelscope"])
-            os.makedirs(cache, exist_ok=True)
+            # 仅在未指定目标文件夹时才预建默认 cache; 否则等 relocate 直接在目标目录落盘
+            if not task.target_folder:
+                os.makedirs(cache, exist_ok=True)
             os.makedirs(_PROGRESS_DIR, exist_ok=True)
             task.progress_file = os.path.join(_PROGRESS_DIR, f"{task.task_id}.json")
             if os.path.exists(task.progress_file):
@@ -256,7 +258,13 @@ class DownloadBridge:
                 return
             if rc == 0:
                 task.status = "done"
-                task.detail = (out or "").strip()[-400:] or "下载完成"
+                raw = (out or "").strip()
+                # 解析辅助脚本的落盘结果行: `OK <path>` 或 `OK`
+                if raw.startswith("OK"):
+                    parts = raw.split(None, 1)
+                    task.detail = ("下载完成，已落盘: " + parts[1]) if len(parts) > 1 else "下载完成"
+                else:
+                    task.detail = raw[-400:] or "下载完成"
                 if task.category:
                     try:
                         self.manager._load_config()
