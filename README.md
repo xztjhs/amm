@@ -266,6 +266,7 @@ PYTHONPATH=/amm python3.11 -m backend.server
 | `docs/DEVELOPMENT.md` | 开发文档 |
 | `docs/v0.2-升级记录-20260807.md` | v0.2 升级记录 |
 | `docs/llama_cpp-空回复-rootcause-20260808.md` | Qwen3 思考模型"有think但空"根因 + reasoning-budget 解法 (v0.6) |
+| `docs/screenshots/` | 产品功能界面截图 + `README.md` 索引 (v0.6) |
 
 ## 许可证
 
