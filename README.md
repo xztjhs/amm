@@ -11,6 +11,12 @@
 - **负责人（撞强）**：xt@pcd.name ｜ 微信：13808230006
 - **MaaS 服务供应商**：北京积算（icompify）— <https://www.icompify.com/>
 
+### 界面预览
+
+![AMM Dashboard 预览](./docs/screenshots/01-dashboard.png)
+
+> 更多产品截图见 [docs/screenshots/](./docs/screenshots/)（Dashboard / Models / Playground / Logs / Settings）
+
 ## 特性
 
 - **混合推理引擎**: 支持 llama.cpp (GGUF) / vLLM / Diffusers 三种后端，可自由切换
