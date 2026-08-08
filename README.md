@@ -17,6 +17,8 @@
 - **⚙️ 预设配置 (v0.2)**: 模型旁放 `<model>.vllm` / `<model>.llamacpp`（YAML/JSON）即可一键加载预设参数
 - **💬 Playground 9 类模型测试 (v0.3)**: chat(流式实测 TTFT/TPS/端到端) / embedding / asr / tts / rerank / ocr / t2i / t2v / i2v 全类型测试 + 性能统计
 - **🔤 会话参数与多轮 (v0.2)**: 模型选择、Temperature/MaxTokens/Top-P/System、多轮历史持久化、图片视觉上传
+- **🚀 启动命令编排 (v0.6)**: Chat/LLM/VLM 可基于参数一键生成完整启动命令行 → 人工修改 → 保存为启动脚本，start/stop/restart 优先执行自定义脚本
+- **🧠 --reasoning-budget (v0.6)**: llama.cpp 支持限制 Qwen3 等思考模型 reasoning token 上限，防空回复；Playground Chat 默认 max_tokens 提升至 16384
 - **📊 Dashboard GPU (v0.3)**: GPU 状态移到首页第二行多列——型号/计算利用率/显存带宽/编码解码/显存占用/温度/风扇/功耗/时钟/PCIe
 - **⚙️ 引擎参数完善 (v0.3)**: Chat 支持 llama.cpp 26 项 + vLLM 18 项运行参数（含 prefix caching/chunked prefill/KV cache/量化/采样，取自 AKVD 知识库检索）
 - **🛠 Settings 运维 (v0.2)**: 重载配置、重启服务、下载日志
@@ -143,6 +145,8 @@ python3.11 /amm/backend/server.py
 | `/api/instances/{id}/advanced` | GET/PUT | 读取/更新 Diffusers 高级配置（Quant/CPU Offload等） |
 | `/api/instances/{id}/engine` | PUT | 切换引擎 |
 | `/api/instances/{id}/logs` | GET | 查看日志 |
+| `/api/instances/{id}/command` | GET/PUT/DELETE | 查看/保存/清除自定义启动命令 (v0.6) |
+| `/api/instances/{id}/command/preview` | POST | 基于当前参数生成实际启动命令行 (v0.6) |
 
 ### OpenAI 兼容
 
@@ -198,6 +202,16 @@ chat_model:
   available_models:
     - name: "Qwen3.6-35B"
       file: "HauhauCS/.../Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf"
+  parameters:
+    # llama.cpp 思考预算 (v0.6): 限制 Qwen3 思考 token, 防空回复
+    - name: "reasoning_budget_enabled"
+      type: "boolean"
+      default: false
+      engine: "llama_cpp"
+    - name: "reasoning_budget"
+      type: "number"
+      default: 8192
+      engine: "llama_cpp"
 ```
 
 模型文件存放在 `/models/` 目录，路径相对于 `/models`。
@@ -229,7 +243,10 @@ PYTHONPATH=/amm python3.11 -m backend.server
 - [x] Diffusers FP8 layerwise_casting (Wan2.2 MoE)
 - [x] Diffusers T2I 推理验证 (Qwen-Image-2512)
 - [x] Diffusers T2V 冷启动验证 (Wan2.2-A14B, 峰值15.9G显存)
-- [ ] Diffusers T2V/I2V 完全验证 (Wan2.2-A14B 日常运行)
+- [x] Diffusers T2V/I2V 完全验证 (Wan2.2-A14B) (v0.4)
+- [x] vLLM FlashInfer/ninja 修复 + Qwen3 启动验证 (v0.6)
+- [x] 启动命令编排 (按参数生成/编辑/保存启动脚本) (v0.6)
+- [x] llama.cpp --reasoning-budget 限制 Qwen3 思考 token 防空回复 (v0.6)
 - [ ] 模型自动下载 (HuggingFace / ModelScope)
 - [ ] 权限管理与多用户
 - [ ] 模型量化转换工具 (GGUF)
@@ -243,6 +260,7 @@ PYTHONPATH=/amm python3.11 -m backend.server
 | `docs/引擎参数调优指南-20260807.md` | vllm/llama.cpp 参数调优 (AKVD) |
 | `docs/DEVELOPMENT.md` | 开发文档 |
 | `docs/v0.2-升级记录-20260807.md` | v0.2 升级记录 |
+| `docs/llama_cpp-空回复-rootcause-20260808.md` | Qwen3 思考模型"有think但空"根因 + reasoning-budget 解法 (v0.6) |
 
 ## 许可证
 

@@ -61,3 +61,7 @@ curl -s -X POST $B/v1/chat/completions -H 'Content-Type: application/json' \
 curl -s -X POST $B/v1/chat/completions -H 'Content-Type: application/json' \
   -d '{"model":"chat","messages":[{"role":"user","content":"1+1等于几？只回答结果"}],"max_tokens":1000}'
 ```
+## 更新 (2026-08-08 12:45)
+- 已上线「启动命令编排」功能(v0.6)：Models→Chat/LLM/VLM→llama_cpp/vllm 可一键生成/编辑/保存启动命令行，start 优先执行自定义脚本。
+- 图片上传报错根因：chat 模型当前为纯文本 GGUF（vLLM 不识别 qwen35moe 架构；llama.cpp 无 mmproj）。如需图片推理，请用启动命令编排指定多模态 VLM 模型 + `--mmproj`。
+

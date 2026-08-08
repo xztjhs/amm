@@ -130,6 +130,18 @@ from backend.api.my_bridge import setup_routes
 setup_routes(app, manager)
 ```
 
+## 启动命令编排（v0.6）
+
+Models→Chat/LLM/VLM（llama_cpp/vllm）的「🚀 启动命令编排」卡片工作流：
+
+1. **按参数生成**：前端调 `POST /api/instances/{id}/command/preview`，后端 `ModelManager.build_command_preview` 调引擎 `engine.build_command` 返回完整命令行
+2. **人工修改**：用户在文本域改 `args`
+3. **保存为启动脚本**：`PUT /api/instances/{id}/command` → `ModelManager.save_startup_command` 写入 `scripts/<id>.sh`（`#!/bin/bash`）并持久化 `inst.startup_command` 到 state.json
+4. **启动/停止/重启**：`start_model` 检测到 `startup_command` 非空时，`cmd = ["/bin/bash", scripts/<id>.sh]`，否则回退 `engine.build_command` 自动生成；`stop_model` 用进程树回收（含脱组的 vLLM EngineCore）
+5. **清除**：`DELETE /api/instances/{id}/command` 删除脚本与持久化字段，恢复自动生成
+
+相关字段：`ModelInstance.startup_command`（engine.py）、`scripts/` 目录（model_manager.STARTUP_DIR）。
+
 ## 环境变量
 
 | 变量 | 说明 | 默认值 |
