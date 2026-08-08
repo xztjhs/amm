@@ -201,8 +201,8 @@ class DownloadBridge:
             task.started = time.time()
             py = self._resolve_python()
             cache = CACHE_MAP.get(task.source, CACHE_MAP["modelscope"])
-            # 仅在未指定目标文件夹时才预建默认 cache; 否则等 relocate 直接在目标目录落盘
-            if not task.target_folder:
+            # 若未指定目标目录, 预建默认 zoo 快照; 否则下载后由 relocate 落到目标目录
+            if not task.target_dir:
                 os.makedirs(cache, exist_ok=True)
             os.makedirs(_PROGRESS_DIR, exist_ok=True)
             task.progress_file = os.path.join(_PROGRESS_DIR, f"{task.task_id}.json")
