@@ -39,6 +39,13 @@ BASE_DIR = Path(AMM_ROOT) if Path(AMM_ROOT).exists() else Path(__file__).resolve
 CONFIG_PATH = BASE_DIR / "backend" / "config" / "models_config.yaml"
 os.makedirs(LOGS_DIR, exist_ok=True)
 
+# ============================================================
+# 版本常量（唯一版本来源；升级时只需改这里）
+#   页脚 / Settings / /api/settings 均从此读取
+# ============================================================
+AMM_VERSION = os.environ.get("AMM_VERSION", "v0.8.0")
+AMM_DOCS_DIR = BASE_DIR / "docs" / "manual"
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
@@ -76,7 +83,7 @@ class APIHandlers:
             "port": sc.get("port", 80),
             "models_dir": sc.get("models_dir", "/models"),
             "logs_dir": sc.get("logs_dir", "/amm/logs"),
-            "version": "v0.2",
+            "version": AMM_VERSION,
         })
 
     # ---- Models Config ----
@@ -276,6 +283,37 @@ class APIHandlers:
         return self._json({"gpus": self.manager.get_gpu_info()})
 
     # ---- Frontend ----
+    # 手册：返回可搜索的文档目录（markdown 列表 + 内容）
+    async def get_docs_summary(self, req):
+        """GET /api/docs"""
+        docs = []
+        if AMM_DOCS_DIR.exists():
+            for f in sorted(AMM_DOCS_DIR.glob("*.md")):
+                try:
+                    title = f.stem
+                    # 取首个 # 标题作为可读标题
+                    for line in f.read_text(encoding="utf-8", errors="ignore").splitlines():
+                        line = line.strip()
+                        if line.startswith("# "):
+                            title = line[2:].strip()
+                            break
+                    docs.append({"file": f.name, "title": title})
+                except Exception:
+                    continue
+        return self._json({"version": AMM_VERSION, "docs": docs})
+
+    async def get_docs_content(self, req):
+        """GET /api/docs/{filename}  返回指定手册的 markdown 内容"""
+        name = req.match_info["filename"]
+        # 防路径穿越
+        if not name or ".." in name or "/" in name or "\\" in name:
+            return self._json({"error": "invalid doc name"}, 400)
+        p = AMM_DOCS_DIR / name
+        if not p.exists():
+            return self._json({"error": f"doc not found: {name}"}, 404)
+        return web.Response(text=p.read_text(encoding="utf-8", errors="ignore"),
+                            content_type="text/markdown; charset=utf-8")
+
     async def serve_index(self, req):
         p = BASE_DIR / "frontend" / "index.html"
         return web.FileResponse(p) if p.exists() else self._json({"error": "index.html not found"}, 404)
@@ -310,6 +348,8 @@ def create_app() -> web.Application:
 
     # Routes (non-param first to avoid conflicts)
     app.router.add_get("/", h.serve_index)
+    app.router.add_get("/api/docs", h.get_docs_summary)
+    app.router.add_get("/api/docs/{filename}", h.get_docs_content)
     app.router.add_get("/api/health", h.health_check)
     app.router.add_get("/api/system", h.get_system_info)
     app.router.add_get("/api/settings", h.get_settings)

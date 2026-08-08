@@ -2238,6 +2238,156 @@
     window.applyPresetFile = applyPresetFile;
     window.closePresetBox = closePresetBox;
 
+    // ---- 用户手册 / 帮助搜索 (v0.8) ----
+    const __docs = { list: [], current: null };
+
+    // 极简 Markdown -> HTML（覆盖手册使用到的子集：标题/表格/代码块/列表/引用/加粗/行内码/链接）
+    function mdToHtml(mdText) {
+        const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        let lines = (mdText || '').split(/\n/);
+        let out = [], inPre = false, inTable = false, tableRows = [];
+        const inline = s => s
+            .replace(/`([^`]+)`/g, (m, c) => '<code>' + esc(c) + '</code>')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, t, u) => '<a href="' + u + '" target="_blank">' + t + '</a>');
+        for (const raw of lines) {
+            const line = raw.replace(/\r$/, '');
+            if (line.trim().startsWith('```')) {
+                if (inPre) { out.push('</code></pre>'); inPre = false; }
+                else { out.push('<pre><code>'); inPre = true; }
+                continue;
+            }
+            if (inPre) { out.push(esc(line)); continue; }
+            // 表格
+            const tpipe = s => '<tr>' + s.replace(/^\||\|$/g, '').split('|').map(c => '<td>'+inline(c.trim())+'</td>').join('') + '</tr>';
+            if (/^\|/.test(line) && /\|$/.test(line)) {
+                if (!inTable) { inTable = true; tableRows = []; out.push('<table>'); }
+                tableRows.push(line);
+                continue;
+            }
+            if (inTable) {
+                out.push('<thead>' + tableRows.slice(0,1).map(r => tpipe(r)).join('') + '</thead>');
+                out.push('<tbody>' + tableRows.slice(2).map(r => tpipe(r)).join('') + '</tbody></table>');
+                inTable = false; tableRows = [];
+            }
+            if (/^#{1,6}\s/.test(line)) {
+                const m = line.match(/^(#{1,6})\s+(.*)$/);
+                const h = m[1].length; out.push(`<h${h}>` + inline(m[2]) + `</h${h}>`);
+            } else if (/^###+\s/.test(line)) {}
+            else if (/^[-*]\s/.test(line)) out.push('<li>' + inline(line.replace(/^[-*]\s/, '')) + '</li>');
+            else if (/^\d+\.\s/.test(line)) out.push('<li>' + inline(line.replace(/^\d+\.\s/, '')) + '</li>');
+            else if (/^>\s?/.test(line)) out.push('<blockquote>' + inline(line.replace(/^>\s?/, '')) + '</blockquote>');
+            else if (line.trim() === '') out.push('<br>');
+            else out.push('<p>' + inline(line) + '</p>');
+        }
+        if (inPre) out.push('</code></pre>');
+        if (inTable && tableRows.length) {
+            out.push('<thead>' + tableRows.slice(0,1).map(r => tpipe(r)).join('') + '</thead>');
+            out.push('<tbody>' + tableRows.slice(2).map(r => tpipe(r)).join('') + '</tbody></table>');
+        }
+        return out.join('');
+    }
+
+    async function loadHelp() {
+        try {
+            const r = await fetch(API_BASE + '/docs');
+            const data = await r.json();
+            __docs.docs = (data && data.docs) || [];
+            const verEl = document.getElementById('helpModalVer');
+            if (verEl) verEl.textContent = data.version || '';
+            renderHelpToc();
+        } catch (e) { console.error('load help failed', e); }
+    }
+
+    function renderHelpToc() {
+        const toc = document.getElementById('helpToc');
+        if (!toc) return;
+        toc.innerHTML = '<div style="font-weight:bold;color:var(--text-secondary);padding:4px 8px;margin-bottom:6px">目录</div>' +
+            (__docs.docs || []).map((d, i) =>
+                '<button class="help-list-item' + (i === 0 && !__docs.current ? ' active' : '') + '" data-doc="' + d.file + '">' + d.title + '</button>'
+            ).join('');
+        toc.querySelectorAll('.help-list-item').forEach(btn => {
+            btn.addEventListener('click', () => openHelpDoc(btn.dataset.doc));
+        });
+        if (!__docs.current && __docs.docs && __docs.docs.length) openHelpDoc(__docs.docs[0].file);
+    }
+
+    async function openHelpDoc(file, query) {
+        try {
+            const r = await fetch(API_BASE + '/docs/' + file);
+            const text = await r.text();
+            __docs.current = file;
+            document.querySelectorAll('.help-list-item').forEach(b => b.classList.toggle('active', b.dataset.doc === file));
+            const content = document.getElementById('helpContent');
+            let html = mdToHtml(text);
+            if (query) {
+                const qesc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const re = new RegExp('(' + qesc + ')', 'gi');
+                html = html.replace(re, '<mark class="hl">$1</mark>');
+            }
+            content.innerHTML = html;
+        } catch (e) { console.error(e); }
+    }
+
+    function openHelp() {
+        const m = document.getElementById('helpModal');
+        if (!m) return;
+        m.style.display = 'flex';
+        if (!__docs.docs.length) loadHelp();
+    }
+    function closeHelp() {
+        const m = document.getElementById('helpModal');
+        if (m) m.style.display = 'none';
+    }
+
+    function setupHelp() {
+        document.getElementById('helpToggle')?.addEventListener('click', openHelp);
+        document.getElementById('helpClose')?.addEventListener('click', closeHelp);
+        const search = document.getElementById('helpSearch');
+        if (search) {
+            let t = null;
+            search.addEventListener('input', () => {
+                clearTimeout(t);
+                t = setTimeout(async () => {
+                    const q = search.value.trim();
+                    if (!q) { renderHelpToc(); return; }
+                    // 全库搜索
+                    let hits = [];
+                    for (const d of (__docs.docs || [])) {
+                        try {
+                            const r = await fetch(API_BASE + '/docs/' + d.file);
+                            const text = await r.text();
+                            if (text.toLowerCase().includes(q.toLowerCase())) {
+                                if (hits.length === 0) { openHelpDoc(d.file, q); }
+                                hits.push({ file: d.file, title: d.title });
+                            }
+                        } catch (e) {}
+                    }
+                    // 更新搜索建议列表
+                    const toc = document.getElementById('helpToc');
+                    if (toc) {
+                        toc.innerHTML = hits.length ? hits.map(h =>
+                            '<button class="help-list-item" data-doc="' + h.file + '">🔍 ' + h.title + '</button>'
+                        ).join('') : '<div style="padding:10px;color:var(--text-muted)">无匹配</div>';
+                        toc.querySelectorAll('.help-list-item').forEach(b => b.addEventListener('click', () => openHelpDoc(b.dataset.doc, q)));
+                    }
+                }, 300);
+            });
+        }
+        // Esc / 遮罩点击关闭
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
+        const modal = document.getElementById('helpModal');
+        if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeHelp(); });
+        // 更新页脚版本
+        fetch(API_BASE + '/settings').then(r => r.json()).then(d => {
+            const fv = document.querySelector('#footerVersion [data-ver]');
+            if (fv && d && d.version) fv.textContent = d.version;
+        }).catch(() => {});
+    }
+
+    window.openHelpDoc = openHelpDoc;
+    setupHelp();
+
     // ---- Boot ----
     document.addEventListener('DOMContentLoaded', init);
 })();

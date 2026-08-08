@@ -1087,3 +1087,102 @@ body {
     cursor: pointer;
 }
 .refresh-select:hover { border-color: var(--border-hover); }
+
+/* ============ v0.8: 用户手册 / 帮助搜索 ============ */
+.help-toggle {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 3px 8px;
+    margin-right: 6px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+}
+.help-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.help-badge { font-size: 10px; }
+.help-search {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 3px 8px;
+    margin-right: 6px;
+    width: 140px;
+}
+.help-search:focus { outline: none; border-color: var(--accent); }
+.help-modal {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+}
+.help-modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: min(960px, 94vw);
+    height: min(640px, 88vh);
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    overflow: hidden;
+}
+.help-modal-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-input);
+}
+.help-modal-head h3 { margin: 0; font-size: 15px; }
+.help-modal-ver { color: var(--accent); font-size: 12px; }
+.btn-close {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text-secondary); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 12px;
+}
+.btn-close:hover { border-color: var(--accent); color: var(--accent); }
+.help-modal-body { flex: 1; display: flex; min-height: 0; }
+.help-list {
+    width: 230px; flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    padding: 10px; overflow-y: auto;
+    font-size: 12px;
+}
+.help-list-item {
+    display: block; width: 100%; text-align: left;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--text-secondary);
+    padding: 7px 8px; border-radius: 6px; margin-bottom: 2px;
+    font-size: 12px;
+}
+.help-list-item:hover { background: var(--bg-input); color: var(--accent); }
+.help-list-item.active { background: var(--accent); color: #fff; }
+.help-content {
+    flex: 1; overflow-y: auto; padding: 18px 22px;
+    font-size: 13px; line-height: 1.75; color: var(--text);
+}
+.help-content h1 { font-size: 20px; margin: 0 0 12px; }
+.help-content h2 { font-size: 16px; margin: 20px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.help-content h3 { font-size: 14px; margin: 16px 0 6px; }
+.help-content h4 { font-size: 13px; margin: 12px 0 4px; }
+.help-content p { margin: 6px 0; }
+.help-content ul, .help-content ol { margin: 6px 0; padding-left: 22px; }
+.help-content li { margin: 3px 0; }
+.help-content code {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 5px; font-size: 12px; font-family: monospace;
+}
+.help-content pre {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px; overflow-x: auto;
+    font-size: 12px; font-family: monospace; line-height: 1.6;
+}
+.help-content pre code { background: none; border: none; padding: 0; }
+.help-content table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+.help-content th, .help-content td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
+.help-content th { background: var(--bg-input); }
+.help-content a { color: var(--accent); }
+.help-content blockquote { border-left: 3px solid var(--accent); margin: 8px 0; padding: 2px 10px; color: var(--text-muted); background: var(--bg-input); border-radius: 0 6px 6px 0; }
+.help-content mark, .hl { background:#ffe08a; color:#222; padding:0 2px; border-radius:3px; }
