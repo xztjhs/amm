@@ -43,6 +43,8 @@ apply_proxy()
 os.environ["MODELSCOPE_CACHE"] = "/models/zoo/modelscope"
 os.environ["MODELSCOPE_DOMAIN"] = "modelscope.cn"
 os.environ["HF_HOME"] = "/models/huggingface"
+# 禁用 HF Xet CDN 协议(经 HTTP 代理常不可达/不稳定), 回退传统分块下载, 代理兼容性更好
+os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
 
 # =====================================================================
@@ -225,7 +227,7 @@ def op_download():
             p = snapshot_download(repo_id=model_id, cache_dir=cache,
                                   revision=revision or None,
                                   allow_patterns=files or None,
-                                  max_workers=4)
+                                  max_workers=2)
             print("OK", p)
             sys.exit(0)
     except SystemExit:

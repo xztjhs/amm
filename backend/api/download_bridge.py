@@ -207,10 +207,26 @@ class DownloadBridge:
             task.detail = "下载中..."
 
             def _poll():
+                stall_start = None
                 while True:
                     if task.proc.poll() is not None:
                         break
                     self._read_progress(task)
+                    # 停滞检测: 5 分钟无进度增长 && 未取消, 则终止
+                    if task.status == "downloading" and task.speed == 0 and task.downloaded > 0:
+                        if stall_start is None:
+                            stall_start = time.time()
+                        elif time.time() - stall_start > 300:
+                            logger.warning(f"Download {task.task_id} stalled, terminating")
+                            try:
+                                task.proc.terminate()
+                            except Exception:
+                                pass
+                            task.status = "failed"
+                            task.error = "下载停滞超时(5分钟无进度), 已终止。请检查代理/网络后重试(支持断点续传)"
+                            break
+                    else:
+                        stall_start = None
                     time.sleep(2)
             tp = threading.Thread(target=_poll, daemon=True)
             tp.start()
