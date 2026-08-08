@@ -1,6 +1,6 @@
 # 维护记录 — 2026-08-08 diffusers 高级参数/自动释放/Playground 三能力（v0.7.3）
 
-> 针对 AMM diffusers（t2i/t2v/i2v）的三项增强：Models 高级参数、推理后自动释放 GPU、Playground 只读高级参数 + 显存估算。
+> 针对 AMM diffusers（t2i/t2v/i2v）的三项增强 + 两处修复：Models 高级参数、推理后自动释放 GPU、Playground 只读高级参数+显存估算、Advanced 区不显示 bug、compose 环境变量。
 
 ## 一、Models 页高级参数（Quant / Compute / Offload / Boundary / CPU-Offload）
 - 位置：Models → 对应模型 → 底部「🧠 Advanced (Diffusers / FP8 量化)」。
@@ -8,7 +8,7 @@
 - 修复：`renderAdvancedSettings` 的 `defaults` 缺 `offload` 键，导致 offload 下拉不读模型实际值，已补。
 
 ## 二、每次推理后自动释放 GPU
-- 实现：`t2i/t2v/i32v` 完成/异常共 6 处调用 `_maybe_release_gpu` → `del pipe`（释放局部 pipeline 引用）→ `gc.collect()` → `_pipeline_cache.clear()` → `torch.cuda.empty_cache()`。
+- 实现：`t2i/t2v/i2v` 完成/异常共 6 处调用 `_maybe_release_gpu` → `del pipe`（释放局部 pipeline 引用）→ `gc.collect()` → `_pipeline_cache.clear()` → `torch.cuda.empty_cache()`。
 - 实测：推理时 GPU 55.9G，完成后回落至 655M。日志 `[auto-release] keep_pipeline=否`。
 - 环境变量（容器启动时传递，默认走缺省值）：
 
@@ -26,7 +26,18 @@
 - 估算函数：`estimateT2iVram`（Qwen-Image-25B）、`estimateVideoVram`（Wan2.2-A14B）。
 
 ## 四、部署注意（当前未用 docker-compose）
-当前容器是裸 `docker run` 启动（容器名 `AMM`，未用 compose）。若需启用预加载或调整自动释放策略，请在 `docker run -e` 传对应 `AMM_*` 环境变量，否则走默认值。
+当前容器是裸 `docker run` 启动（容器名 `AMM`，未用 compose）。若需启用预加载或调整自动释放策略，请在 `docker run -e` 传对应 `AMM_*` 环境变量，否则走默认值。`deploy/docker-compose.yml` 已补齐这些变量，用 compose 启动时自带：
+
+  | 变量 | 默认 | 说明 |
+  |------|------|------|
+  | `AMM_AUTO_RELEASE` | `full` | `full`=彻底释放+清权重（GPU 回基线）；`cache`=仅清临时碎片保留模型 |
+  | `AMM_START_PRELOAD` | `0` | `1` 时 start 模型按 advanced 参数后台预加载到 GPU |
+  | `AMM_AUTO_RELEASE_GPU` | `1` | `0` 关闭推理后自动释放 |
+  | `AMM_ROOT` / `MODELS_DIR` / `PYTHONPATH` | `/amm` 等 | 容器路径（compose environment 已设） |
+
+## 五、Models 页 Advanced 区不显示 bug 修复（commit 6cafbc7）
+- **根因**：`renderAdvancedSettings` 是 async 函数，但在同步模板 `${...?renderAdvancedSettings(id):''}` 直接求值 → 拿到 Promise → 渲染空。
+- **修复**：模板改为 `<div id="adv-wrap-{id}">` 占位，渲染后异步注入；t2i/t2v/i2v 三模型 Advanced 均正常。
 
 ## 涉及文件
 - `backend/api/diffusers_bridge.py`：`_release_gpu` / `_maybe_release_gpu`，6 处自动释放（`del pipe`）

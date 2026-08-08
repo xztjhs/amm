@@ -2,6 +2,15 @@
 
 ## v0.7.3 — 2026-08-08（diffusers 高级参数/自动释放/Playground 三能力）
 
+### 🐛 追加修复：Models 页 diffusers Advanced 区不显示
+- **根因**：`renderAdvancedSettings` 是 `async` 函数，但在 `renderModelsDetail` 的同步模板字面量 `${...?renderAdvancedSettings(id):''}` 直接被求值 → 拿到的是 Promise，渲染成空。
+- **修复**：模板改渲染 `<div id="adv-wrap-<id>">` 占位；渲染后对 engine=diffusers 的模型异步调用 `renderAdvancedSettings` 注入真实区，并 `bindParamChange` 联动显存估算。
+- **验证**：t2i / t2v / i2v 三模型 Advanced 区（Quant/Compute/Offload/Boundary/CPU-Offload）均正常渲染。
+- commit `6cafbc7`。
+
+### ⚙️ docker-compose.yml 环境变量 (v0.7.3)
+- 新增 `AMM_AUTO_RELEASE` / `AMM_START_PRELOAD` / `AMM_AUTO_RELEASE_GPU` / `AMM_ROOT` / `MODELS_DIR` / `PYTHONPATH`。
+
 ### 🧠 1. Models 页 diffusers 高级参数（t2i/t2v/i2v）
 - Advanced 区支持 **Quant / Compute Dtype / Offload / Boundary Ratio / CPU Offload** 设置并回写 yaml，start/推理按参数生效；修复 offload 下拉不读模型实际值的 bug。
 - t2i/t2v/i2v 参数 label 中英对照（label + label_en）。
