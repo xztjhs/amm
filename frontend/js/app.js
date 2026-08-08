@@ -468,6 +468,28 @@
 
     function fmtMb(mb) { return mb>=1024 ? (mb/1024).toFixed(1)+' GB' : mb+' MB'; }
 
+    // ---- 显存估算 (diffusers video / Wan2.2-A14B) v0.7.3 ----
+    function estimateVideoVram(d) {
+        const quant = (d.quant||'fp8').toLowerCase();
+        const compute = (d.compute_dtype||'bf16').toLowerCase();
+        const offload = (d.offload||'gpu').toLowerCase();
+        const res = String(d.resolution||'480p');
+        const frames = Math.max(1, d.num_frames||81);
+        const steps = Math.max(1, d.num_steps||50);
+        const storeB = _dtypeBytes(quant);
+        const weights = 54 * (storeB === 1 ? 0.5 : (storeB === 2 ? 1 : 2)); // FP8~27G, BF16~54G, FP32~110G
+        // 激活: 随帧数线性 + 分辨率(720p=2.5x) + 计算精度 + 步数线性
+        const actBase = res==='720p' ? 30 : 12;       // 81帧基准激活(GB)
+        const actGB = actBase * (frames/81) * (res==='720p'?2.5:1.0) * (compute==='fp32'?1.8:1.0) * (1+0.003*steps);
+        const fixedGB = 4.0; // CUDA context + VAE + text encoder 常驻
+        let resident = weights + actGB + fixedGB;
+        if (offload==='group' || offload==='model') resident *= 0.55;
+        return { mb: Math.max(1024, Math.round(resident*1024)), gb: +resident.toFixed(1),
+            weights_mb: Math.round(weights*1024), act_mb: Math.round(actGB*1024), fixed_mb: Math.round(fixedGB*1024),
+            offload, is_oom: resident > 85.0,
+            note: `${res}·${frames}f·${steps}步 ${quant.toUpperCase()}/${compute.toUpperCase()}/offload=${offload}` };
+    }
+
     function renderParamInput(modelId, param, inst) {
         const val = (inst && inst.parameters && inst.parameters[param.name] !== undefined) ? inst.parameters[param.name] : param.default;
         let input;
@@ -972,46 +994,49 @@
         });
         // 填充 Playground 模型选择 (chat + vision)
         await populatePlaygroundModels();
-        // T2I: 显存实时估算 + 输入变化刷新
+        // 显存实时估算 + 只读高级参数 + 输入变化刷新 (T2I/T2V/I2V)
         setupT2iVram();
+        setupT2vVram();
+        setupI2vVram();
 
     }
 
     // ---- T2I 显存估算 (Playground) ----
-    function setupT2iVram() {
-        refreshT2iVramPlayground();
-        ['pgT2IWidth','pgT2IHeight','pgT2ISteps','pgT2INum'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) { el.addEventListener('input', refreshT2iVramPlayground); el.addEventListener('change', refreshT2iVramPlayground); }
-        });
+    function setupT2iVram() { setupPgVram('t2i', { fields:['pgT2IWidth','pgT2IHeight','pgT2ISteps','pgT2INum'], vramFn: estimateT2iVram, cfg(m){return {width:m('pgT2IWidth',1024),height:m('pgT2IHeight',1024),num_images:m('pgT2INum',1),num_steps:m('pgT2ISteps',28)};}, advLabel:'T2I' }); }
+    function setupT2vVram() { setupPgVram('t2v', { fields:['pgT2VResolution','pgT2VFrames','pgT2VSteps'], vramFn: estimateVideoVram, cfg(m){return {resolution:m('pgT2VResolution','480p'), num_frames:m('pgT2VFrames',81), num_steps:m('pgT2VSteps',50)};}, advLabel:'T2V' }); }
+    function setupI2vVram() { setupPgVram('i2v', { fields:[], vramFn: estimateVideoVram, cfg:null, advLabel:'I2V' }); }
+
+    // ---- 通用: Playground 显存估算 + 只读高级参数展示 ----
+    function setupPgVram(modelId, opt) {
+        refreshPgVram(modelId, opt);
+        (opt.fields||[]).forEach(id => { const el=document.getElementById(id); if(el){ el.addEventListener('input',()=>refreshPgVram(modelId,opt)); el.addEventListener('change',()=>refreshPgVram(modelId,opt)); } });
     }
-    async function refreshT2iVramPlayground() {
-        const box = document.getElementById('pgT2IVram');
-        const advBox = document.getElementById('pgT2IAdv');
-        let adv = { quant: 'fp8', compute_dtype: 'bf16', boundary_ratio: '', cpu_offload: false, offload: 'gpu' };
-        try { const r = await apiGet('/instances/t2i/advanced'); if (r && r.settings) adv = r.settings || {}; } catch(e) {}
-        const g = (id, d) => { const el = document.getElementById(id); return el ? parseFloat(el.value) : d; };
-        if (box) {
-            const est = estimateT2iVram({
-                quant: adv.quant || '', compute_dtype: adv.compute_dtype || 'bf16', offload: adv.offload || 'gpu',
-                width: g('pgT2IWidth',1024), height: g('pgT2IHeight',1024),
-                num_images: g('pgT2INum',1), num_steps: g('pgT2ISteps',28),
-            });
+    async function refreshPgVram(modelId, opt) {
+        const box = document.getElementById('pgVram-'+modelId);
+        const advBox = document.getElementById('pgAdv-'+modelId);
+        let adv = { quant:'fp8', compute_dtype:'bf16', boundary_ratio:'', cpu_offload:false, offload:'gpu' };
+        try { const r = await apiGet('/instances/'+modelId+'/advanced'); if (r && r.settings) adv = r.settings || {}; } catch(e){}
+        if (box && opt && opt.vramFn) {
+            const g = (id, d) => { const el = document.getElementById(id); return el ? parseFloat(el.value) : d; };
+            const est = opt.vramFn(Object.assign(
+                { quant:adv.quant||'', compute_dtype:adv.compute_dtype||'bf16', offload:adv.offload||'gpu' },
+                opt.cfg ? opt.cfg(g) : {}
+            ));
             const color = est.is_oom ? 'var(--error)' : 'var(--success)';
             box.innerHTML = `<span>💾 估算显存 <strong style="color:${color}">${fmtMb(est.mb)}</strong></span>
-                <span style="opacity:.75">权重 ${fmtMb(est.weights_mb)} + 激活 ${fmtMb(est.act_mb)} + 固定 ${fmtMb(est.fixed_mb)}</span>
+                <span style="opacity:.75">${est.weights_mb!=null?('权重 '+fmtMb(est.weights_mb)+' + '):''}${est.act_mb!=null?('激活 '+fmtMb(est.act_mb)+' + '):''}${est.fixed_mb!=null?('固定 '+fmtMb(est.fixed_mb)):''}</span>
                 ${est.is_oom ? '<b style="color:var(--error)">⚠ 超85G!</b>' : ''}`;
         }
         if (advBox) {
             const q = adv.quant ? String(adv.quant).toUpperCase() : 'AUTO';
             const cd = adv.compute_dtype || 'bf16';
             const ol = adv.offload || 'gpu';
-            const br = (adv.boundary_ratio === null || adv.boundary_ratio === undefined || adv.boundary_ratio === '') ? '自动' : adv.boundary_ratio;
+            const br = (adv.boundary_ratio===null||adv.boundary_ratio===undefined||adv.boundary_ratio==='') ? '自动' : adv.boundary_ratio;
             advBox.innerHTML = `<div style="font-size:11px;color:var(--text-muted);line-height:1.7;">
                 <b style="color:var(--text-secondary)">🎛 模型高级参数 (模型级·推理只读)</b> ·
                 Quant <b>${q}</b> · Compute <b>${cd}</b> · Offload <b>${ol}</b> ·
                 Boundary <b>${br}</b> · CPU-Offload：<b>${adv.cpu_offload?'ON':'OFF'}</b>
-                <span style="opacity:.7">(可在 Models → T2I → Advanced 修改, 需 Restart 生效)</span>
+                <span style="opacity:.7">(可在 Models → ${opt.advLabel||modelId.toUpperCase()} → Advanced 修改, 需 Restart 生效)</span>
             </div>`;
         }
     }
