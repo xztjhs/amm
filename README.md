@@ -197,7 +197,7 @@ python3.11 /amm/backend/server.py
 | 模型类别 | llama.cpp | vLLM | Diffusers |
 |----------|:---------:|:----:|:---------:|
 | Chat / LLM | ✅ | ✅ | ❌ |
-| Embedding | ✅ | ✅ | ❌ |
+| Embedding | ✅ | ❌ (v0.6.1 移除) | ❌ |
 | ASR | ✅ | ❌ | ❌ |
 | TTS | ✅ | ❌ | ❌ |
 | Reranker | ✅ | ❌ | ❌ |

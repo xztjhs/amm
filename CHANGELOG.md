@@ -1,5 +1,24 @@
 # AMM Changelog
 
+## v0.6.1 — 2026-08-08（维护）
+
+### 🧬 Embedding 仅保留 llama_cpp 引擎（#1）
+- `config/models_config.yaml` embedding `available_engines` 改为 `["llama_cpp"]`，UI 移除 vLLM 按钮
+- 原因：本机无 Embedding safetensors，vLLM 加载 GGUF embedding 需手动补参，收敛为单引擎开箱即用
+
+### ⚙️ vLLM 引擎参数缺陷修复（#3）
+- **quantization auto 崩溃**：UI 默认 `quantization=auto` 被透传 `--quantization auto`，vLLM 0.22.1 报
+  `Unknown quantization method: auto`。修复：值为 `auto/空/none` 时不再透传
+- **Embedding 自动补参**：embedding 类别自动注入 `--dtype float16 --convert embed`，GGUF 加载无需手动改命令
+- 文件：`engines/vllm.py`（备份 `vllm.py.bak_1786172301`）
+
+### 🎨 Diffusers 引擎部署修复（#3）
+- 根因：AMM server 为容器 PID1（系统 python3.11），diffusers 依赖只装了 vLLM venv，主进程无法 import
+- 修复：把 numpy/diffusers/transformers/accelerate/einops/safetensors/pillow + opencv/imageio 装到系统 python
+- 关键：**每次装完依赖需重启 AMM 容器**（宿主机 `docker stop/start AMM`），否则主进程缓存旧状态报
+  `Numpy is not available` / `OpenCV not found`
+- 实测：T2I / T2V / I2V 全部出图/出视频通过（见 docs/维护记录-20260808-引擎与diffusers.md）
+
 ## v0.6 — 2026-08-08
 
 ### 🚀 启动命令编排 (Chat/LLM/VLM llama_cpp/vllm)

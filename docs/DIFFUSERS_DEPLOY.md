@@ -43,6 +43,22 @@ nohup /amm/backend/engines_installed/vllm/0.22.1/venv/bin/python /amm/backend/se
 #    API:  curl -X POST http://127.0.0.1:8080/v1/images/generations -d '{"prompt":"..."}'
 ```
 
+## 2026-08-08 修复记录（v0.6.1）
+**当前有效方案**：AMM 容器内 server 是 PID1（`/usr/bin/python3.11`，systemd/docker-sock 均不可用），
+故不是切换 venv，而是把 **diffusers 依赖直接装到系统 python**，与“server 用 venv python 启动”等效：
+```bash
+/usr/bin/python3.11 -m pip install --index-url https://mirrors.aliyun.com/pypi/simple/ \
+  numpy==2.3.5 diffusers==0.39.0 transformers==5.14.1 accelerate==1.14.0 \
+  einops==0.8.2 safetensors==0.8.0 pillow==12.3.0 \
+  opencv-python-headless imageio imageio-ffmpeg
+```
+**关键**：每次装完依赖需重启 AMM 容器（宿主机 SSH 端口 22：`docker stop -t 10 AMM && docker start AMM`），
+否则主进程 torch/cv2 缓存旧状态（报 `Numpy is not available` / `OpenCV not found`）。
+
+实测 T2I(Qwen-Image-2512)/T2V/I2V(Wan2.2-A14B FP8) 全部出图/出视频通过。
+详见 `docs/维护记录-20260808-引擎与diffusers.md`。
+
+
 ## 待办
 - [ ] 等模型下载完成
 - [ ] 单测 verify_diffusers (需停 vLLM)
