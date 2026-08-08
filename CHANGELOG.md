@@ -1,5 +1,29 @@
 # AMM Changelog
 
+## v0.6.3 — 2026-08-08（Tools 三项模型工具修复）
+
+### 🧰 Tools 菜单三项功能 webui 实测 + 修复
+在独立的 Tools 菜单下，通过真实 Web UI 完整走查 模型自动下载 / GGUF 量化 / vLLM→GGUF 转换，修复 4 处 bug：
+
+- **前端：量化/转换文件浏览器回调未暴露 to window**（`frontend/js/app.js`）
+  - `qLoadDir / qPickFile / qPickDirTarget / qUp / qNewDir / vgPickSrc` 等 HTML onclick 依赖的闭包函数从未挂到 `window`，导致点目录/选文件全部无反应。补全 `window.q*` 绑定。
+- **前端：GGUF 过滤正则错误**（`app.js`）
+  - `/^\\.gguf$/i` 双反斜杠匹配含字符的 `\\.gguf`，对 `.gguf` 恒不匹配 → 源目录永远“无 GGUF 文件”。改为单反斜杠 `/^\.gguf$/i`。
+- **前端：量化源“浏览”按钮 onclick 拼写错误**（`index.html`）
+  - `openQuantSrcBrowser()` 缺 “ize”，改为 `openQuantizeSrcBrowser()`。
+- **后端：QuantizerBridge 缺 `_resolve`**（`engines/quantizer.py`）
+  - `quantize()`/`convert_hf()` 调用不存在的 `self._resolve` → POST /api/quantize、/api/convert/hf 一律 500。补上文件路径解析方法。
+- **后端：status 排序 key 错误**（`quantizer.py`）
+  - `x["created"]` 但 `to_dict()` 输出 `created_at` → GET /api/quantize/status 恒 500。改为 `x.get("created_at")`。
+- **后端：vLLM→GGUF 用错 gguf 库**（`quantizer.py`）
+  - `_run_convert_hf` 设置 `NO_LOCAL_GGUF=1` 导致禁用 llama.cpp b4727 自带 `scripts/gguf-py`，`import gguf` 落到 vLLM venv 旧版 0.19（无 `MODEL_ARCH.DFLASH`）→ AttributeError。移除 `NO_LOCAL_GGUF`。
+
+### ✅ 实测结果（tools tab，webui 驱动）
+1. **GGUF 量化**：`GLM-OCR-Q8_0.gguf`(907M) → q4_0，约 7s，输出同目录。
+2. **vLLM→GGUF**：`/models/Qwen3-4B`(safetensors) → f32 GGUF(16.1G) → q4_k_m(2.5G)，全程约 70s。
+3. **模型下载**：`Qwen/Qwen2.5-0.5B-Instruct-gguf`(ModelScope)，约 5.1G，7.4MB/s，下载至 `/models/zoo/modelscope/`。
+- 测试产物已清理，保留三类输出路径可重复验证。
+
 ## v0.6.2 — 2026-08-08
 
 ### 🧰 新增独立 Tools 菜单（模型工具从 Settings 拆分）
