@@ -175,7 +175,7 @@
             console.error('Refresh:', e);
         }
         const tab = document.querySelector('.nav-item.active')?.dataset?.tab;
-        if (!tab || tab === 'dashboard') renderDashboard();
+        if (!tab || tab === 'dashboard') { renderDashboard(); renderDashboardDiffTasks(); }
         if (tab === 'gpu') renderGPU();
         const el = document.getElementById('lastUpdate');
         if (el) el.textContent = 'Last update: ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
@@ -248,6 +248,34 @@
                     ${(g.running_processes||[]).length ? g.running_processes.map(p=>`<div class="gpu-proc-item" title="${escapeHtml(p.command||p.name)}"><span class="gpu-proc-pid">PID ${escapeHtml(p.pid)}</span><span class="gpu-proc-name">${escapeHtml(p.command||p.name)}</span><span class="gpu-proc-mem">${p.gpu_memory_mb!=null?escapeHtml(p.gpu_memory_mb)+' MB':''}</span></div>`).join('') : '<div class="gpu-proc-empty">无运行程序</div>'}
                 </div>
             </div>`).join('');
+    }
+
+    // 渲染 diffusers 推理任务 (Dashboard 底部, 实时提交; v0.7)
+    async function renderDashboardDiffTasks() {
+        const box = document.getElementById('dashboardDiffTasks');
+        const title = document.getElementById('diffTasksTitle');
+        if (!box) return;
+        let tasks = [];
+        try {
+            const r = await apiGet('/bridge/diffusers/status');
+            tasks = (r && r.tasks) || [];
+        } catch (e) { tasks = []; }
+        if (title) title.style.display = (tasks.length ? '' : 'none');
+        if (!tasks.length) { box.innerHTML = ''; return; }
+        const now = Date.now() / 1000;
+        const fmt = (s) => (s ?? 0).toFixed(1) + 's';
+        box.innerHTML = tasks.map(t => {
+            let statusHtml;
+            if (t.status === 'submitted') { statusHtml = '<span style="color:var(--text-muted)">排队中 ⏱ ' + fmt(now - t.submitted_at) + '</span>'; }
+            else if (t.status === 'running') { statusHtml = '<span style="color:var(--accent)">推理中 ⏱ ' + fmt(now - t.submitted_at) + '</span>'; }
+            else if (t.status === 'completed') { statusHtml = '<span style="color:var(--success)">✓ 完成 ' + (t.elapsed_total!=null?fmt(t.elapsed_total):'') + '</span>'; }
+            else { statusHtml = '<span style="color:var(--error)">✗ 失败</span>'; }
+            return `<div class="diff-task-item">
+                <span class="diff-task-id">${escapeHtml(t.model_id.toUpperCase())} #${t.seq}</span>
+                <span class="diff-task-prompt">${escapeHtml((t.prompt||'').slice(0,50))||''}</span>
+                ${statusHtml}
+            </div>`;
+        }).join('');
     }
 
     function short(a, n) { n = n||70; return a.length>n ? a.slice(0,n)+'…' : a; }
@@ -520,6 +548,13 @@
                             <input type="checkbox" id="${id}-cpu_offload" ${defaults.cpu_offload?'checked':''} style="accent-color:var(--accent)"> 启用
                         </label>
                     </div>
+                    <div class="param-item"><label>Offload 策略<span class="param-desc">gpu=全驻显存(推荐); model=序列CPU offload; group=叶子offload</span></label>
+                        <select class="form-select" id="${id}-offload">
+                            <option value="gpu" ${!defaults.offload || defaults.offload==='gpu'?'selected':''}>gpu (全驻 GPU) ⭐</option>
+                            <option value="model" ${defaults.offload==='model'?'selected':''}>model (enable_model_cpu_offload)</option>
+                            <option value="group" ${defaults.offload==='group'?'selected':''}>group (leaf_level offload)</option>
+                        </select>
+                    </div>
                 </div>
                 <div style="margin-top:12px;display:flex;gap:8px;">
                     <button class="btn btn-primary btn-sm" onclick="saveAdvancedSettings('${modelId}')">Save Advanced</button>
@@ -535,6 +570,7 @@
             compute_dtype: document.getElementById(`${id}-compute_dtype`)?.value || '',
             boundary_ratio: document.getElementById(`${id}-boundary_ratio`)?.value || '',
             cpu_offload: document.getElementById(`${id}-cpu_offload`)?.checked || false,
+            offload: document.getElementById(`${id}-offload`)?.value || 'gpu',
         };
         // 空字符串转 null (后端会接受并写 None)
         if (settings.quant === '') settings.quant = '';
@@ -1130,20 +1166,29 @@
         const steps = parseInt(document.getElementById('pgT2ISteps').value);
         const guidance = parseFloat(document.getElementById('pgT2IGuidance').value);
         const result = document.getElementById('pgT2IResult');
-        result.innerHTML = '<div class="pg-placeholder">Generating... please wait</div>';
+        const t0 = Date.now();
+        const timer = startLiveTimer(result, t0);
+        result.innerHTML = '<div class="pg-placeholder">Generating... <span class="pg-live-time">⏱ 0s</span></div>';
         try {
             const resp = await fetch('/v1/images/generations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: prompt, width: width, height: height, num_inference_steps: steps, guidance_scale: guidance, n: 1 }),
+                body: JSON.stringify({ prompt: prompt, width: width, height: height, num_inference_steps: steps, guidance_scale: guidance, n: 1, save_to_disk: true }),
             });
             const data = await resp.json();
+            stopLiveTimer(timer);
+            const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
             if (data.data && data.data[0] && data.data[0].b64_json) {
-                result.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" style="max-width:100%;border-radius:8px;">';
+                let extra = '';
+                if (data.download_urls && data.download_urls.length) {
+                    extra = `<div style="margin-top:8px;font-size:12px;"><a href="${data.download_urls[0]}" target="_blank" style="color:var(--accent)">💾 下载图片文件</a> <span style="color:var(--text-muted)">(${data.saved_paths && data.saved_paths[0] || ''})</span></div>`;
+                }
+                result.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" style="max-width:100%;border-radius:8px;"><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">提交到完成耗时 ${elapsed}s</div>' + extra;
             } else {
                 result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
             }
         } catch (e) {
+            stopLiveTimer(timer);
             result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
         }
     }
@@ -1160,6 +1205,17 @@
             result.textContent = 'Error: ' + e.message;
         }
     }
+
+    // ---- Live timing helpers (v0.7: 提交->完成 实时计时) ----
+    function startLiveTimer(container, t0) {
+        const iv = setInterval(() => {
+            const s = ((Date.now() - t0) / 1000).toFixed(1) + 's';
+            const el = container.querySelector('.pg-live-time');
+            if (el) el.textContent = '⏱ ' + s;
+        }, 500);
+        return iv;
+    }
+    function stopLiveTimer(iv) { if (iv) clearInterval(iv); }
 
     // ---- T2V (Wan2.2-T2V-A14B) ----
     async function generateVideo() {
@@ -1179,9 +1235,10 @@
             save_to_disk: saveDisk,
             video_type: 't2v',
         };
-        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟（依赖 cpu_offload/quant 设置）</div>';
+        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟（依赖 offload/quant 设置） <span class="pg-live-time">⏱ 0s</span></div>';
         hint.textContent = '已发送, 等待推理...';
         const t0 = Date.now();
+        const timer = startLiveTimer(result, t0);
         try {
             const resp = await fetch('/v1/videos/generations', {
                 method: 'POST',
@@ -1189,21 +1246,25 @@
                 body: JSON.stringify(payload),
             });
             const data = await resp.json();
+            stopLiveTimer(timer);
             const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
             if (data.data && data.data[0] && data.data[0].b64_json) {
                 const mime = data.data[0].mime || 'video/mp4';
                 const src = `data:${mime};base64,${data.data[0].b64_json}`;
                 let extra = '';
-                if (data.saved_paths && data.saved_paths.length) {
+                if (data.download_urls && data.download_urls.length) {
+                        extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths && data.saved_paths[0])} · <a href="${data.download_urls[0]}" target="_blank" style="color:var(--accent)">⬇ 下载 MP4</a></div>`;
+                } else if (data.saved_paths && data.saved_paths.length) {
                     extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths[0])}</div>`;
                 }
-                result.innerHTML = `<video controls autoplay loop muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">耗时 ${elapsed}s · ${(data.data[0].b64_json.length * 3 / 4 / 1024 / 1024).toFixed(1)} MB</div>${extra}`;
-                hint.textContent = '✅ 完成';
+                result.innerHTML = `<video controls autoplay loop muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">提交到完成耗时 ${elapsed}s · ${(data.data[0].b64_json.length * 3 / 4 / 1024 / 1024).toFixed(1)} MB</div>${extra}`;
+                hint.textContent = '✅ 完成 (' + elapsed + 's)';
             } else {
                 result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
                 hint.textContent = '❌ 失败';
             }
         } catch (e) {
+            stopLiveTimer(timer);
             result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
             hint.textContent = '❌ 异常';
         }
@@ -1238,8 +1299,9 @@
             save_to_disk: saveDisk,
             video_type: 'i2v',
         };
-        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟</div>';
+        result.innerHTML = '<div class="pg-placeholder">生成中... 5s 480P 预计 5-15 分钟 <span class="pg-live-time">⏱ 0s</span></div>';
         const t0 = Date.now();
+        const timer = startLiveTimer(result, t0);
         try {
             const resp = await fetch('/v1/videos/generations', {
                 method: 'POST',
@@ -1247,19 +1309,23 @@
                 body: JSON.stringify(payload),
             });
             const data = await resp.json();
+            stopLiveTimer(timer);
             const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
             if (data.data && data.data[0] && data.data[0].b64_json) {
                 const mime = data.data[0].mime || 'video/mp4';
                 const src = `data:${mime};base64,${data.data[0].b64_json}`;
                 let extra = '';
-                if (data.saved_paths && data.saved_paths.length) {
+                if (data.download_urls && data.download_urls.length) {
+                    extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths && data.saved_paths[0])} · <a href="${data.download_urls[0]}" target="_blank" style="color:var(--accent)">⬇ 下载 MP4</a></div>`;
+                } else if (data.saved_paths && data.saved_paths.length) {
                     extra = `<div style="margin-top:8px;color:var(--success);font-size:12px;">💾 已落盘: ${escapeHtml(data.saved_paths[0])}</div>`;
                 }
-                result.innerHTML = `<video controls autoplay loop muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">耗时 ${elapsed}s</div>${extra}`;
+                result.innerHTML = `<video controls autoplay muted style="max-width:100%;border-radius:8px;" src="${src}"></video><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">提交到完成耗时 ${elapsed}s</div>${extra}`;
             } else {
                 result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
             }
         } catch (e) {
+            stopLiveTimer(timer);
             result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">Error: ' + escapeHtml(e.message) + '</div>';
         }
     }

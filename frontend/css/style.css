@@ -1011,6 +1011,17 @@ body {
 .gpu-proc-mem { color: var(--text-muted); flex-shrink: 0; }
 .gpu-proc-empty { font-size: 11px; color: var(--text-muted); padding: 4px 8px; }
 
+/* ============ v0.7: Diffusers 推理任务列表 ============ */
+.diff-task-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 18px; }
+.diff-task-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; padding: 6px 10px;
+    background: var(--bg-input); border-radius: 6px;
+    border: 1px solid var(--border);
+}
+.diff-task-id { color: var(--accent); font-weight: 600; flex-shrink: 0; }
+.diff-task-prompt { color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ============ v0.5: 刷新间隔选择 ============ */
 .refresh-select {
     background: var(--bg-input);

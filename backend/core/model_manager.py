@@ -310,12 +310,13 @@ class ModelManager:
 
     # 哪些 model_cfg 字段会被 UI 当作"FP8 / 显存优化"高级设置透传到 yaml (2026-08-05)
     # 这些字段不在 instance.parameters 里, 但 UI 也需要能在网页上切换
-    ADVANCED_FIELDS = {"quant", "compute_dtype", "boundary_ratio", "cpu_offload"}
+    # 2026-08-08: 增加 offload 策略 (gpu|model|group), 解决 t2v/i2v GPU 不工作
+    ADVANCED_FIELDS = {"quant", "compute_dtype", "boundary_ratio", "cpu_offload", "offload"}
 
     def update_advanced_settings(self, model_id: str, settings: Dict[str, Any]):
         """更新 Diffusers 引擎的高级设置 (FP8 量化 / CPU offload / boundary 等) 到 yaml
 
-        支持字段: quant, compute_dtype, boundary_ratio, cpu_offload
+        支持字段: quant, compute_dtype, boundary_ratio, cpu_offload, offload
         其他字段会被拒绝 (防止前端误改 category / model_id 等核心字段)
         """
         # 找到 yaml key
@@ -359,6 +360,11 @@ class ModelManager:
                         raise ValueError(f"boundary_ratio 必须是 float: {e}")
             elif f == "cpu_offload":
                 cfg["cpu_offload"] = bool(v)
+            elif f == "offload":
+                v = (v or "").lower().strip()
+                if v not in ("gpu", "model", "group", ""):
+                    raise ValueError(f"offload 值不合法 {v!r}, 允许: gpu/model/group")
+                cfg["offload"] = v or None
 
         # 写回 yaml
         import yaml as _yaml

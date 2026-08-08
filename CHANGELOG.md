@@ -1,5 +1,39 @@
 # AMM Changelog
 
+## v0.7 — 2026-08-08（Diffusers bug 修复 + 任务实时计时/落盘/下载）
+
+针对 AMM 反馈 4 项问题修复：
+
+### 🐛 1. t2i/t2v/i2v 日志为空（Logs tab）
+- **根因**：diffusers 走内置桥接（非子进程），`build_command()` 返回空列表 → `start_model` 无 `{model}_server.log`，`get_model_logs` 恒空。
+- **修复**：`diffusers_bridge.py` 新增 per-model 日志写入，pipeline 加载 / 任务提交 / 推理开始 / 完成 / 异常均写入 `logs/{model}.server.log`（与 UI `get_model_logs` 对齐）。Logs tab 现在能实时看到三类模型的运行日志。
+
+### 🐛 2. t2v / i2v 发起测试 GPU 不工作、Dashboard 无工作进程
+- **根因**：video 模型 `cpu_offload` 逻辑走 `enable_model_cpu_offload()`（序列 CPU offload），层被挪到 CPU、GPU 利用率趋 0，且为内置桥接（无子进程）→ `nvidia-smi compute-apps` 看不到活跃进程。
+- **修复（关键）**：offload 策略显式化，新增 `offload` 字段 `gpu | model | group`：
+  - `gpu`（默认）：全模型驻留 GPU（Wan2.2-A14B FP8 ~28G，84G 可驻）→ GPU 利用率最高；
+  - `model`：`enable_model_cpu_offload()`（旧默认）；
+  - `group`：leaf_level CPU offload（显存极紧兜底）。
+  - 兼容旧 `cpu_offload` bool（true→group，false/缺省→gpu）。后端 `update_advanced_settings` 白名单新增 `offload`，可网页改。
+- **Dashboard 可视化**：新增 `/api/bridge/diffusers/status` 暴露活动/最近任务（模型/进度/实时耗时/成功失败），前端 Dashboard 新增「Diffusers 推理任务」区块实时轮询展示（解决"看不到工作")。
+
+### 🟫 3. Playground 发起 t2i/t2v/i2v 拿不到最终文件
+- t2i/t2v/i2v 生成**默认落盘**到 `/amm/verification`（不再依赖前端 save_to_disk 勾选），响应带 `saved_paths`；
+- 新增 `GET /api/bridge/diffusers/download?path=`（限定在 VERIFICATION_DIR 内防目录穿越），前端结果区给出「⬇ 下载文件」链接；
+- 失败时把具体错误写进 per-model 日志（配合修复 1 可查）。
+
+### ⏱ 4. Playground 实时计时（提交→成功拿到结果）
+- 后端每个任务记录 `submitted_at / started_at / finished_at`，算 `elapsed_submit_to_run`、`elapsed_total`；
+- 前端 Playground 三个生成过程实时显示「⏱ 用时 Ns」（500ms 刷新），完成后展示「提交到完成耗时 `${elapsed}s`」；
+- Dashboard 推理任务区块同样实时显示每条任务已用时。
+
+### 涉及文件
+- `backend/api/diffusers_bridge.py`：per-model 日志、任务状态注册、offload 策略、默认落盘、status/download 路由
+- `backend/core/model_manager.py`：ADVANCED_FIELDS 增加 `offload`
+- `frontend/index.html`：Dashboard 推理任务区块
+- `frontend/js/app.js`：实时计时、下载链接、dashboard 任务区、高级设置 offload 选择
+- `frontend/css/style.css`：`.diff-task-*` 样式
+
 ## v0.6.4 — 2026-08-08（模型下载：代理 + 版本/文件选择 + 断点续传/进度）
 
 ### 🌐 模型自动下载增强（Tools → Model Download）

@@ -17,6 +17,8 @@ import logging
 import os
 import glob
 import time
+import urllib.parse
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -37,8 +39,114 @@ except Exception as _e:
     logger.warning(f"创建 VERIFICATION_DIR={VERIFICATION_DIR} 失败: {_e}, 回退到 /tmp")
     VERIFICATION_DIR = "/tmp"
 
+# per-model 日志目录 (与 ModelManager.LOGS_DIR 对齐, 也兼容独立运行)
+_DEFAULT_LOGS = os.path.join(os.environ.get("AMM_ROOT", "/amm"), "logs")
+_LOGS_DIR = os.environ.get("LOGS_DIR", _DEFAULT_LOGS)
+try:
+    os.makedirs(_LOGS_DIR, exist_ok=True)
+except Exception:
+    _LOGS_DIR = "/tmp"
+
 # 惰性加载的 pipeline 缓存
 _pipeline_cache: Dict[str, Any] = {}
+
+# ============================================================
+# 活动任务注册中心 (供 Dashboard / 计时 / 实时日志)
+#   记录: 提交 -> 进入推理 -> 完成 的全过程时间戳
+# ============================================================
+_TASK_LOCK = asyncio.Lock()
+_ACTIVE_TASKS: Dict[str, Dict[str, Any]] = {}   # task_id -> task record
+_TASK_SEQ = 0
+
+
+def _write_model_log(model_id: str, line: str) -> None:
+    """把一行日志追加到 <logs>/{model_id}_server.log (与 get_model_logs 对齐)"""
+    try:
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(os.path.join(_LOGS_DIR, f"{model_id}_server.log"), "a", encoding="utf-8") as f:
+            f.write(f"[{ts}] {line}\n")
+    except Exception as e:
+        logger.warning(f"写 model log({model_id}) 失败: {e}")
+
+
+async def _task_begin(model_id: str, **meta) -> str:
+    """新建一条推理任务记录 (提交时刻), 返回 task_id"""
+    global _TASK_SEQ
+    async with _TASK_LOCK:
+        _TASK_SEQ += 1
+        task_id = f"{model_id}-{int(time.time()*1000)}"
+        _ACTIVE_TASKS[task_id] = {
+            "task_id": task_id,
+            "model_id": model_id,
+            "seq": _TASK_SEQ,
+            "submitted_at": time.time(),
+            "started_at": None,       # 进入实际推理
+            "finished_at": None,
+            "status": "submitted",
+            "elapsed_submit_to_run": None,   # 提交 -> 开始推理
+            "elapsed_total": None,           # 提交 -> 完成
+            "error": None,
+            "saved_paths": [],
+            **meta,
+        }
+    _model_log(model_id, f"[task {task_id}] 提交任务", extra=meta)
+    return task_id
+
+
+async def _task_phase(model_id: str, task_id: str, phase: str, **meta) -> None:
+    async with _TASK_LOCK:
+        t = _ACTIVE_TASKS.get(task_id)
+        if t is None:
+            return
+        now = time.time()
+        if phase in ("running", "infer"):
+            t["started_at"] = t["started_at"] or now
+            t["status"] = "running"
+            t["elapsed_submit_run"] = now - t["submitted_at"]
+        elif phase == "complete":
+            t["finished_at"] = now
+            t["status"] = "completed"
+            t["elapsed_total"] = now - t["submitted_at"]
+        elif phase == "error":
+            t["finished_at"] = now
+            t["status"] = "error"
+            t["error"] = meta.get("error")
+            t["elapsed_total"] = now - t["submitted_at"]
+        for k, v in meta.items():
+            if k != "error":
+                t[k] = v
+
+
+def _model_log(model_id: str, line: str, extra: Optional[dict] = None) -> None:
+    """写一条带可选 K=V 后缀的日志"""
+    if extra:
+        kv = " ".join(f"{k}={v}" for k, v in extra.items() if v is not None)
+        if kv:
+            line = f"{line} ({kv})"
+    _write_model_log(model_id, line)
+
+
+def list_active_tasks() -> List[Dict[str, Any]]:
+    """汇总进行中/最近完成的任务 (不含锁, 供事件循环外读数)"""
+    now = time.time()
+    out = []
+    for t in _ACTIVE_TASKS.values():
+        if t["status"] == "running" or (t["finished_at"] and now - t["finished_at"] < 600):
+            d = dict(t)
+            d["elapsed_total"] = (
+                (t["elapsed_total"] or (now - t["submitted_at"] if t["status"] == "running" else None))
+            )
+            d["elapsed_run"] = (now - t["started_at"]) if t["started_at"] and t["status"] == "running" else None
+            out.append(d)
+    return sorted(out, key=lambda x: x["seq"], reverse=True)
+
+
+def _trim(s: Any, n: int = 80) -> str:
+    """截断 prompt 用于日志/展示"""
+    if s is None:
+        return ""
+    s = str(s).replace("\n", " ").strip()
+    return s if len(s) <= n else s[:n] + "…"
 
 # ============================================================
 # Quantization / dtype helpers (CUDA 13 + Blackwell sm_120)
@@ -193,18 +301,28 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
 
     关键能力 (2026-08-05 增强):
       - 支持 Wan2.2 MoE 双专家 (transformer + transformer_2 一起加载)
-      - 支持 FP8 layerwise_casting 量化加载 (transformer 权重存储 FP8、计算 BF16)
-      - 支持 group_offload 后备方案 (显存仍不够时)
-      - 保留 enable_model_cpu_offload 作为最后兜底
+      - 支持 FP8 layerwise_casting 量化加载
+      - 支持 group_offload 后备方案
+      - 保留 enable_model_cpu_offload
+
+    offload 策略 (2026-08-08 显式化, 解决 t2v/i2v GPU 不工作):
+      model_cfg["offload"]:  "gpu"   -> 全模型驻留 GPU (Wan2.2-A14B FP8 ~28G, 84G 可期; GPU 利用率最高, 推荐)
+                             "model" -> enable_model_cpu_offload (序列层级 CPU offload, 旧默认)
+                             "group" -> leaf_level group offload (显存极紧时)
+      兼容旧字段 cpu_offload (bool):
+        不设/None        -> 默认 "gpu"
+        cpu_offload=true -> "group"
+        cpu_offload=false-> "gpu"
     """
     model_id = model_cfg.get("model_id", "")
     category = model_cfg.get("category", "")
     model_source = model_cfg.get("model_source", "modelscope")
 
-    cache_key = f"{category}:{model_id}:quant={model_cfg.get('quant','default')}"
+    cache_key = f"{category}:{model_id}:quant={model_cfg.get('quant','default')}:offload={_resolve_offload(model_cfg)}"
     if cache_key in _pipeline_cache:
         return _pipeline_cache[cache_key]
 
+    _model_log(model_id, f"开始加载 pipeline (source={model_source}, quant={model_cfg.get('quant','default')})")
     logger.info(f"Loading {category} pipeline: {model_id} (source={model_source}, quant={model_cfg.get('quant','default')})")
 
     def _load():
@@ -215,27 +333,21 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
         logger.info(f"Local model path: {local}")
 
         # ---- 计算 / 存储 dtype ----
-        # image 类 (Qwen-Image) 小 (54G 全 BF16 可吃下), 不强求 FP8
-        # video 类 (Wan2.2-A14B) 27B MoE, 必须 FP8
         if category == "image":
             compute_dtype = _torch_dtype(model_cfg.get("compute_dtype", "bf16")) or torch.bfloat16
-            storage_dtype = compute_dtype  # 不量化
+            storage_dtype = compute_dtype
         else:
             compute_dtype = _torch_dtype(model_cfg.get("compute_dtype", "bf16")) or torch.bfloat16
-            storage_dtype = compute_dtype  # from_pretrained 默认加载用 compute_dtype
-            # Wan VAE 解码器需要 FP32 保真
+            storage_dtype = compute_dtype
             vae_dtype = torch.float32
 
         if category == "image":
             from diffusers import QwenImagePipeline
-            # 适配 ModelScope 下载的权重: 没有 .bf16 变体后缀, 不能传 variant
-            # (HF 仓库才有 model.bf16.safetensors 这种, ModelScope 默认走 fp32 总分片)
             pipe = QwenImagePipeline.from_pretrained(
                 local,
                 torch_dtype=compute_dtype,
             )
         else:
-            # 视频: 根据 model_index.json 的 _class_name 动态选择 pipeline
             from diffusers import WanPipeline, WanImageToVideoPipeline, WanImage2VideoModularPipeline
             pipe_cls = WanPipeline
             idx_path = os.path.join(local, "model_index.json")
@@ -254,44 +366,47 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
             except Exception as e:
                 logger.warning(f"read model_index failed, default WanPipeline: {e}")
 
-            # Wan2.2 MoE 双专家: boundary_ratio 由 model_cfg 指定, 默认 0.875 (官方)
             boundary_ratio = model_cfg.get("boundary_ratio")
             if boundary_ratio is None and "Wan2.2" in model_id:
-                boundary_ratio = 0.875  # 官方默认值
+                boundary_ratio = 0.875
             logger.info(f"Wan MoE boundary_ratio = {boundary_ratio}")
 
             load_kwargs = dict(
                 torch_dtype=compute_dtype,
             )
-            # boundary_ratio 在 WanPipeline.__init__ 阶段传入 (写进 config)
             if boundary_ratio is not None:
                 load_kwargs["boundary_ratio"] = float(boundary_ratio)
 
             pipe = pipe_cls.from_pretrained(local, **load_kwargs)
 
-        # ---- FP8 layerwise_casting (transformer 权重降精度存储) ----
+        # ---- FP8 layerwise_casting ----
         if _should_enable_layerwise_casting(model_cfg):
             _apply_layerwise_casting(pipe)
 
-        # ---- 显存搬运策略 ----
-        # 优先级: group_offload (CPU leaf) > enable_model_cpu_offload > 全 GPU
-        if model_cfg.get("cpu_offload"):
+        # ---- 显存搬运策略 (2026-08-08 显式) ----
+        offload = _resolve_offload(model_cfg)
+        _model_log(model_id, f"offload 策略 = {offload}")
+        if offload == "group":
             _apply_group_offload(pipe, offload_to_cpu=True)
-            # VAE 仍放 GPU,提升解码速度
             try:
                 if torch.cuda.is_available() and getattr(pipe, "vae", None) is not None:
                     pipe.vae.to("cuda")
             except Exception as e:
                 logger.warning(f"VAE 移回 GPU 失败: {e}")
-        else:
-            # 默认: 序列 CPU offload (保守且稳)
+        elif offload == "model":
             try:
                 pipe.enable_model_cpu_offload()
-                logger.info("enable_model_cpu_offload enabled (default)")
+                logger.info("enable_model_cpu_offload enabled (model offload)")
             except Exception as e:
-                logger.warning(f"enable_model_cpu_offload 失败, fallback cuda: {e}")
+                logger.warning(f"enable_model_cpu_offload 失败: {e}")
                 if torch.cuda.is_available():
                     pipe = pipe.to("cuda")
+        else:  # gpu - 全驻 GPU
+            if torch.cuda.is_available():
+                pipe = pipe.to("cuda")
+                logger.info(f"全模型驻留 GPU (to cuda), offload={offload}")
+            else:
+                logger.warning("CUDA 不可用, diffusers 回退 CPU 推理")
 
         return pipe
 
@@ -300,10 +415,38 @@ async def _load_pipeline(model_cfg: Dict) -> Any:
         pipe = await loop.run_in_executor(None, _load)
     except Exception as e:
         logger.exception(f"Pipeline load failed for {model_id}")
+        _model_log(model_id, f"Pipeline 加载失败: {e}")
         raise
     _pipeline_cache[cache_key] = pipe
+    _model_log(model_id, "Pipeline 加载完成")
     logger.info(f"Pipeline loaded: {cache_key}")
     return pipe
+
+
+def _resolve_offload(model_cfg: Dict) -> str:
+    """解析 offload 策略, 返回 'gpu' | 'model' | 'group' (优先新字段 offload, 兼容旧 cpu_offload)"""
+    off = model_cfg.get("offload") if model_cfg.get("offload") not in (None, "") else None
+    if off:
+        off = str(off).lower().strip()
+        if off in ("gpu", "full", "cuda", "none"):
+            return "gpu"
+        if off in ("model", "sequence", "seq"):
+            return "model"
+        if off in ("group", "leaf", "leaf_level"):
+            return "group"
+    co = model_cfg.get("cpu_offload")
+    if co is True:
+        return "group"
+    if co is False or co is None:
+        return "gpu"
+    s = str(co).lower().strip()
+    if s in ("true", "1", "on"):
+        return "group"
+    if s in ("0", "false", "off", "none"):
+        return "gpu"
+    if s in ("model", "seq"):
+        return "model"
+    return "group"
 
 
 def _to_base64_png(img) -> str:
@@ -397,6 +540,26 @@ class DiffusersBridgeHandler:
             "verification_dir_writable": os.access(VERIFICATION_DIR, os.W_OK),
         })
 
+    async def status(self, req):
+        """活动任务状态 (供 Dashboard / 前端轮询, 实时耗时)"""
+        return self._json({"tasks": list_active_tasks()})
+
+    async def download(self, req):
+        """下载保存的产物文件 (PNG / MP4), 限定在 VERIFICATION_DIR 内防目录穿越"""
+        path = req.query.get("path", "")
+        if not path:
+            return self._json({"error": "path required"}, 400)
+        try:
+            p = Path(path).resolve()
+            vdir = Path(VERIFICATION_DIR).resolve()
+            if not (str(p).startswith(str(vdir)) or p in (vdir,)):
+                return self._json({"error": "path 越界"}, 403)
+            if not p.is_file():
+                return self._json({"error": "文件不存在: " + str(p)}, 404)
+            return web.FileResponse(str(p), headers={"Access-Control-Allow-Origin": "*"})
+        except Exception as e:
+            return self._json({"error": str(e)}, 500)
+
     # ---- /v1/videos/generations (OpenAI 风格统一入口) ----
     async def videos_generate(self, req):
         """OpenAI 风格的视频生成入口: 根据请求体 video_type 路由到 t2v / i2v
@@ -421,10 +584,14 @@ class DiffusersBridgeHandler:
 
     # ---- T2I: 文生图 ----
     async def t2i_generate(self, req):
+        model_id = "t2i"
+        task_id = await _task_begin(model_id)
         try:
             data = await req.json()
             prompt = data.get("prompt", "")
+            await _task_phase(model_id, task_id, "submitted", prompt=_trim(prompt), width=data.get("width"), height=data.get("height"))
             if not prompt:
+                _model_log(model_id, f"[task {task_id}] 缺少 prompt")
                 return self._json({"error": "prompt required"}, 400)
 
             model_cfg = _find_model_cfg(self.manager, "t2i") or _find_model_cfg_by_category(self.manager, "image")
@@ -460,34 +627,41 @@ class DiffusersBridgeHandler:
                     return list(result[0])
                 return list(result.images) if hasattr(result, "images") else list(result)
 
+            await _task_phase(model_id, task_id, "running", started=True)
             loop = asyncio.get_event_loop()
             images = await loop.run_in_executor(None, _gen)
 
             data_list = [{"b64_json": _to_base64_png(img)} for img in images]
             resp = {"data": data_list, "created": int(asyncio.get_event_loop().time())}
 
-            # 可选: 同步落盘到 VERIFICATION_DIR (默认不落, 避免冷启动期产废文件)
-            if data.get("save_to_disk"):
-                saved_paths = []
-                for img in images:
-                    p = _save_png(img, model_cfg.get("model_id", ""), seed=seed)
-                    if p:
-                        saved_paths.append(p)
-                if saved_paths:
-                    resp["saved_paths"] = saved_paths
-                    logger.info(f"t2i saved {len(saved_paths)} PNG -> {saved_paths[0] if len(saved_paths)==1 else saved_paths}")
+            # 默认落盘 (不管 save_to_disk), 便于拿文件; 同时返回可下载 URL
+            saved_paths = []
+            for img in images:
+                p = _save_png(img, model_cfg.get("model_id", ""), seed=seed)
+                if p:
+                    saved_paths.append(p)
+            if saved_paths:
+                resp["saved_paths"] = saved_paths
+                resp["download_urls"] = ["/api/bridge/diffusers/download?path=" + urllib.parse.quote(p) for p in saved_paths]
 
+            await _task_phase(model_id, task_id, "complete", saved_paths=saved_paths)
+            _model_log(model_id, f"[task {task_id}] 完成: {len(saved_paths)} 张图", extra={"saved": saved_paths})
             return self._json(resp)
 
         except Exception as e:
             logger.exception("t2i generate error")
+            await _task_phase(model_id, task_id, "error", error=str(e))
+            _model_log(model_id, f"[task {task_id}] 异常: {e}")
             return self._json({"error": str(e)}, 500)
 
     # ---- T2V: 文生视频 ----
     async def t2v_generate(self, req):
+        model_id = "t2v"
+        task_id = await _task_begin(model_id)
         try:
             data = await req.json()
             prompt = data.get("prompt", "")
+            await _task_phase(model_id, task_id, "submitted", prompt=_trim(prompt), res=data.get("resolution"), frames=data.get("num_frames"))
             if not prompt:
                 return self._json({"error": "prompt required"}, 400)
 
@@ -504,7 +678,6 @@ class DiffusersBridgeHandler:
             num_frames = int(data.get("num_frames", 81))
             num_steps = int(data.get("num_inference_steps", 50))
             guidance = float(data.get("guidance_scale", 5.0))
-            # Wan2.2 MoE: 双 guidance, 官方默认值 4.0 / 3.0
             guidance_2 = data.get("guidance_scale_2")
             if guidance_2 is not None:
                 guidance_2 = float(guidance_2)
@@ -528,17 +701,16 @@ class DiffusersBridgeHandler:
                     generator=generator,
                     output_type="np",
                 )
-                # Wan2.2 MoE 才需要 guidance_scale_2
                 if guidance_2 is not None and getattr(pipe, "transformer_2", None) is not None:
                     sig = _inspect.signature(pipe.__call__)
                     if "guidance_scale_2" in sig.parameters:
                         pipe_kwargs["guidance_scale_2"] = guidance_2
                 with torch.no_grad():
                     frames = pipe(**pipe_kwargs)
-                # diffusers 0.39: Wan 返回 WanPipelineOutput, 统一提取帧序列
                 vid = _extract_video_frames(frames)
                 return export_to_video(vid, fps=fps)
 
+            await _task_phase(model_id, task_id, "running", model=True)
             loop = asyncio.get_event_loop()
             mp4_bytes = await loop.run_in_executor(None, _gen)
             if isinstance(mp4_bytes, str):  # 返回文件路径
@@ -549,22 +721,31 @@ class DiffusersBridgeHandler:
                 "data": [{"b64_json": _to_base64_video_bytes(mp4_bytes), "mime": "video/mp4"}],
                 "created": int(asyncio.get_event_loop().time()),
             }
-            if data.get("save_to_disk"):
-                p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
-                if p:
-                    resp["saved_paths"] = [p]
-                    logger.info(f"t2v saved MP4 -> {p}")
+            # 默认落盘 + 下载 URL
+            p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
+            if p:
+                resp["saved_paths"] = [p]
+                resp["download_urls"] = ["/api/bridge/diffusers/download?path=" + urllib.parse.quote(p)]
+                _model_log(model_id, f"[task {task_id}] 完成, {len(mp4_bytes)} bytes", {"saved": p, "res": res})
+            else:
+                _model_log(model_id, f"[task {task_id}] 完成但落盘失败")
+            await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
             return self._json(resp)
 
         except Exception as e:
             logger.exception("t2v generate error")
+            await _task_phase(model_id, task_id, "error", error=str(e))
+            _model_log(model_id, f"[task {task_id}] 异常: {e}")
             return self._json({"error": str(e)}, 500)
 
     # ---- I2V: 图生视频 ----
     async def i2v_generate(self, req):
+        model_id = "i2v"
+        task_id = await _task_begin(model_id)
         try:
             data = await req.json()
             prompt = data.get("prompt", "")
+            await _task_phase(model_id, task_id, "submitted", prompt=_trim(prompt), res=data.get("resolution"), frames=data.get("num_frames"))
             image_b64 = data.get("image", data.get("image_b64", ""))
             if not image_b64:
                 return self._json({"error": "image (base64) required"}, 400)
@@ -622,6 +803,7 @@ class DiffusersBridgeHandler:
                 vid = _extract_video_frames(frames)
                 return export_to_video(vid, fps=fps)
 
+            await _task_phase(model_id, task_id, "running", model=True)
             loop = asyncio.get_event_loop()
             mp4_bytes = await loop.run_in_executor(None, _gen)
             if isinstance(mp4_bytes, str):
@@ -632,15 +814,19 @@ class DiffusersBridgeHandler:
                 "data": [{"b64_json": _to_base64_video_bytes(mp4_bytes), "mime": "video/mp4"}],
                 "created": int(asyncio.get_event_loop().time()),
             }
-            if data.get("save_to_disk"):
-                p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
-                if p:
-                    resp["saved_paths"] = [p]
-                    logger.info(f"i2v saved MP4 -> {p}")
+            p = _save_video_bytes(mp4_bytes, model_cfg.get("model_id", ""), seed=seed)
+            if p:
+                resp["saved_paths"] = [p]
+                resp["download_urls"] = ["/api/bridge/diffusers/download?path=" + urllib.parse.quote(p)]
+                logger.info(f"i2v saved MP4 -> {p}")
+            await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
+            _model_log(model_id, f"[task {task_id}] 完成, {len(mp4_bytes)} bytes", {"saved": p})
             return self._json(resp)
 
         except Exception as e:
             logger.exception("i2v generate error")
+            await _task_phase(model_id, task_id, "error", error=str(e))
+            _model_log(model_id, f"[task {task_id}] 异常: {e}")
             return self._json({"error": str(e)}, 500)
 
 
@@ -648,6 +834,8 @@ def setup_routes(app: web.Application, manager):
     """注册 Diffusers 桥接路由"""
     h = DiffusersBridgeHandler(manager)
     app.router.add_get("/api/bridge/diffusers/health", h.health)
+    app.router.add_get("/api/bridge/diffusers/status", h.status)
+    app.router.add_get("/api/bridge/diffusers/download", h.download)
     app.router.add_post("/api/bridge/diffusers/t2i", h.t2i_generate)
     app.router.add_post("/api/bridge/diffusers/t2v", h.t2v_generate)
     app.router.add_post("/api/bridge/diffusers/i2v", h.i2v_generate)
