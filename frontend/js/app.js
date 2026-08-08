@@ -841,6 +841,38 @@
         sel.addEventListener('change', refreshLogs);
     }
 
+    // 日志行着色器: 解析时间戳/级别/消息, 提高可读性与对比度
+    const LOG_LEVEL_COLOR = {
+        'DEBUG': 'var(--text-muted)',
+        'INFO': 'var(--cyan)',
+        'WARNING': 'var(--warning)',
+        'WARN': 'var(--warning)',
+        'ERROR': 'var(--error)',
+        'CRITICAL': 'var(--error)',
+    };
+    function renderLogLines(logs) {
+        if (!logs || !logs.length) return '(empty)';
+        return logs.map(function (line) {
+            const raw = String(line);
+            if (!raw.trim()) return '';
+            // 堆栈/缩进行(以空格/制表开头, 无级别标记): 降强调
+            if (/^\s+/.test(raw) && !/^\d{4}-\d{2}-\d{2}/.test(raw)) {
+                return '<div class="log-line log-stack">' + escapeHtml(raw) + '</div>';
+            }
+            const m = raw.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:,\d+)?)\s*\[?([A-Za-z]+)\]?\s?(.*)$/);
+            if (m) {
+                const lv = (m[2] || 'INFO').toUpperCase();
+                const color = LOG_LEVEL_COLOR[lv] || 'var(--text)';
+                return '<div class="log-line">'
+                    + '<span class="log-ts">' + escapeHtml(m[1]) + ' </span>'
+                    + '<span class="log-lv" style="color:' + color + ';font-weight:600;">[' + escapeHtml(lv) + ']</span> '
+                    + '<span class="log-txt">' + escapeHtml(m[3]) + '</span>'
+                    + '</div>';
+            }
+            return '<div class="log-line log-plain">' + escapeHtml(raw) + '</div>';
+        }).join('');
+    }
+
     async function refreshLogs() {
         const modelId = document.getElementById('logModelSelect')?.value;
         const lines = document.getElementById('logLines')?.value || 100;
@@ -848,7 +880,7 @@
         if (!viewer) return;
         if (!modelId) { viewer.textContent = 'Select a model to view logs...'; return; }
         const data = await apiGet('/instances/' + modelId + '/logs?lines=' + lines);
-        viewer.textContent = (data && data.logs) ? (data.logs.join('\n') || '(empty)') : 'Failed to load logs.';
+        viewer.innerHTML = (data && data.logs) ? renderLogLines(data.logs) : 'Failed to load logs.';
         viewer.scrollTop = viewer.scrollHeight;
     }
 
@@ -1835,6 +1867,8 @@
         const source = document.getElementById('dlSource')?.value || 'modelscope';
         const category = document.getElementById('dlCategory')?.value || '';
         const rev = (window.__dlSelectedRev || {}).revision || '';
+        const target_parent = document.getElementById('dlTargetParent')?.value.trim() || '';
+        const target_folder = document.getElementById('dlTargetFolder')?.value.trim() || '';
         const cbs = document.querySelectorAll('.dl-file-cb');
         let files = [];
         if (cbs.length) files = Array.from(cbs).filter(c => c.checked).map(c => c.value);
@@ -1844,6 +1878,7 @@
         const r = await apiPost('/models/download', {
             model_id: modelId, source: source, category: category,
             revision: rev, files: files, total: total, total_files: total_files,
+            target_parent: target_parent, target_folder: target_folder,
         });
         if (r && r.ok) {
             toast('✅ 已提交下载任务 ' + r.task_id, 'success');

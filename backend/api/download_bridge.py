@@ -46,13 +46,16 @@ def _load_proxy() -> dict:
 
 class DownloadTask:
     def __init__(self, task_id: str, model_id: str, source: str, category: str = "",
-                 revision: str = "", files: Optional[list] = None):
+                 revision: str = "", files: Optional[list] = None,
+                 target_parent: str = "", target_folder: str = ""):
         self.task_id = task_id
         self.model_id = model_id
         self.source = source
         self.category = category
         self.revision = revision
         self.files = files or []
+        self.target_parent = target_parent
+        self.target_folder = target_folder
         self.proxy = _load_proxy()
         self.status = "pending"
         self.created = time.time()
@@ -78,6 +81,8 @@ class DownloadTask:
             "category": self.category,
             "revision": self.revision,
             "files": self.files,
+            "target_parent": self.target_parent,
+            "target_folder": self.target_folder,
             "proxy": self.proxy,
             "status": self.status,
             "downloaded": self.downloaded,
@@ -166,13 +171,21 @@ class DownloadBridge:
             files = [f.strip() for f in files.split(",") if f.strip()]
         total = int(body.get("total") or 0)
         total_files = int(body.get("total_files") or 0)
+        # 目标落盘位置(可空, 空则保持默认 zoo 快照结构)
+        target_parent = (body.get("target_parent") or "").strip().strip("/")
+        target_folder = (body.get("target_folder") or "").strip().lstrip("/")
+        if target_folder:
+            # 校验: 不含危险字符/路径穿越
+            if any(ch in target_folder for ch in ("..", "/", "\\", "\0")):
+                return self._json({"error": "文件夹名称含非法字符"}, 400)
         if not model_id or model_id.startswith("__"):
             return self._json({"error": "缺少有效 model_id"}, 400)
         if source not in ("modelscope", "huggingface"):
             return self._json({"error": f"source 仅支持 modelscope/huggingface: {source}"}, 400)
 
         task_id = f"dl_{int(time.time())}_{len(self.tasks)}"
-        task = DownloadTask(task_id, model_id, source, category, revision, files)
+        task = DownloadTask(task_id, model_id, source, category, revision, files,
+                            target_parent, target_folder)
         task.total = total
         task.total_files = total_files
         with self._lock:
@@ -200,6 +213,9 @@ class DownloadBridge:
                 "AMM_REVISION": task.revision, "AMM_FILES": json.dumps(task.files),
                 "AMM_PROXY": json.dumps(task.proxy), "AMM_PROGRESS": task.progress_file,
                 "AMM_TOTAL": str(task.total),
+                "AMM_TARGET_PARENT": task.target_parent,
+                "AMM_TARGET_FOLDER": task.target_folder,
+                "AMM_MODELS_DIR": os.environ.get("MODELS_DIR", "/models"),
             })
             task.proc = subprocess.Popen([py, "-c", self._helper_source()],
                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

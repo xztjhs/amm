@@ -339,6 +339,21 @@ AI 用于图像识别与自然语言处理
                         <button class="btn btn-sm" onclick="window.refreshDownloadStatus()">🔄 刷新任务</button>
                     </div>
 
+                    <!-- 目标落盘位置 -->
+                    <div style="display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px;align-items:end;margin-bottom:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;">
+                        <div>
+                            <label style="font-size:11px;color:var(--text-muted)">目标父目录 (可选, 留空存到 /models 根)</label>
+                            <input id="dlTargetParent" class="form-input" placeholder="如 vllm / diffusion" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:11px;color:var(--text-muted)">文件夹名称 (可选, 默认=模型短名)</label>
+                            <input id="dlTargetFolder" class="form-input" placeholder="留空则用模型短名" value="">
+                        </div>
+                        <div style="font-size:11px;color:var(--text-muted);padding-bottom:8px;line-height:1.5;">
+                            落盘至 <code style="color:var(--accent)">/models/{父目录/文件夹名}</code>，与<br>引擎浏览路径保持一致
+                        </div>
+                    </div>
+
                     <!-- 版本选择 -->
                     <div id="dlVersionPanel" style="display:none;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
                         <div style="font-size:12px;font-weight:600;margin-bottom:6px;">📁 模型版本 (revision)</div>

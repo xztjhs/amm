@@ -599,19 +599,26 @@ body {
 }
 
 .log-viewer {
-    background: #0a0c14;
+    background: #0d1020;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 16px;
     font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--text);
     max-height: 70vh;
     overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-all;
-    line-height: 1.6;
+    line-height: 1.7;
 }
+.log-line { padding: 1px 0; }
+.log-line:hover { background: rgba(255,255,255,0.04); }
+.log-ts { color: #7a8196; }
+.log-lv { margin-right: 2px; }
+.log-txt { color: var(--text); }
+.log-stack { color: #6a7190; padding-left: 22px; }
+.log-plain { color: var(--text-secondary); }
 
 /* ---- Settings Tab ---- */
 .settings-panel {

@@ -16,6 +16,7 @@ import sys
 import json
 import time
 import re
+import shutil
 import threading
 import traceback
 from pathlib import Path
@@ -29,6 +30,10 @@ files = json.loads(os.environ.get("AMM_FILES", "[]") or "[]")
 proxy = json.loads(os.environ.get("AMM_PROXY", "{}") or "{}")
 progress_file = os.environ.get("AMM_PROGRESS", "")
 total_ref = int(os.environ.get("AMM_TOTAL", "0") or 0)
+# 目标落盘(可选): 下载完成后将真实模型文件整理到 MODELS_DIR/父目录/文件夹名
+target_parent = os.environ.get("AMM_TARGET_PARENT", "") or ""
+target_folder = os.environ.get("AMM_TARGET_FOLDER", "") or ""
+models_dir = os.environ.get("AMM_MODELS_DIR", "/models")
 
 
 def apply_proxy():
@@ -230,12 +235,76 @@ def _monitor():
             pass
 
 
+def _relocate_to_target(snapshot: str) -> str:
+    """把下载完成的快照目录整理到 MODELS_DIR/<父目录>/<文件夹名>/。
+
+    解析 HF/ModelScope 快照里的 symlink -> 真实文件, 复制(同盘硬链, 跨盘复制)
+    到目标目录, 生成与现有 /models/vllm/Qwen3-4B 一致的扁平结构。
+    """
+    if not snapshot or not target_folder:
+        return snapshot
+    src = Path(snapshot)
+    if not src.is_dir():
+        raise RuntimeError(f"下载完成但快照目录不存在: {snapshot}")
+    parent = (models_dir.rstrip("/") + "/" + target_parent.strip("/")).rstrip("/") if target_parent else models_dir
+    dst = Path(parent) / target_folder
+    dst.mkdir(parents=True, exist_ok=True)
+
+    seen_dirs = set()
+    copied = moved = 0
+
+    def _real(p: Path) -> Path:
+        # 解析 symlink 得到真实文件(快照典型结构)
+        try:
+            if p.is_symlink():
+                return p.resolve()
+        except Exception:
+            pass
+        return p
+
+    for root, dirs, fnames in os.walk(src):
+        rootp = Path(root)
+        for fn in fnames:
+            f = rootp / fn
+            true_f = _real(f)
+            if not true_f.is_file():
+                continue
+            rel = true_f.relative_to(src) if _within(true_f, src) else f.relative_to(src)
+            # 跳过快照内部缓存/索引文件
+            if ".cache" in str(f).replace(os.sep, "/").lower() or str(f).endswith(".incomplete"):
+                continue
+            target = dst / rel
+            if target.exists():
+                continue  # 断点续传/重复下载场景下已存在, 跳过
+            target.parent.mkdir(parents=True, exist_ok=True)
+            # 同文件系统: 先尝试硬链接省空间, 失败(跨设备/已存在)回退复制
+            try:
+                os.link(str(true_f), str(target))
+                moved += 1
+            except OSError:
+                try:
+                    shutil.copy2(str(true_f), str(target))
+                    moved += 1
+                except Exception:
+                    pass
+    return str(dst)
+
+
+def _within(p: Path, root: Path) -> bool:
+    try:
+        p.relative_to(root)
+        return True
+    except Exception:
+        return False
+
+
 def op_download():
     if progress_file:
         os.makedirs(Path(progress_file).parent, exist_ok=True)
     _stop.clear()
     threading.Thread(target=_monitor, daemon=True).start()
     try:
+        ok_path = ""
         if source == "modelscope":
             from modelscope import snapshot_download
             kw = dict(cache_dir=cache)
@@ -244,16 +313,17 @@ def op_download():
             if files:
                 kw["allow_file_pattern"] = files
             p = snapshot_download(model_id, **kw)
-            print("OK", p)
-            sys.exit(0)
+            ok_path = _relocate_to_target(p)
         else:
             from huggingface_hub import snapshot_download
             p = snapshot_download(repo_id=model_id, cache_dir=cache,
                                   revision=revision or None,
                                   allow_patterns=files or None,
                                   max_workers=2)
-            print("OK", p)
-            sys.exit(0)
+            ok_path = _relocate_to_target(p)
+        final = ok_path or p
+        print("OK", final)
+        sys.exit(0)
     except SystemExit:
         raise
     except Exception as e:
