@@ -669,44 +669,51 @@ t2i_model:
       size_gb: 15.0
   parameters:
     - name: "width"
-      label: "图片宽度"
+      label: "图片宽度 (Width)"
+      label_en: "Width"
       type: "number"
       default: 1024
       min: 512
       max: 2048
     - name: "height"
-      label: "图片高度"
+      label: "图片高度 (Height)"
+      label_en: "Height"
       type: "number"
       default: 1024
       min: 512
       max: 2048
     - name: "num_inference_steps"
-      label: "推理步数"
+      label: "推理步数 (Steps)"
+      label_en: "Inference Steps"
       type: "number"
       default: 28
       min: 10
       max: 100
     - name: "guidance_scale"
-      label: "引导强度"
+      label: "引导强度 (Guidance)"
+      label_en: "Guidance Scale"
       type: "float"
       default: 5.0
       min: 1.0
       max: 20.0
       step: 0.5
     - name: "seed"
-      label: "随机种子"
+      label: "随机种子 (Seed)"
+      label_en: "Seed"
       type: "number"
       default: -1
       min: -1
       max: 4294967295
     - name: "num_images"
-      label: "生成数量"
+      label: "生成数量 (Count)"
+      label_en: "Number of Images"
       type: "number"
       default: 1
       min: 1
       max: 4
     - name: "scheduler"
-      label: "调度器"
+      label: "调度器 (Scheduler)"
+      label_en: "Scheduler"
       type: "select"
       default: "flow_match_euler"
       options: ["flow_match_euler", "flow_match_heun", "euler", "dpm_solver"]

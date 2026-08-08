@@ -393,6 +393,7 @@
                     <div class="params-grid">
                         ${relevantParams.map(p => renderParamInput(id, p, inst)).join('')}
                     </div>
+                    ${id === 't2i' ? '<div id="t2i-vram-models" class="vram-est-box">加载中…</div>' : ''}
                     <div style="margin-top:12px;display:flex;gap:8px;">
                         <button class="btn btn-primary btn-sm" onclick="saveParameters('${id}')">Save Parameters</button>
                         <button class="btn btn-sm" onclick="viewLogs('${id}')">View Logs</button>
@@ -404,6 +405,52 @@
         });
         container.innerHTML = html;
     }
+
+    // ---- 显存估算 (diffusers T2I / Qwen-Image-25B) v0.7.2 ----
+    function _dtypeBytes(q) { return (q==='fp8'||q==='float8')?1:((q==='bf16'||q==='fp16'||q==='float16'||q==='bfloat16')?2:4); }
+    function estimateT2iVram(d) {
+        // d: { quant, compute_dtype, offload, width, height, num_images, num_steps }
+        const width = Math.max(512, d.width||1024);
+        const height = Math.max(512, d.height||1024);
+        const nimg = Math.min(Math.max(1,d.num_images||1),4);
+        const steps = Math.max(1,d.num_steps||28);
+        const quant = (d.quant||'fp8').toLowerCase();
+        const compute = (d.compute_dtype||'bf16').toLowerCase();
+        const offload = (d.offload||'gpu').toLowerCase();
+
+        const storeB = _dtypeBytes(quant);    // 权重存储字节
+        const actB = _dtypeBytes(compute);     // 激活字节
+        const paramB = 26;                      // Qwen-Image-25B 近似总参 (含 T5-ish text encoder + transformer + VAE)
+
+        // 1) 静态权重 (存 GPU by default, offload 时部分下 CPU)
+        const weights = paramB * storeB;         // GB  -> FP8 26GB / BF16 52GB / FP32 104GB
+
+        // 2) 激活内存: latent = 1/8 分辨率; 峰值约正比 latent tokens x num_images x actB
+        const latentToken = (width/8)*(height/8);
+        const actFactor = (compute==='fp32'?1.6:1.0);  // fp32 激活更大
+        const act = latentToken * nimg * actB / 1e6 * 0.9 * actFactor * (steps>60?1.15:1.0);
+
+        // 3) 运行时/固定开销: CUDA context + 低分辨率小图片的最低基线
+        const fixed = 2.0;   // GB: CUDA context, 临时张量
+
+        // 4) offload 策略对显存驻留的影响
+        let resident = weights + act + fixed;
+        if (offload==='group' || offload==='model') resident *= 0.55;   // CPU offload 显著降低驻留
+
+        const mb = Math.round(resident*1024);
+        return {
+            mb,
+            gb: +(resident).toFixed(1),
+            weights_mb: Math.round(weights*1024),
+            act_mb: Math.round(act*1024),
+            fixed_mb: Math.round(fixed*1024),
+            offload,
+            is_oom: resident > 84.0,
+            note: `铺位${quant.toUpperCase()}·计算${compute.toUpperCase()}·offload=${offload}`,
+        };
+    }
+
+    function fmtMb(mb) { return mb>=1024 ? (mb/1024).toFixed(1)+' GB' : mb+' MB'; }
 
     function renderParamInput(modelId, param, inst) {
         const val = (inst && inst.parameters && inst.parameters[param.name] !== undefined) ? inst.parameters[param.name] : param.default;
@@ -691,6 +738,27 @@
         document.getElementById('tab-logs').classList.add('active');
         document.getElementById('logModelSelect').value = modelId;
         refreshLogs();
+    }
+
+    // ---- VRAM 估算 (Models 页 t2i) v0.7.2 ----
+    async function refreshT2iVramModels() {
+        const box = document.getElementById('t2i-vram-models');
+        if (!box) return;
+        let adv = { quant: 'fp8', compute_dtype: 'bf16', offload: 'gpu' };
+        try { const r = await apiGet('/instances/t2i/advanced'); if (r && r.settings) adv = r.settings || {}; } catch(e) {}
+        const get = (id, dflt) => { const el = document.getElementById('param-t2i-'+id); return el ? (el.type==='checkbox'?el.checked:parseFloat(el.value)) : dflt; };
+        const est = estimateT2iVram({
+            quant: adv.quant || '', compute_dtype: adv.compute_dtype || 'bf16', offload: adv.offload || 'gpu',
+            width: get('width', 1024), height: get('height', 1024),
+            num_images: get('num_images', 1), num_steps: get('num_inference_steps', 28),
+        });
+        const color = est.is_oom ? 'var(--error)' : 'var(--success)';
+        box.innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;">
+            <span>💾 估算显存: <strong style="color:${color};font-size:15px">${fmtMb(est.mb)}</strong></span>
+            <span style="color:var(--text-muted)">权重${fmtMb(est.weights_mb)} + 激活${fmtMb(est.act_mb)} + 固定${fmtMb(est.fixed_mb)}</span>
+            ${est.is_oom ? '<span style="color:var(--error)">⚠ 超出 85G 显存! 降低分辨率/改 offload</span>' : ''}
+            <span style="color:var(--text-muted)">${est.note}</span>
+        </div>`;
     }
 
     // ---- GPU ----
