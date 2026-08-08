@@ -44,6 +44,17 @@ services:
       - PYTHONUNBUFFERED=1
       - HF_HOME=/models/huggingface
       - MODELSCOPE_CACHE=/models/modelscope
+      # ---- diffusers 推理行为 (v0.7.3) ----
+      # 每次推理后自动释放 GPU: full=彻底释放+清权重(推荐) / cache=仅清临时碎片保留模型
+      - AMM_AUTO_RELEASE=full
+      # start 模型时是否按 advanced 参数预加载到 GPU (0=不预加载, 1=预加载)
+      - AMM_START_PRELOAD=0
+      # 推理后自动释放总开关
+      - AMM_AUTO_RELEASE_GPU=1
+      # AMM 根路径(挂载点)
+      - AMM_ROOT=/amm
+      - MODELS_DIR=/models
+      - PYTHONPATH=/amm/backend
     restart: unless-stopped
     # 容器启动后进入交互模式，手动运行 install.sh
     tty: true

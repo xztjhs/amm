@@ -399,11 +399,19 @@
                         <button class="btn btn-sm" onclick="viewLogs('${id}')">View Logs</button>
                     </div>
                     ${['chat_model','embedding_model'].includes(key) ? renderStartupCard(id, key) : ''}
-                    ${currentEngine === 'diffusers' ? renderAdvancedSettings(id) : ''}
+                    ${currentEngine === 'diffusers' ? '<div id="adv-wrap-' + id + '"></div>' : ''}
                 </div>
             </div>`;
         });
         container.innerHTML = html;
+        // 异步加载 diffusers 模型的高级设置区 (renderAdvancedSettings 是 async)
+        keys.forEach(key => {
+            const cfg = config[key]; if (!cfg) return;
+            const id = cfg.id;
+            const inst = instances[id];
+            const ce = (inst && inst.engine_type) || cfg.engine_type || '';
+            if (ce === 'diffusers') renderAdvancedSettings(id);
+        });
         if (config.t2i_model) refreshT2iVramModels();
         bindParamChange('t2i');
     }
@@ -579,10 +587,10 @@
         } catch (e) { toast('清除失败: ' + e.message); }
     }
 
-    // ---- Diffusers Advanced Settings (FP8 quant / CPU offload / boundary) ----
-    // 这些字段不放在 instance.parameters 里, 走 /api/instances/{id}/advanced 写 yaml
+    // ---- Diffusers Advanced Settings (FP8 quant / offload) ----
     async function renderAdvancedSettings(modelId) {
-        // 默认值 (从 yaml 读取, 失败则用兜底)
+        const wrap = document.getElementById('adv-wrap-' + modelId);
+        if (!wrap) return "";
         const defaults = {
             quant: '',          // 空 / fp8 / bf16 / none
             compute_dtype: 'bf16',
@@ -605,7 +613,7 @@
             console.warn('renderAdvancedSettings load failed', e);
         }
         const id = `adv-${modelId}`;
-        return `
+        wrap.innerHTML = `
             <div class="advanced-settings" style="margin-top:18px;padding:14px;background:var(--bg-input);border-radius:var(--radius);border:1px solid var(--border);">
                 <h4 style="font-size:13px;margin-bottom:8px;color:var(--text-secondary);">🧠 Advanced (Diffusers / FP8 量化)</h4>
                 <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">
@@ -648,6 +656,8 @@
                     <button class="btn btn-sm" onclick="restartModel('${modelId}')">🔄 Restart Now</button>
                 </div>
             </div>`;
+        if (modelId === 't2i') refreshT2iVramModels();
+        bindParamChange(modelId);
     }
 
     async function saveAdvancedSettings(modelId) {
