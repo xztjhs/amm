@@ -831,7 +831,7 @@
             messages: messages,
             stream: true,
             temperature: parseFloat(document.getElementById('pgChatTemp')?.value || '0.7'),
-            max_tokens: parseInt(document.getElementById('pgChatMaxTokens')?.value || '1024'),
+            max_tokens: parseInt(document.getElementById('pgChatMaxTokens')?.value || '16384'),
             top_p: parseFloat(document.getElementById('pgChatTopP')?.value || '0.9'),
         };
         const tStart = performance.now();
