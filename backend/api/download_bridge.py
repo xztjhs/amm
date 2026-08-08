@@ -217,14 +217,14 @@ class DownloadBridge:
                     if task.downloaded > last_dl:
                         last_dl = task.downloaded
                         last_growth = time.time()
-                    if task.downloaded > 0 and (time.time() - last_growth) > 90:
-                        logger.warning(f"Download {task.task_id} no progress in 90s, terminating")
+                    if task.downloaded > 0 and (time.time() - last_growth) > 180:
+                        logger.warning(f"Download {task.task_id} no progress in 180s, terminating")
                         try:
                             task.proc.terminate()
                         except Exception:
                             pass
                         task.status = "failed"
-                        task.error = "下载无进展超过90秒, 已终止。请检查代理/网络后重试(支持断点续传)"
+                        task.error = "下载无进展超过 3 分钟, 已终止。请检查代理/网络后重试(支持断点续传)"
                         break
                     time.sleep(2)
             tp = threading.Thread(target=_poll, daemon=True)

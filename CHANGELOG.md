@@ -1,5 +1,32 @@
 # AMM Changelog
 
+## v0.6.4 — 2026-08-08（模型下载：代理 + 版本/文件选择 + 断点续传/进度）
+
+### 🌐 模型自动下载增强（Tools → Model Download）
+1. **HTTP 代理设置**：
+   - 面板新增「HTTP 代理」开关 + 地址，可开启/关闭/保存；持久化到 `backend/config/download_proxy.json`。
+   - 开启后下载（HF/ModelScope）经代理转发；测试代理 `http://192.168.100.73:7891`。
+   - API: `GET/POST /api/models/download/proxy`。
+2. **版本 + 文件选择**：
+   - 「查询版本与文件」列出模型所有分支/revision(tag/branch)，每版本展示文件清单 + 各文件大小 + 合计。
+   - 可单选文件子集下载（默认可全选）。API：`POST /api/models/downloads`。
+   - HF 用 `HfApi.list_repo_refs + model_info + get_paths_info`；ModelScope 用分支/文件 API。
+3. **下载体验**：
+   - 断点续传（HF/ModelScope snapshot 原生 resume）。
+   - 实时进度条 + 下载速度 + 剩余时间(ETA) + 当前文件；任务可取消。
+   - 停滞保护：下载无进展 3 分钟自动终止提示重试（避免永久挂起）。
+   - API：`POST /api/models/download`、`GET status`、`POST cancel`。
+
+### 关键实现
+- `backend/api/download_bridge.py`（重写 v0.5）：代理/版本查询/下载/进度追踪，子进程 + 心跳 JSON。
+- `backend/api/_download_helper.py`（新增）：revisions 查询与 download 执行脚本(环境变量传参)。
+- `frontend/index.html` / `frontend/js/app.js`：面板 UI + 交互；`css/style.css` 补 btn-xs。
+
+### 实测（webui, 245:60006）
+- ModelScope: `Qwen/Qwen1.5-0.5B`(1.19G) 下载完成，进度/速度(3-7MB/s)/进度条实时显示；重下已存在模型秒 100% 完成(断点续传)。
+- HF 经代理: 版本/文件查询成功，下载可用但代理 CDN 带宽低（HF 未认证限速+代理限制）；HF 大文件经该代理带宽极差是网络环境限制。
+- 修复：下载进度统计改为仅统计目标模型子目录(避免历史模型干扰)；status 列表排序 key `created_at`；停滞检测改 180s 防慢代理误杀。
+
 ## v0.6.3 — 2026-08-08（Tools 三项模型工具修复）
 
 ### 🧰 Tools 菜单三项功能 webui 实测 + 修复
