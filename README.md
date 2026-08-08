@@ -21,6 +21,17 @@
 
 > 更多产品截图见 [docs/screenshots/](./docs/screenshots/)（Dashboard / Models / Playground / Logs / Settings）
 
+## 📖 用户手册（v0.8.0）
+
+- **在线手册**：WebUI 右上角「📚 手册」按钮 + 搜索框，全库全文检索，开机即用。
+- **Markdown 源**：[docs/manual/](./docs/manual/)
+  - [产品与功能介绍](./docs/manual/01-产品与功能介绍.md)
+  - [WebUI 操作教程（Step by Step）](./docs/manual/02-WebUI操作教程.md)
+  - [Web API 使用指南（零 IT 经验版）](./docs/manual/03-API使用指南-零IT版.md)
+  - [Web API 使用指南（Agent / Skill 版）](./docs/manual/04-API使用指南-Agent版.md)
+  - [功能详细·组件架构](./docs/manual/05-功能设计组件架构.md)
+  - [问题记录与修复](./docs/manual/06-问题记录与修复.md)
+
 ## 特性
 
 - **混合推理引擎**: 支持 llama.cpp (GGUF) / vLLM / Diffusers 三种后端，可自由切换

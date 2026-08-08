@@ -2333,7 +2333,7 @@
         const m = document.getElementById('helpModal');
         if (!m) return;
         m.style.display = 'flex';
-        if (!__docs.docs.length) loadHelp();
+        if (!Array.isArray(__docs.docs) || !__docs.docs.length) loadHelp();
     }
     function closeHelp() {
         const m = document.getElementById('helpModal');

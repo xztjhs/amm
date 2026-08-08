@@ -312,7 +312,7 @@ class APIHandlers:
         if not p.exists():
             return self._json({"error": f"doc not found: {name}"}, 404)
         return web.Response(text=p.read_text(encoding="utf-8", errors="ignore"),
-                            content_type="text/markdown; charset=utf-8")
+                            content_type="text/markdown", charset="utf-8")
 
     async def serve_index(self, req):
         p = BASE_DIR / "frontend" / "index.html"

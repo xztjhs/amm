@@ -1,5 +1,29 @@
 # AMM Changelog
 
+## v0.8.0 — 2026-08-09（用户手册上线 / 版本号统一 / 容器瘦身 / 部署配置仓库化）
+
+### 📚 1. 用户手册上线（右上角帮助 + 搜索）
+- 新增 `docs/manual/` 用户手册共 7 章：产品介绍 / WebUI 教程 / **API 零IT版** / **API Agent版** / 架构设计 / 问题记录 / 图片见木。
+- WebUI 右上角新增「📚 手册」按钮 + 搜索框：
+  - 后端新增 `GET /api/docs`（手册目录）与 `GET /api/docs/{file}`（文章 markdown）。
+  - 前端弹窗分左右：左侧目录，右侧 Markdown 渲染；搜索框全库全文检索并高亮命中。
+  - 页脚版本号由 `v0.2` 改为动态读取 `/api/settings`（当前 `v0.8.0`）。
+- 浅色主题截图全套：`docs/screenshots/light-0*.png`。
+
+### 🔐 2. 版本号统一（修复页脚/Settings 显示 v0.2 的过时 bug）
+- `backend/server.py` 新增唯一版本常量 `AMM_VERSION`（默认 v0.8.0，可用环境变量覆盖）。
+- `/api/settings` version 字段、Settings 页、页脚均从此读取，一处升级全局生效。
+
+### 🧹 3. 容器瘦身（写层 16G → 220M）
+- 清理 `/root/.cache/pip` 11G、`/root/.cache/vllm` 619M、`/tmp` 编译/解包残留 2.1G。
+- 截断超大日志 `amm_server.log`(827M) 等，清旧版本备份目录。
+- 详见 `docs/维护记录-20260809-容器清理与部署配置.md`。
+
+### 🐳 4. amm-docker 独立仓库
+- 将容器部署配置（docker-compose / 安装脚本 / 环境变量）抽离为独立仓库 `iei/amm-docker`，与主代码解耦。
+
+---
+
 ## v0.7.3 — 2026-08-08（diffusers 高级参数/自动释放/Playground 三能力）
 
 ### 🐛 追加修复：Models 页 diffusers Advanced 区不显示
