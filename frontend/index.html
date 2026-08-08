@@ -294,23 +294,49 @@ AI 用于图像识别与自然语言处理
                 <div class="setting-group" id="modelDownloadPanel">
                 <h3>📥 模型自动下载 (Model Download)</h3>
                     <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
-                        从 ModelScope 或 HuggingFace 下载模型到 /models。
+                        从 ModelScope 或 HuggingFace 下载模型到 /models。支持代理、版本选择、断点续传、速度/剩余时间显示。
                     </p>
+
+                    <!-- 代理设置 -->
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;border:1px dashed var(--border);border-radius:8px;background:var(--bg-input);">
+                        <label style="font-size:12px;font-weight:600;white-space:nowrap;">🌐 HTTP 代理</label>
+                        <label class="switch" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;">
+                            <input type="checkbox" id="dlProxyEnabled" onchange="window.toggleProxyInput()">
+                            <span>开启</span>
+                        </label>
+                        <input id="dlProxyUrl" class="form-input" placeholder="http://host:port" style="flex:1;" disabled>
+                        <button class="btn btn-sm" onclick="window.saveProxy()">💾 保存代理</button>
+                    </div>
+
                     <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:end;margin-bottom:8px;">
                         <div><label style="font-size:11px;color:var(--text-muted)">源</label>
-                            <select id="dlSource" class="form-select">
+                            <select id="dlSource" class="form-select" onchange="window.loadDownloadVersions()">
                                 <option value="modelscope">ModelScope (国内优先)</option>
                                 <option value="huggingface">HuggingFace</option>
                             </select></div>
                         <div><label style="font-size:11px;color:var(--text-muted)">模型 ID (如 Qwen/Qwen-Image-2512)</label>
-                            <input id="dlModelId" class="form-input" placeholder="组织/模型名"></div>
+                            <input id="dlModelId" class="form-input" placeholder="组织/模型名" onkeydown="if(event.key==='Enter')window.loadDownloadVersions()"></div>
                         <div><label style="font-size:11px;color:var(--text-muted)">类别(可选)</label>
                             <select id="dlCategory" class="form-select"><option value="">—</option><option>chat</option><option>embedding</option><option>asr</option><option>tts</option><option>t2i</option><option>t2v</option><option>i2v</option></select></div>
                     </div>
-                    <div style="display:flex;gap:8px;margin-bottom:10px;">
+                    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                        <button class="btn btn-sm" onclick="window.loadDownloadVersions()">🔍 查询版本与文件</button>
                         <button class="btn btn-primary btn-sm" onclick="window.startModelDownload()">⬇️ 开始下载</button>
                         <button class="btn btn-sm" onclick="window.refreshDownloadStatus()">🔄 刷新任务</button>
                     </div>
+
+                    <!-- 版本选择 -->
+                    <div id="dlVersionPanel" style="display:none;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:6px;">📁 模型版本 (revision)</div>
+                        <div id="dlVersions"></div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+                            <button class="btn btn-xs" onclick="window.selectAllVersionFiles()">全选文件</button>
+                            <button class="btn btn-xs" onclick="window.deselectAllVersionFiles()">清空选择</button>
+                            <span id="dlFilesStats" style="margin-left:8px;"></span>
+                        </div>
+                        <div id="dlVersionFiles" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;max-height:220px;overflow-y:auto;"></div>
+                    </div>
+
                     <div class="download-task-list" id="downloadTaskList"><p style="color:var(--text-muted);font-size:12px">暂无下载任务</p></div>
                 </div>
 

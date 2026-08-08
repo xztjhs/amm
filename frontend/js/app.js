@@ -725,6 +725,7 @@
 
     // ---- Tools (模型下载 / GGUF 量化 / vLLM→GGUF 转换) ----
     async function renderTools() {
+        try { await loadProxySettings(); } catch (e) { console.error('loadProxySettings', e); }
         try { await refreshDownloadStatus(); } catch (e) { console.error('refreshDownloadStatus', e); }
         try { await refreshQuantize(); } catch (e) { console.error('refreshQuantize', e); }
         try { await refreshVgTask(); } catch (e) { console.error('refreshVgTask', e); }
@@ -1470,39 +1471,221 @@
 
 
 
-    // ---- Model Download (v0.4) ----
+    // ---- Model Download (v0.5) : 代理 / 版本选择 / 文件清单 / 断点续传 / 速度 / ETA ----
+    // 下载任务缓存 (用于局部进度刷新)
+    let dlTasksCache = [];
+
+    function fmtSize2(bytes) {
+        if (!bytes && bytes !== 0) return '-';
+        if (bytes === 0) return '0 B';
+        const units = ['B','KB','MB','GB','TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + units[i];
+    }
+    function fmtSpeed(bps) {
+        if (!bps) return '0 B/s';
+        if (bps >= 1048576) return (bps/1048576).toFixed(1)+' MB/s';
+        if (bps >= 1024) return (bps/1024).toFixed(1)+' KB/s';
+        return bps.toFixed(0)+' B/s';
+    }
+    function fmtEta(sec) {
+        if (sec === null || sec === undefined || isNaN(sec) || sec < 0) return '';
+        if (sec < 60) return '剩余 ' + Math.ceil(sec) + 's';
+        if (sec < 3600) {
+            const m = Math.floor(sec/60), s = Math.ceil(sec%60);
+            return '剩余 ' + m + 'm' + (s<10?'0':'') + s + 's';
+        }
+        const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60);
+        return '剩余 ' + h + 'h' + m + 'm';
+    }
+
+    // 代理相关
+    async function loadProxySettings() {
+        const r = await apiGet('/models/download/proxy');
+        if (!r || !r.proxy) return;
+        const p = r.proxy;
+        const en = document.getElementById('dlProxyEnabled');
+        const url = document.getElementById('dlProxyUrl');
+        if (en) en.checked = !!p.enabled;
+        if (url) { url.value = p.url || ''; url.disabled = !p.enabled; }
+    }
+    function toggleProxyInput() {
+        const en = document.getElementById('dlProxyEnabled');
+        const url = document.getElementById('dlProxyUrl');
+        if (url) url.disabled = !en.checked;
+        if (en && en.checked && url && !url.value) url.focus();
+    }
+    async function saveProxy() {
+        const en = document.getElementById('dlProxyEnabled');
+        const url = document.getElementById('dlProxyUrl');
+        const body = { enabled: en.checked, url: url.value.trim() };
+        const r = await apiPost('/models/download/proxy', body);
+        if (r && r.ok) toast('✅ 代理设置已保存' + (body.enabled ? ' (' + body.url + ')' : ''), 'success');
+        else toast('❌ ' + ((r && r.error) || '保存失败'), 'error');
+    }
+
+    // 版本与文件查询
+    async function loadDownloadVersions() {
+        const modelId = document.getElementById('dlModelId')?.value.trim();
+        if (!modelId) return toast('请输入模型 ID', 'error');
+        const source = document.getElementById('dlSource')?.value || 'huggingface';
+        const panel = document.getElementById('dlVersionPanel');
+        const verEl = document.getElementById('dlVersions');
+        if (verEl) verEl.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">查询中...</p>';
+        if (panel) panel.style.display = 'block';
+        toast('🔍 查询 ' + modelId + ' 版本...');
+        const r = await apiPost('/models/downloads', { model_id: modelId, source: source });
+        if (!r || r.error) {
+            if (verEl) verEl.innerHTML = '<p style="font-size:12px;color:var(--error)">查询失败: ' + escapeHtml((r && r.error) || '网络错误') + '</p>';
+            return;
+        }
+        const versions = r.versions || [];
+        if (!versions.length) { if (verEl) verEl.innerHTML = '<p style="font-size:12px;color:var(--error)">未找到任何版本</p>'; return; }
+        verEl.innerHTML = versions.map((v, i) => `
+            <label style="display:inline-flex;align-items:center;gap:6px;margin:2px 8px 2px 0;cursor:pointer;padding:3px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg-card);">
+                <input type="radio" name="dlRev" value="${escapeAttr(v.revision)}" ${i===0?'checked':''} onchange="window.selectDownloadVersion()">
+                <span style="font-size:12px;">${escapeHtml(v.revision)}</span>
+                <span style="font-size:11px;color:var(--text-muted);">(${escapeHtml(v.type)})</span>
+                <span style="font-size:11px;color:var(--text-muted);">${v.total_size?fmtSize2(v.total_size):''}</span>
+            </button>
+        `).join('');
+        // 记录最新选中的版本文件
+        window.__dlVersions = versions;
+        window.__dlSelectedRev = versions[0];
+        showDownloadVersionFiles(versions[0]);
+    }
+    function showDownloadVersion() {
+        const val = document.querySelector('input[name="dlver"]:checked')?.value;
+        const versions = window.__dlVersions || [];
+        const v = versions.find(x => x.revision === val);
+        if (v) { window.__dlSelectedRev = v; showDownloadVersionFiles(v); }
+    }
+    function vSize(bytes) { return fmtSize2(bytes); }
+    function showDownloadVersionFiles(v) {
+        const el = document.getElementById('dlVersionFiles');
+        const stat = document.getElementById('dlFilesStats');
+        if (!el) return;
+        if (!v) { el.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">无文件信息</p>'; return; }
+        const files = v.files || [];
+        if (!files.length) { el.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">' + (v.error ? '加载失败: ' + escapeHtml(v.error) : '未获取到文件清单') + '</p>'; return; }
+        el.innerHTML = files.map((f, i) => `
+            <label style="display:flex;align-items:center;gap:8px;padding:3px 2px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" class="dl-file-cb" value="${escapeAttr(f.filename)}" onchange="updateDlFilesStats()">
+                <span style="flex:1;word-break:break-all;">${escapeHtml(f.filename)}</span>
+                <span style="color:var(--text-muted);font-size:11px;">${f.size?fmtSize2(f.size):''}</span>
+            </label>
+        `).join('');
+        updateDlFilesStats();
+        if (stat) stat.textContent = '共 ' + files.length + ' 个文件, 合计 ' + fmtSize2(v.total_size||0);
+    }
+    function updateDlFilesStats() {
+        const cbs = document.querySelectorAll('.dl-file-cb');
+        const el = document.getElementById('dlFilesStats');
+        if (!el || !cbs.length) return;
+        const sel = Array.from(cbs).filter(c => c.checked);
+        el.textContent = '已选 ' + sel.length + ' 个文件 / 共 ' + cbs.length;
+    }
+    function selectAllVersionFiles() {
+        document.querySelectorAll('.dl-file-cb').forEach(c => c.checked = true); updateDlFilesStats();
+    }
+    function deselectAllVersionFiles() {
+        document.querySelectorAll('.dl-file-cb').forEach(c => c.checked = false); updateDlFilesStats();
+    }
+
     async function startModelDownload() {
         const modelId = document.getElementById('dlModelId')?.value.trim();
         if (!modelId) return toast('请输入模型 ID', 'error');
         const source = document.getElementById('dlSource')?.value || 'modelscope';
         const category = document.getElementById('dlCategory')?.value || '';
-        toast('⬇️ 开始下载 ' + modelId + ' ...');
-        const r = await apiPost('/models/download', { model_id: modelId, source: source, category: category });
+        const rev = (window.__dlSelectedRev || {}).revision || '';
+        const cbs = document.querySelectorAll('.dl-file-cb');
+        let files = [];
+        if (cbs.length) files = Array.from(cbs).filter(c => c.checked).map(c => c.value);
+        const total = (window.__dlSelectedRev || {}).total_size || 0;
+        const total_files = (window.__dlSelectedRev && (window.__dlSelectedRev.files||[]).length) || 0;
+        toast('⬇️ 开始下载 ' + modelId + (rev?' ('+rev+')':'') + ' ...');
+        const r = await apiPost('/models/download', {
+            model_id: modelId, source: source, category: category,
+            revision: rev, files: files, total: total, total_files: total_files,
+        });
         if (r && r.ok) {
             toast('✅ 已提交下载任务 ' + r.task_id, 'success');
             await refreshDownloadStatus();
-            // 轮询状态
-            setTimeout(refreshDownloadStatus, 3000);
+            startDlProgressPoll();
         } else {
             toast('❌ ' + ((r && r.error) || '提交失败'), 'error');
         }
     }
 
+    let dlPollTimer = null;
+    function startDlProgressPoll() {
+        if (dlPollTimer) clearInterval(dlPollTimer);
+        // 高频率刷新任务列表中的进度
+        dlPollTimer = setInterval(async () => {
+            const r = await apiGet('/models/download/status');
+            if (!r || !r.tasks) return;
+            const running = r.tasks.some(t => t.status === 'downloading' || t.status === 'pending');
+            if (running) {
+                renderDownloadTasks(r.tasks);
+            } else {
+                clearInterval(dlPollTimer); dlPollTimer = null;
+                renderDownloadTasks(r.tasks);
+            }
+        }, 1000);
+    }
+
     async function refreshDownloadStatus() {
-        const listEl = document.getElementById('downloadTaskList');
-        if (!listEl) return;
         const r = await apiGet('/models/download/status');
         if (!r || !r.tasks) return;
-        if (!r.tasks.length) { listEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px">暂无下载任务</p>'; return; }
-        listEl.innerHTML = r.tasks.map(t => `
-            <div class="dl-task" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
+        renderDownloadTasks(r.tasks);
+        // 若有运行中任务, 启动轮询
+        if (r.tasks.some(t => t.status === 'downloading' || t.status === 'pending')) startDlProgressPoll();
+    }
+
+    function renderDownloadTasks(tasks) {
+        const listEl = document.getElementById('downloadTaskList');
+        if (!listEl) return;
+        if (!tasks.length) {
+            listEl.innerHTML = '<p style="color:var(--text-muted);font-size:12px">暂无下载任务</p>';
+            return;
+        }
+        dlTasksCache = tasks;
+        listEl.innerHTML = tasks.map(t => {
+            const st = t.status;
+            const pct = (t.total > 0) ? Math.min(100, Math.round(t.downloaded / t.total * 100)) : 0;
+            let bar = '';
+            let extra = '';
+            if (st === 'downloading') {
+                bar = `<div style="height:6px;background:var(--border);border-radius:3px;margin-top:6px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--primary,#3b82f6);transition:width .8s;"></div></div>`;
+                extra = `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <span>⬇️ ${fmtSpeed(t.speed)}</span>`;
+                if (t.total > 0) extra += `<span>${pct}%</span>`;
+                if (t.eta) extra += `<span>${fmtEta(t.eta)}</span>`;
+                if (t.current_file) extra += `<span style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeAttr(t.current_file)}">${escapeHtml(t.current_file)}</span>`;
+                extra += `</div>`;
+            }
+            return `<div class="dl-task" style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:12px;font-weight:600">${t.source} · ${escapeHtml(t.model_id)}</span>
-                    <span class="version-status ${t.status}">${t.status}</span>
+                    <span style="font-size:12px;font-weight:600">${escapeHtml(t.source)} · ${escapeHtml(t.model_id)}${t.revision?'<span style="color:var(--text-muted);font-weight:400"> @'+escapeHtml(t.revision)+'</span>':''}</span>
+                    <span style="display:flex;align-items:center;gap:8px;">
+                        ${st==='downloading'?'<button class="btn btn-xs" onclick="window.cancelDownload(\''+t.task_id+'\')">✕ 取消</button>':''}
+                        <span class="version-status ${st}">${st}</span>
+                    </span>
                 </div>
                 <div style="font-size:11px;color:var(--text-muted);margin-top:4px;word-break:break-all">${escapeHtml(t.detail || t.error || '')}</div>
-            </div>`).join('');
+                ${bar}
+                ${extra}
+            </div>`;
+        }).join('');
     }
+
+    async function cancelDownload(taskId) {
+        if (!confirm('确定取消下载任务?')) return;
+        const r = await apiPost('/models/download/cancel', { task_id: taskId });
+        if (r && r.ok) toast('已请求取消', 'info'); else toast('取消失败', 'error');
+        setTimeout(refreshDownloadStatus, 500);
+    }
+    window.cancelDownload = cancelDownload;
 
     function escapeHtml(text) {
         var div = document.createElement('div');
@@ -1529,6 +1712,15 @@
     window.runOCR = runOCR;
     window.startModelDownload = startModelDownload;
     window.refreshDownloadStatus = refreshDownloadStatus;
+    window.loadProxySettings = loadProxySettings;
+    window.toggleProxyInput = toggleProxyInput;
+    window.saveProxy = saveProxy;
+    window.loadDownloadVersions = loadDownloadVersions;
+    window.selectDownloadVersion = showDownloadVersion;
+    window.showDownloadVersionFiles = showDownloadVersionFiles;
+    window.updateDlFilesStats = updateDlFilesStats;
+    window.selectAllVersionFiles = selectAllVersionFiles;
+    window.deselectAllVersionFiles = deselectAllVersionFiles;
     window.generateVideo = generateVideo;
     window.generateI2V = generateI2V;
     // ---- GGUF Quantize (v0.4) ----

@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 """
-AMM - 模型自动下载 API (v0.4)
+AMM - 模型自动下载 API (v0.5)
 ===============================
-支持 ModelScope 与 HuggingFace 两种源的模型下载，
-提供下载任务注册、进度查询。
+支持 ModelScope 与 HuggingFace 两种源的模型下载。
+
+特性:
+- HTTP 代理设置（全局，可开关，持久化）。
+- 模型版本(revision)/分支查询 + 每版本文件清单 + 文件大小预览。
+- 下载支持断点续传、下载速度显示、剩余时间预测。
+- 可选: 只下载某 revision / 指定文件子集。
 
 约定:
-- 下载到 `MODELS_DIR/zoo/modelscope`（ModelScope）或 `MODELS_DIR/zoo/huggingface`（HF）
-- 用独立子进程执行，避免阻塞 aiohttp 事件循环
-- 任务状态: pending | downloading | done | failed
+- 下载到 `MODELS_DIR/zoo/modelscope`（ModelScope）或 `MODELS_DIR/zoo/huggingface`（HF）。
+- 用独立子进程执行, 避免阻塞 aiohttp 事件循环。
+- 进度: 子进程内线程每秒统计 cache 目录占用并写入临时 JSON, 父进程读取。
 """
 import os
 import json
@@ -16,36 +21,54 @@ import logging
 import subprocess
 import threading
 import time
-import uuid
 from pathlib import Path
 from typing import Dict, Optional
 
-import yaml
 from aiohttp import web
 
 logger = logging.getLogger("AMM.Download")
 
-# 下载根目录
-_MODELS_DIR = os.environ.get("MODELS_DIR", "/models")
 CACHE_MAP = {
     "modelscope": "/models/zoo/modelscope",
     "huggingface": "/models/zoo/huggingface",
 }
+_PROXY_CONF = "/amm/backend/config/download_proxy.json"
+_PROGRESS_DIR = "/models/.download-progress"
+
+
+def _load_proxy() -> dict:
+    try:
+        with open(_PROXY_CONF, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"enabled": False, "url": ""}
 
 
 class DownloadTask:
-    def __init__(self, task_id: str, model_id: str, source: str, category: str = ""):
+    def __init__(self, task_id: str, model_id: str, source: str, category: str = "",
+                 revision: str = "", files: Optional[list] = None):
         self.task_id = task_id
         self.model_id = model_id
         self.source = source
         self.category = category
-        self.status = "pending"          # pending | downloading | done | failed
+        self.revision = revision
+        self.files = files or []
+        self.proxy = _load_proxy()
+        self.status = "pending"
         self.created = time.time()
         self.started = None
         self.finished = None
         self.error = ""
         self.detail = ""
         self.proc = None
+        self.progress_file = ""
+        self.downloaded = 0
+        self.total = 0
+        self.speed = 0.0
+        self.eta = None
+        self.downloaded_files = 0
+        self.total_files = 0
+        self.current_file = ""
 
     def to_dict(self):
         return {
@@ -53,7 +76,17 @@ class DownloadTask:
             "model_id": self.model_id,
             "source": self.source,
             "category": self.category,
+            "revision": self.revision,
+            "files": self.files,
+            "proxy": self.proxy,
             "status": self.status,
+            "downloaded": self.downloaded,
+            "total": self.total,
+            "speed": round(self.speed, 1),
+            "eta": self.eta,
+            "downloaded_files": self.downloaded_files,
+            "total_files": self.total_files,
+            "current_file": self.current_file,
             "created_at": self.created,
             "started_at": self.started,
             "finished_at": self.finished,
@@ -68,29 +101,82 @@ class DownloadBridge:
         self.tasks: Dict[str, DownloadTask] = {}
         self._lock = threading.Lock()
 
-    # ------------------------------------------------------------
-    # 下载执行
-    # ------------------------------------------------------------
+    # ---------------- 代理设置 ----------------
+    async def get_proxy(self, req) -> web.Response:
+        return self._json({"proxy": _load_proxy()})
+
+    async def set_proxy(self, req) -> web.Response:
+        try:
+            body = await req.json()
+        except Exception:
+            return self._json({"error": "无效 JSON"}, 400)
+        enabled = bool(body.get("enabled"))
+        url = (body.get("url") or "").strip()
+        if enabled and not url:
+            return self._json({"error": "开启代理但未提供代理地址"}, 400)
+        data = {"enabled": enabled, "url": url}
+        try:
+            os.makedirs(os.path.dirname(_PROXY_CONF), exist_ok=True)
+            with open(_PROXY_CONF, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            return self._json({"error": f"代理设置保存失败: {e}"}, 500)
+        return self._json({"ok": True, "proxy": data})
+
+    # ---------------- 版本/文件清单查询 ----------------
+    async def revisions(self, req) -> web.Response:
+        try:
+            body = await req.json()
+        except Exception:
+            return self._json({"error": "无效 JSON"}, 400)
+        model_id = (body.get("model_id") or "").strip()
+        source = (body.get("source") or "huggingface").strip().lower()
+        if not model_id:
+            return self._json({"error": "缺少 model_id"}, 400)
+        if source not in ("huggingface", "modelscope"):
+            return self._json({"error": f"source 仅支持 huggingface/modelscope: {source}"}, 400)
+        py = self._resolve_python()
+        env = self._build_env({"AMM_OP": "revisions", "AMM_SOURCE": source,
+                               "AMM_MODEL": model_id,
+                               "AMM_PROXY": json.dumps(_load_proxy())})
+        try:
+            r = subprocess.run([py, "-c", self._helper_source()], capture_output=True,
+                               text=True, timeout=240, env=env, cwd="/amm")
+        except subprocess.TimeoutExpired:
+            return self._json({"error": "版本查询超时(网络不可达或模型过大)"}, 504)
+        if r.returncode != 0:
+            return self._json({"error": (r.stderr or r.stdout or "").strip()[-800:]}, 502)
+        try:
+            return self._json(json.loads((r.stdout or "").strip()))
+        except Exception as e:
+            return self._json({"error": f"结果解析失败: {e}; 输出:{(r.stdout or '')[-300:]}"}, 502)
+
+    # ---------------- 下载执行 ----------------
     async def start(self, req) -> web.Response:
         try:
             body = await req.json()
         except Exception:
             return self._json({"error": "无效 JSON"}, 400)
-
         model_id = (body.get("model_id") or "").strip()
         source = (body.get("source") or "modelscope").strip().lower()
         category = (body.get("category") or "").strip()
+        revision = (body.get("revision") or "").strip()
+        files = body.get("files") or []
+        if isinstance(files, str):
+            files = [f.strip() for f in files.split(",") if f.strip()]
+        total = int(body.get("total") or 0)
+        total_files = int(body.get("total_files") or 0)
         if not model_id or model_id.startswith("__"):
             return self._json({"error": "缺少有效 model_id"}, 400)
         if source not in ("modelscope", "huggingface"):
             return self._json({"error": f"source 仅支持 modelscope/huggingface: {source}"}, 400)
 
         task_id = f"dl_{int(time.time())}_{len(self.tasks)}"
-        task = DownloadTask(task_id, model_id, source, category)
+        task = DownloadTask(task_id, model_id, source, category, revision, files)
+        task.total = total
+        task.total_files = total_files
         with self._lock:
             self.tasks[task_id] = task
-
-        # 后台启动下载
         threading.Thread(target=self._run_download, args=(task,), daemon=True).start()
         return self._json({"ok": True, "task_id": task_id, **task.to_dict()})
 
@@ -98,25 +184,48 @@ class DownloadBridge:
         try:
             task.status = "downloading"
             task.started = time.time()
-            # 使用 vLLM venv 的 python（已装 modelscope / huggingface_hub）
             py = self._resolve_python()
             cache = CACHE_MAP.get(task.source, CACHE_MAP["modelscope"])
             os.makedirs(cache, exist_ok=True)
-            script = _DOWNLOAD_SCRIPT.format(
-                source=task.source, model_id=task.model_id, cache=cache
-            )
-            task.proc = subprocess.Popen(
-                [py, "-c", script],
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                text=True, env=self._env(), cwd="/amm",
-            )
+            os.makedirs(_PROGRESS_DIR, exist_ok=True)
+            task.progress_file = os.path.join(_PROGRESS_DIR, f"{task.task_id}.json")
+            if os.path.exists(task.progress_file):
+                try:
+                    os.remove(task.progress_file)
+                except Exception:
+                    pass
+            env = self._build_env({
+                "AMM_OP": "download", "AMM_SOURCE": task.source,
+                "AMM_MODEL": task.model_id, "AMM_CACHE": cache,
+                "AMM_REVISION": task.revision, "AMM_FILES": json.dumps(task.files),
+                "AMM_PROXY": json.dumps(task.proxy), "AMM_PROGRESS": task.progress_file,
+                "AMM_TOTAL": str(task.total),
+            })
+            task.proc = subprocess.Popen([py, "-c", self._helper_source()],
+                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                         text=True, env=env, cwd="/amm")
             task.detail = "下载中..."
+
+            def _poll():
+                while True:
+                    if task.proc.poll() is not None:
+                        break
+                    self._read_progress(task)
+                    time.sleep(2)
+            tp = threading.Thread(target=_poll, daemon=True)
+            tp.start()
             out, _ = task.proc.communicate(timeout=None)
+            tp.join(timeout=5)
+            self._read_progress(task)
             task.finished = time.time()
-            if task.proc.returncode == 0:
+            rc = task.proc.returncode
+            task.proc = None
+            if task.status == "cancelled":
+                task.error = "任务已取消"
+                return
+            if rc == 0:
                 task.status = "done"
-                task.detail = (out or "").strip()[-500:]
-                # 若指定了类别，尝试刷新模型配置
+                task.detail = (out or "").strip()[-400:] or "下载完成"
                 if task.category:
                     try:
                         self.manager._load_config()
@@ -124,29 +233,61 @@ class DownloadBridge:
                         pass
             else:
                 task.status = "failed"
-                task.error = (out or "").strip()[-500:]
+                task.error = (out or "").strip()[-600:]
         except Exception as e:
             task.status = "failed"
             task.error = str(e)
             task.finished = time.time()
 
-    # ------------------------------------------------------------
-    # 查询
-    # ------------------------------------------------------------
+    def _read_progress(self, task: DownloadTask):
+        try:
+            if not task.progress_file or not os.path.exists(task.progress_file):
+                return
+            with open(task.progress_file, encoding="utf-8") as f:
+                p = json.load(f)
+            task.downloaded = int(p.get("downloaded", task.downloaded))
+            task.total = int(p.get("total", task.total)) or task.total
+            task.speed = float(p.get("speed", 0))
+            task.eta = p.get("eta")
+            task.downloaded_files = int(p.get("downloaded_files", task.downloaded_files))
+            task.total_files = int(p.get("total_files", task.total_files)) or task.total_files
+            task.current_file = p.get("current_file", task.current_file) or ""
+            task.detail = p.get("detail", task.detail)
+        except Exception:
+            pass
+
+    # ---------------- 查询 ----------------
     async def status(self, req) -> web.Response:
         task_id = req.query.get("task_id", "")
         if task_id:
             t = self.tasks.get(task_id)
             if not t:
                 return self._json({"error": "任务不存在"}, 404)
+            self._read_progress(t)
             return self._json(t.to_dict())
-        tasks = [t.to_dict() for t in self.tasks.values()]
+        tasks = []
+        for t in self.tasks.values():
+            if t.status in ("downloading", "pending"):
+                self._read_progress(t)
+            tasks.append(t.to_dict())
         tasks.sort(key=lambda x: x["created"], reverse=True)
         return self._json({"tasks": tasks[:20], "count": len(tasks)})
 
-    # ------------------------------------------------------------
-    # helpers
-    # ------------------------------------------------------------
+    async def cancel(self, req) -> web.Response:
+        try:
+            body = await req.json()
+        except Exception:
+            return self._json({"error": "无效 JSON"}, 400)
+        task_id = (body.get("task_id") or "").strip()
+        t = self.tasks.get(task_id)
+        if not t:
+            return self._json({"error": "任务不存在"}, 404)
+        if t.proc and t.proc.poll() is None:
+            t.proc.terminate()
+        t.status = "cancelled"
+        return self._json({"ok": True, "task_id": task_id})
+
+    # ---------------- helpers ----------------
     def _resolve_python(self) -> str:
         for p in [
             "/amm/backend/engines_installed/vllm/0.22.1/venv/bin/python",
@@ -156,10 +297,22 @@ class DownloadBridge:
                 return p
         return "python3"
 
-    def _env(self) -> Dict[str, str]:
+    def _helper_source(self) -> str:
+        # 从同目录外部文件读取, 便于维护; 缺失时用内嵌兜底
+        helper = Path(__file__).parent / "_download_helper.py"
+        if helper.exists():
+            try:
+                return helper.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        raise RuntimeError("缺少下载辅助脚本 _download_helper.py")
+
+    def _build_env(self, extra: Dict[str, str] = None) -> Dict[str, str]:
         env = dict(os.environ)
         env["MODELSCOPE_CACHE"] = CACHE_MAP["modelscope"]
         env["HF_HOME"] = "/models/huggingface"
+        if extra:
+            env.update(extra)
         return env
 
     def _json(self, data, status=200):
@@ -167,33 +320,11 @@ class DownloadBridge:
                                  headers={"Access-Control-Allow-Origin": "*"})
 
 
-_DOWNLOAD_SCRIPT = """
-import os, sys
-source = "{source}"
-model_id = "{model_id}"
-cache = "{cache}"
-if source == "modelscope":
-    os.environ.setdefault("MODELSCOPE_CACHE", cache)
-    os.environ.setdefault("MODELSCOPE_DOMAIN", "modelscope.cn")
-    try:
-        from modelscope import snapshot_download
-    except Exception as e:
-        print("MODELSCOPE_NOT_AVAILABLE", e); sys.exit(3)
-    p = snapshot_download(model_id, cache_dir=cache)
-elif source == "huggingface":
-    os.environ.setdefault("HF_HOME", "/models/huggingface")
-    try:
-        from huggingface_hub import snapshot_download
-    except Exception as e:
-        print("HF_NOT_AVAILABLE", e); sys.exit(3)
-    p = snapshot_download(repo_id=model_id, cache_dir=cache)
-else:
-    print("BAD_SOURCE"); sys.exit(2)
-print("OK", p)
-"""
-
-
 def setup_routes(app: web.Application, manager):
     bridge = DownloadBridge(manager)
+    app.router.add_get("/api/models/download/proxy", bridge.get_proxy)
+    app.router.add_post("/api/models/download/proxy", bridge.set_proxy)
+    app.router.add_post("/api/models/downloads", bridge.revisions)
     app.router.add_post("/api/models/download", bridge.start)
     app.router.add_get("/api/models/download/status", bridge.status)
+    app.router.add_post("/api/models/download/cancel", bridge.cancel)
