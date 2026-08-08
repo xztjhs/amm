@@ -29,6 +29,10 @@ logger = logging.getLogger("AMM.DiffusersBridge")
 MODELS_DIR = os.environ.get("MODELS_DIR", "/models")
 MODELSCOPE_CACHE = os.environ.get("MODELSCOPE_CACHE", os.path.join(MODELS_DIR, "zoo", "modelscope"))
 
+# 每次推理完成后自动调用 CUDA 释放 (空缓存) (v0.7.3)
+#   默认开启; 环境变量 AMM_AUTO_RELEASE_GPU=0 关闭
+AUTO_RELEASE_GPU = os.environ.get("AMM_AUTO_RELEASE_GPU", "1").strip().lower() not in ("0", "false", "off", "no")
+
 # 验证产物输出目录 (T2I PNG / T2V MP4)
 # 可通过环境变量 VERIFICATION_DIR 覆盖, 默认 /amm/verification
 # 在启动时自动创建 (权限允许则失败警告, 不报错)
@@ -125,6 +129,35 @@ def _model_log(model_id: str, line: str, extra: Optional[dict] = None) -> None:
             line = f"{line} ({kv})"
     _write_model_log(model_id, line)
 
+
+def _maybe_release_gpu(model_id: str) -> None:
+    """推理完成后按开关自动释放 GPU 临时显存 (v0.7.3)"""
+    if AUTO_RELEASE_GPU:
+        _release_gpu(model_id=model_id, keep_pipeline=True)
+
+def _release_gpu(model_id: Optional[str] = None, keep_pipeline: bool = True) -> None:
+    """推理完成后自动释放 GPU 活跃/临时显存 (v0.7.2)
+
+    - gc.collect() + torch.cuda.empty_cache(): 归还 CUDA 缓存给驱动, 降低驻留
+    - 默认保留已加载 pipeline (keep_pipeline=True), 仅释放临时/碎片;
+      若需彻底卸载模型释放权重请用 /unload 接口。
+    """
+    try:
+        import gc, torch
+        gc.collect()
+        if torch.cuda.is_available():
+            freed = torch.cuda.memory_allocated()
+            torch.cuda.empty_cache()
+            after = torch.cuda.memory_allocated()
+            freed = freed - after
+            rlog = f"CUDA 活跃显存释放约 {round(max(0,freed)/1024/1024,1)} MB (cache 保持)"
+        else:
+            rlog = "CUDA 不可用, 跳过释放"
+    except Exception as e:
+        rlog = f"GPU 释放跳过: {e}"
+    if model_id:
+        _model_log(model_id, f"[auto-release] {rlog}")
+    logger.info(f"diffusers auto-release: {rlog}")
 
 def list_active_tasks() -> List[Dict[str, Any]]:
     """汇总进行中/最近完成的任务 (不含锁, 供事件循环外读数)"""
@@ -730,12 +763,14 @@ class DiffusersBridgeHandler:
 
             await _task_phase(model_id, task_id, "complete", saved_paths=saved_paths)
             _model_log(model_id, f"[task {task_id}] 完成: {len(saved_paths)} 张图", extra={"saved": saved_paths})
+            _maybe_release_gpu(model_id)
             return self._json(resp)
 
         except Exception as e:
             logger.exception("t2i generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
     # ---- T2V: 文生视频 ----
@@ -814,12 +849,14 @@ class DiffusersBridgeHandler:
             else:
                 _model_log(model_id, f"[task {task_id}] 完成但落盘失败")
             await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
+            _maybe_release_gpu(model_id)
             return self._json(resp)
 
         except Exception as e:
             logger.exception("t2v generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
     # ---- I2V: 图生视频 ----
@@ -905,12 +942,14 @@ class DiffusersBridgeHandler:
                 logger.info(f"i2v saved MP4 -> {p}")
             await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
             _model_log(model_id, f"[task {task_id}] 完成, {len(mp4_bytes)} bytes", {"saved": p})
+            _maybe_release_gpu(model_id)
             return self._json(resp)
 
         except Exception as e:
             logger.exception("i2v generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
 

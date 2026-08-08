@@ -566,6 +566,7 @@
             compute_dtype: 'bf16',
             boundary_ratio: '', // 空 = 自动 (Wan2.2 -> 0.875)
             cpu_offload: false,
+            offload: 'gpu',      // gpu / model / group
         };
         try {
             const r = await apiGet('/instances/' + modelId + '/advanced');
@@ -575,6 +576,7 @@
                     compute_dtype: r.settings.compute_dtype || 'bf16',
                     boundary_ratio: (r.settings.boundary_ratio === null || r.settings.boundary_ratio === undefined) ? '' : r.settings.boundary_ratio,
                     cpu_offload: !!r.settings.cpu_offload,
+                    offload: r.settings.offload || 'gpu',
                 });
             }
         } catch (e) {
@@ -985,19 +987,33 @@
     }
     async function refreshT2iVramPlayground() {
         const box = document.getElementById('pgT2IVram');
-        if (!box) return;
-        let adv = { quant: 'fp8', compute_dtype: 'bf16', offload: 'gpu' };
+        const advBox = document.getElementById('pgT2IAdv');
+        let adv = { quant: 'fp8', compute_dtype: 'bf16', boundary_ratio: '', cpu_offload: false, offload: 'gpu' };
         try { const r = await apiGet('/instances/t2i/advanced'); if (r && r.settings) adv = r.settings || {}; } catch(e) {}
         const g = (id, d) => { const el = document.getElementById(id); return el ? parseFloat(el.value) : d; };
-        const est = estimateT2iVram({
-            quant: adv.quant || '', compute_dtype: adv.compute_dtype || 'bf16', offload: adv.offload || 'gpu',
-            width: g('pgT2IWidth',1024), height: g('pgT2IHeight',1024),
-            num_images: g('pgT2INum',1), num_steps: g('pgT2ISteps',28),
-        });
-        const color = est.is_oom ? 'var(--error)' : 'var(--success)';
-        box.innerHTML = `<span>💾 估算显存 <strong style="color:${color}">${fmtMb(est.mb)}</strong></span>
-            <span style="opacity:.75">权重 ${fmtMb(est.weights_mb)} + 激活 ${fmtMb(est.act_mb)} + 固定 ${fmtMb(est.fixed_mb)}</span>
-            ${est.is_oom ? '<b style="color:var(--error)">⚠ 超85G!</b>' : ''}`;
+        if (box) {
+            const est = estimateT2iVram({
+                quant: adv.quant || '', compute_dtype: adv.compute_dtype || 'bf16', offload: adv.offload || 'gpu',
+                width: g('pgT2IWidth',1024), height: g('pgT2IHeight',1024),
+                num_images: g('pgT2INum',1), num_steps: g('pgT2ISteps',28),
+            });
+            const color = est.is_oom ? 'var(--error)' : 'var(--success)';
+            box.innerHTML = `<span>💾 估算显存 <strong style="color:${color}">${fmtMb(est.mb)}</strong></span>
+                <span style="opacity:.75">权重 ${fmtMb(est.weights_mb)} + 激活 ${fmtMb(est.act_mb)} + 固定 ${fmtMb(est.fixed_mb)}</span>
+                ${est.is_oom ? '<b style="color:var(--error)">⚠ 超85G!</b>' : ''}`;
+        }
+        if (advBox) {
+            const q = adv.quant ? String(adv.quant).toUpperCase() : 'AUTO';
+            const cd = adv.compute_dtype || 'bf16';
+            const ol = adv.offload || 'gpu';
+            const br = (adv.boundary_ratio === null || adv.boundary_ratio === undefined || adv.boundary_ratio === '') ? '自动' : adv.boundary_ratio;
+            advBox.innerHTML = `<div style="font-size:11px;color:var(--text-muted);line-height:1.7;">
+                <b style="color:var(--text-secondary)">🎛 模型高级参数 (模型级·推理只读)</b> ·
+                Quant <b>${q}</b> · Compute <b>${cd}</b> · Offload <b>${ol}</b> ·
+                Boundary <b>${br}</b> · CPU-Offload：<b>${adv.cpu_offload?'ON':'OFF'}</b>
+                <span style="opacity:.7">(可在 Models → T2I → Advanced 修改, 需 Restart 生效)</span>
+            </div>`;
+        }
     }
 
     async function populatePlaygroundModels() {

@@ -441,7 +441,10 @@ class ModelManager:
                 inst.pid = inst.process.pid
             else:
                 # 内置桥接模式 (diffusers)，标记为运行
+                # 并按当前 Advanced 参数(quant/dtype/offload等) 后台预加载到 GPU (v0.7.3)
                 inst.pid = 0
+                if model_cfg.get("engine_type", "") == "diffusers" and model_id in ("t2i", "t2v", "i2v"):
+                    asyncio.create_task(self._preload_diffusers(model_id, model_cfg))
 
             inst.status = "running"
             logger.info(f"模型 {model_id} 已启动, engine={inst.engine_type}, PID={inst.pid}")
@@ -451,6 +454,16 @@ class ModelManager:
             inst.status = "error"
             logger.error(f"启动模型 {model_id} 失败: {e}")
             return {"error": str(e)}
+
+    async def _preload_diffusers(self, model_id: str, model_cfg: Dict):
+        """按当前 advanced 参数后台预加载 diffusers pipeline (start 后立即可用)"""
+        try:
+            from backend.api import diffusers_bridge as br
+            t0 = time.time()
+            await br._load_pipeline(model_cfg)
+            logger.info(f"模型 {model_id} 预加载完成 ({(time.time()-t0):.1f}s)")
+        except Exception as e:
+            logger.warning(f"模型 {model_id} 预加载失败(可忽略, 首次推理会重试): {e}")
 
     async def stop_model(self, model_id: str):
         """停止模型推理服务"""
