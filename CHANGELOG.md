@@ -1,5 +1,16 @@
 # AMM Changelog
 
+## v0.6.2 — 2026-08-08
+
+### 🧰 新增独立 Tools 菜单（模型工具从 Settings 拆分）
+- 顶部导航新增 **Tools** 菜单，含三个模型工具面板：
+  - 📥 **模型自动下载 (Model Download)**
+  - ⚗️ **GGUF 量化转换**
+  - 🧬 **vLLM → GGUF 模型转换 (给 llama.cpp)**
+- 对应三个 tool 面板已从 **Settings** 页移除，Settings 仅保留：服务配置 / 运维操作 / 推理引擎管理
+- 切到 Tools 页时自动刷新三类任务状态（下载任务 / GGUF 转换任务 / vLLM→GGUF 转换任务）
+- 文件：`frontend/index.html`、`frontend/js/app.js`
+
 ## v0.6.1 — 2026-08-08（维护）
 
 ### 🧬 Embedding 仅保留 llama_cpp 引擎（#1）

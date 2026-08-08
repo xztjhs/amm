@@ -59,6 +59,7 @@
                 if (tab === 'gpu') renderGPU();
                 if (tab === 'logs') startLogAutoRefresh();
                 if (tab === 'settings') renderSettings();
+                if (tab === 'tools') renderTools();
             });
         });
     }
@@ -720,6 +721,13 @@
         }
         await loadEngines();
         renderEngineManagement();
+    }
+
+    // ---- Tools (模型下载 / GGUF 量化 / vLLM→GGUF 转换) ----
+    async function renderTools() {
+        try { await refreshDownloadStatus(); } catch (e) { console.error('refreshDownloadStatus', e); }
+        try { await refreshQuantize(); } catch (e) { console.error('refreshQuantize', e); }
+        try { await refreshVgTask(); } catch (e) { console.error('refreshVgTask', e); }
     }
 
     function renderEngineManagement() {
