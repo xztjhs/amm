@@ -770,6 +770,8 @@ class DiffusersBridgeHandler:
 
             await _task_phase(model_id, task_id, "complete", saved_paths=saved_paths)
             _model_log(model_id, f"[task {task_id}] 完成: {len(saved_paths)} 张图", extra={"saved": saved_paths})
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json(resp)
 
@@ -777,6 +779,8 @@ class DiffusersBridgeHandler:
             logger.exception("t2i generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
@@ -856,6 +860,8 @@ class DiffusersBridgeHandler:
             else:
                 _model_log(model_id, f"[task {task_id}] 完成但落盘失败")
             await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json(resp)
 
@@ -863,6 +869,8 @@ class DiffusersBridgeHandler:
             logger.exception("t2v generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
@@ -949,6 +957,8 @@ class DiffusersBridgeHandler:
                 logger.info(f"i2v saved MP4 -> {p}")
             await _task_phase(model_id, task_id, "complete", saved_paths=resp.get("saved_paths"), bytes=len(mp4_bytes))
             _model_log(model_id, f"[task {task_id}] 完成, {len(mp4_bytes)} bytes", {"saved": p})
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json(resp)
 
@@ -956,6 +966,8 @@ class DiffusersBridgeHandler:
             logger.exception("i2v generate error")
             await _task_phase(model_id, task_id, "error", error=str(e))
             _model_log(model_id, f"[task {task_id}] 异常: {e}")
+            try: del pipe
+            except NameError: pass
             _maybe_release_gpu(model_id)
             return self._json({"error": str(e)}, 500)
 
