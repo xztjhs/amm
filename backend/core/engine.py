@@ -48,6 +48,7 @@ class ModelInstance:
     start_time: Optional[float] = None
     selected_model_file: str = ""
     parameters: Dict[str, Any] = field(default_factory=dict)
+    startup_command: str = ""   # 人工自定义启动命令/脚本 (v0.6)
     log_lines: List[str] = field(default_factory=list)
     request_count: int = 0
     error_count: int = 0
@@ -70,6 +71,7 @@ class ModelInstance:
             "start_time": self.start_time,
             "selected_model_file": self.selected_model_file,
             "parameters": self.parameters,
+            "startup_command": self.startup_command,
             "log_lines": self.log_lines,
             "request_count": self.request_count,
             "error_count": self.error_count,

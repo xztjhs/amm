@@ -135,6 +135,18 @@
         }
     }
 
+    async function apiDelete(path) {
+        try {
+            const resp = await fetch(API_BASE + path, { method: 'DELETE' });
+            updateServerStatus(true);
+            return await resp.json();
+        } catch (e) {
+            updateServerStatus(false);
+            console.error('DELETE ' + path + ':', e);
+            return null;
+        }
+    }
+
     function updateServerStatus(online) {
         const dot = document.getElementById('serverStatus');
         const txt = document.getElementById('serverStatusText');
@@ -356,6 +368,7 @@
                         <button class="btn btn-primary btn-sm" onclick="saveParameters('${id}')">Save Parameters</button>
                         <button class="btn btn-sm" onclick="viewLogs('${id}')">View Logs</button>
                     </div>
+                    ${['chat_model','embedding_model'].includes(key) ? renderStartupCard(id, key) : ''}
                     ${currentEngine === 'diffusers' ? renderAdvancedSettings(id) : ''}
                 </div>
             </div>`;
@@ -379,7 +392,77 @@
     }
 
     function toggleDetailBody(id) {
-        document.getElementById(id)?.classList.toggle('expanded');
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('expanded');
+        if (el.classList.contains('expanded')) {
+            const mid = id.replace('body-', '');
+            loadStartupState(mid);
+        }
+    }
+
+    // ---- 启动命令编排 (v0.6) ----
+    function renderStartupCard(id, key) {
+        return `<div class="startup-card" style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <h4 style="font-size:14px;margin:0;">🚀 启动命令编排 (人工加载命令行)</h4>
+                <span id="startup-state-${id}" style="font-size:11px;color:var(--text-muted)"></span>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+                基于上方参数点击“按参数生成”预览启动命令行；可手动修改，点“保存为启动脚本”写入 <code>scripts/${id}.sh</code>；
+                保存后 Start 将直接执行该脚本启动推理服务。
+            </div>
+            <textarea id="startup-cmd-${id}" rows="4" spellcheck="false"
+                style="width:100%;font-family:monospace;font-size:11px;padding:8px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);line-height:1.5;resize:vertical;"
+                placeholder="点击「生成启动命令」自动填入，或直接粘贴/编写命令行..."></textarea>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-sm" onclick="generateStartupCmd('${id}')">⚙️ 生成启动命令</button>
+                <button class="btn btn-sm btn-primary" onclick="saveStartupCmd('${id}')">💾 保存为启动脚本</button>
+                <button class="btn btn-sm" onclick="clearStartupCmd('${id}')">🗑 清除自定义</button>
+                <button class="btn btn-sm btn-warning" onclick="restartModel('${id}')">🔄 Restart (执行脚本)</button>
+            </div>
+        </div>`;
+    }
+
+    async function loadStartupState(id) {
+        try {
+            const r = await apiGet('/instances/' + id + '/command');
+            const el = document.getElementById('startup-state-' + id);
+            const ta = document.getElementById('startup-cmd-' + id);
+            if (el && r) el.textContent = r.has_custom ? '状态: 自定义命令 ✍️' : '状态: 自动生成(未自定义)';
+            if (ta && r && r.startup_command) ta.value = r.startup_command;
+        } catch (e) { console.error('startup state', e); }
+    }
+
+    async function generateStartupCmd(id) {
+        const ta = document.getElementById('startup-cmd-' + id);
+        try {
+            const r = await apiPost('/instances/' + id + '/command/preview', {});
+            if (r && r.shell) ta.value = r.shell;
+            else toast('生成失败: ' + (r.error || '未知'));
+        } catch (e) { toast('生成失败: ' + e.message); }
+    }
+
+    async function saveStartupCmd(id) {
+        const ta = document.getElementById('startup-cmd-' + id);
+        if (!ta || !ta.value.trim()) { toast('启动命令为空'); return; }
+        try {
+            const r = await apiPut('/instances/' + id + '/command', { command: ta.value });
+            toast(r.success ? '已保存为启动脚本' : '保存失败: ' + (r.error || ''));
+            loadStartupState(id);
+        } catch (e) { toast('保存失败: ' + e.message); }
+    }
+
+    // apiDelete 需新建 helper (已在上方新增); 清除自定义启动命令
+    async function clearStartupCmd(id) {
+        if (!confirm('清除自定义启动命令并恢复自动生成？')) return;
+        try {
+            await apiDelete('/instances/' + id + '/command');
+            const ta = document.getElementById('startup-cmd-' + id);
+            if (ta) ta.value = '';
+            loadStartupState(id);
+            toast('已清除自定义启动命令');
+        } catch (e) { toast('清除失败: ' + e.message); }
     }
 
     // ---- Diffusers Advanced Settings (FP8 quant / CPU offload / boundary) ----
@@ -1632,6 +1715,10 @@
     window.clearChatHistory = clearChatHistory;
     window.clearChatImage = clearChatImage;
     window.loadChatHistory = loadChatHistory;
+    window.generateStartupCmd = generateStartupCmd;
+    window.saveStartupCmd = saveStartupCmd;
+    window.clearStartupCmd = clearStartupCmd;
+    window.loadStartupState = loadStartupState;
     window.openFileBrowser = openFileBrowser;
     window.closeFileBrowser = closeFileBrowser;
     window.fbLoadDir = fbLoadDir;

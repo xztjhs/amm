@@ -247,6 +247,30 @@ class APIHandlers:
             logger.error(f"重启/重载失败: {e}")
             return self._json({"ok": False, "error": str(e)}, 500)
 
+    # ---- Startup Command (v0.6) ----
+    async def get_startup_command(self, req):
+        model_id = req.match_info["model_id"]
+        return self._json(self.manager.get_startup_command(model_id))
+
+    async def build_command_preview(self, req):
+        model_id = req.match_info["model_id"]
+        result = await self.manager.build_command_preview(model_id)
+        return self._json(result)
+
+    async def save_startup_command(self, req):
+        model_id = req.match_info["model_id"]
+        try:
+            data = await req.json()
+            command = data.get("command", "")
+            result = self.manager.save_startup_command(model_id, command)
+            return self._json(result)
+        except Exception as e:
+            return self._json({"error": str(e)}, 400)
+
+    async def clear_startup_command(self, req):
+        model_id = req.match_info["model_id"]
+        return self._json(self.manager.clear_startup_command(model_id))
+
     # ---- GPU ----
     async def get_gpu_info(self, req):
         return self._json({"gpus": self.manager.get_gpu_info()})
@@ -315,6 +339,10 @@ def create_app() -> web.Application:
     app.router.add_put("/api/instances/{model_id}/model-file", h.update_model_file)
     app.router.add_put("/api/instances/{model_id}/engine", h.select_engine)
     app.router.add_get("/api/instances/{model_id}/logs", h.get_model_logs)
+    app.router.add_get("/api/instances/{model_id}/command", h.get_startup_command)
+    app.router.add_post("/api/instances/{model_id}/command/preview", h.build_command_preview)
+    app.router.add_put("/api/instances/{model_id}/command", h.save_startup_command)
+    app.router.add_delete("/api/instances/{model_id}/command", h.clear_startup_command)
 
     # OpenAI / Diffusers bridges
     setup_openai_routes(app, manager)

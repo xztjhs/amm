@@ -106,6 +106,90 @@ class ModelManager:
             "reranker_model", "ocr_model", "t2i_model", "t2v_model", "i2v_model",
         ]
 
+    # ================================================================
+    # Startup Command (v0.6) : 人工编排启动命令/脚本
+    # ================================================================
+    STARTUP_DIR = os.path.join(AMM_ROOT, "scripts")
+
+    def _startup_script_path(self, model_id: str) -> str:
+        return os.path.join(self.STARTUP_DIR, f"{model_id}.sh")
+
+    async def build_command_preview(self, model_id: str) -> Dict[str, Any]:
+        """基于当前参数+引擎，生成实际启动命令 (供 UI 预览/编辑)"""
+        inst = self.instances.get(model_id)
+        if not inst:
+            return {"error": f"模型 {model_id} 未找到"}
+        model_cfg = self._find_model_config(model_id)
+        if not model_cfg:
+            return {"error": f"模型配置 {model_id} 未找到"}
+        engine = self.registry.get(inst.engine_type)
+        if not engine:
+            return {"error": f"引擎 {inst.engine_type} 不支持"}
+        host = self.config.get("server", {}).get("host", "0.0.0.0")
+        try:
+            cmd = await engine.build_command(model_cfg, inst, MODELS_DIR, host)
+            return {
+                "engine": inst.engine_type,
+                "engine_version": inst.engine_version or "",
+                "model": inst.selected_model_file,
+                "port": model_cfg.get("port"),
+                "args": cmd,
+                "shell": self._shell_join(cmd),
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+    @staticmethod
+    def _shell_join(cmd: list) -> str:
+        import shlex
+        return " ".join(shlex.quote(c) for c in cmd)
+
+    def get_startup_command(self, model_id: str) -> Dict[str, Any]:
+        inst = self.instances.get(model_id)
+        if not inst:
+            return {"error": f"模型 {model_id} 未找到"}
+        return {
+            "model_id": model_id,
+            "startup_command": inst.startup_command or "",
+            "has_custom": bool(inst.startup_command and inst.startup_command.strip()),
+            "script_path": self._startup_script_path(model_id),
+        }
+
+    def save_startup_command(self, model_id: str, command: str, write_script: bool = True) -> Dict[str, Any]:
+        """保存自定义启动命令；写入 .sh 脚本并持久化"""
+        inst = self.instances.get(model_id)
+        if not inst:
+            return {"error": f"模型 {model_id} 未找到"}
+        command = (command or "").strip()
+        inst.startup_command = command
+        if write_script:
+            try:
+                os.makedirs(self.STARTUP_DIR, exist_ok=True)
+                script = self._startup_script_path(model_id)
+                with open(script, "w", encoding="utf-8") as f:
+                    f.write("#!/bin/bash\n# AMM 自定义启动脚本 (人工编辑启动命令)\nset -e\n" + command + "\n")
+                os.chmod(script, 0o755)
+            except Exception as e:
+                logger.warning(f"写入启动脚本失败: {e}")
+        self._save_state()
+        logger.info(f"模型 {model_id} 启动命令已保存")
+        return {"success": True, "command": command, "has_custom": bool(command)}
+
+    def clear_startup_command(self, model_id: str) -> Dict[str, Any]:
+        inst = self.instances.get(model_id)
+        if not inst:
+            return {"error": f"模型 {model_id} 未找到"}
+        inst.startup_command = ""
+        try:
+            p = self._startup_script_path(model_id)
+            if os.path.isfile(p):
+                os.remove(p)
+        except Exception:
+            pass
+        self._save_state()
+        logger.info(f"模型 {model_id} 启动命令已清除")
+        return {"success": True, "has_custom": False}
+
     def _load_state(self):
         """从磁盘恢复参数、模型文件和引擎选择"""
         state_file = Path(LOGS_DIR) / "state.json"
@@ -124,6 +208,8 @@ class ModelManager:
                         self.instances[model_id].engine_type = saved["engine_type"]
                     if saved.get("engine_version"):
                         self.instances[model_id].engine_version = saved["engine_version"]
+                    if saved.get("startup_command") is not None:
+                        self.instances[model_id].startup_command = saved["startup_command"]
             logger.info(f"状态已恢复: {len(state.get('instances', {}))} 个模型")
         except Exception as e:
             logger.warning(f"恢复状态失败: {e}")
@@ -138,6 +224,7 @@ class ModelManager:
                     "selected_model_file": inst.selected_model_file,
                     "engine_type": inst.engine_type,
                     "engine_version": inst.engine_version,
+                    "startup_command": inst.startup_command,
                 }
             state_file = Path(LOGS_DIR) / "state.json"
             os.makedirs(LOGS_DIR, exist_ok=True)
@@ -333,9 +420,13 @@ class ModelManager:
             inst.status = "starting"
             inst.start_time = time.time()
 
-            # 构建命令
+            # 构建命令：优先使用人工自定义启动命令(脚本)，否则按参数自动生成
             host = self.config.get("server", {}).get("host", "0.0.0.0")
-            cmd = await engine.build_command(model_cfg, inst, MODELS_DIR, host)
+            if inst.startup_command and inst.startup_command.strip():
+                cmd = ["/bin/bash", self._startup_script_path(model_id)]
+                logger.info(f"模型 {model_id} 使用自定义启动脚本: {self._startup_script_path(model_id)}")
+            else:
+                cmd = await engine.build_command(model_cfg, inst, MODELS_DIR, host)
 
             if cmd:
                 # 子进程模式 (llama.cpp, vllm)
