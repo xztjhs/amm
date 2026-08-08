@@ -131,33 +131,40 @@ def _model_log(model_id: str, line: str, extra: Optional[dict] = None) -> None:
 
 
 def _maybe_release_gpu(model_id: str) -> None:
-    """推理完成后按开关自动释放 GPU 临时显存 (v0.7.3)"""
-    if AUTO_RELEASE_GPU:
-        _release_gpu(model_id=model_id, keep_pipeline=True)
+    """推理完成后按开关自动释放 GPU (v0.7.3)
+
+    AMM_AUTO_RELEASE (默认 full):
+      full  -> 彻底卸载 pipeline (清 cache + 释放权重), GPU 切实回低占用
+      cache -> 仅 empty_cache 临时碎片, 保留模型 (适合连续推理性能)
+    """
+    if not AUTO_RELEASE_GPU:
+        return
+    mode = os.environ.get("AMM_AUTO_RELEASE", "full").strip().lower()
+    _release_gpu(model_id=model_id, keep_pipeline=(mode != "full"))
+
 
 def _release_gpu(model_id: Optional[str] = None, keep_pipeline: bool = True) -> None:
-    """推理完成后自动释放 GPU 活跃/临时显存 (v0.7.2)
+    """释放 GPU 显存 (v0.7.3)
 
-    - gc.collect() + torch.cuda.empty_cache(): 归还 CUDA 缓存给驱动, 降低驻留
-    - 默认保留已加载 pipeline (keep_pipeline=True), 仅释放临时/碎片;
-      若需彻底卸载模型释放权重请用 /unload 接口。
+    - keep_pipeline=True : 仅 gc + 空缓存, 保留已加载模型 (释放临时/碎片)
+    - keep_pipeline=False: 彻底卸载 pipeline 缓存 + gc + 空缓存, 释放权重,
+      推理完成后 GPU 占用回落到基线。
     """
+    if not keep_pipeline:
+        _pipeline_cache.clear()
     try:
         import gc, torch
         gc.collect()
         if torch.cuda.is_available():
-            freed = torch.cuda.memory_allocated()
             torch.cuda.empty_cache()
-            after = torch.cuda.memory_allocated()
-            freed = freed - after
-            rlog = f"CUDA 活跃显存释放约 {round(max(0,freed)/1024/1024,1)} MB (cache 保持)"
+            rlog = f"CUDA 显存已自动释放 (keep_pipeline={'是' if keep_pipeline else '否'})"
         else:
             rlog = "CUDA 不可用, 跳过释放"
     except Exception as e:
         rlog = f"GPU 释放跳过: {e}"
     if model_id:
         _model_log(model_id, f"[auto-release] {rlog}")
-    logger.info(f"diffusers auto-release: {rlog}")
+    logger.info(f"diffusers auto-release ({model_id}): {rlog}")
 
 def list_active_tasks() -> List[Dict[str, Any]]:
     """汇总进行中/最近完成的任务 (不含锁, 供事件循环外读数)"""

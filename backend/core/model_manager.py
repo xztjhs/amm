@@ -440,10 +440,14 @@ class ModelManager:
                 inst.process = await engine.start_process(cmd, log_path)
                 inst.pid = inst.process.pid
             else:
-                # 内置桥接模式 (diffusers)，标记为运行
-                # 并按当前 Advanced 参数(quant/dtype/offload等) 后台预加载到 GPU (v0.7.3)
+                # 内置桥接模式 (diffusers)。默认不预加载(避免占用满显存);
+                # 若 AMM_START_PRELOAD=1 则按当前高级参数后台预加载到 GPU (v0.7.3)
                 inst.pid = 0
-                if model_cfg.get("engine_type", "") == "diffusers" and model_id in ("t2i", "t2v", "i2v"):
+                if (
+                    os.environ.get("AMM_START_PRELOAD", "0").strip() in ("1","true","on")
+                    and model_cfg.get("engine_type", "") == "diffusers"
+                    and model_id in ("t2i", "t2v", "i2v")
+                ):
                     asyncio.create_task(self._preload_diffusers(model_id, model_cfg))
 
             inst.status = "running"
