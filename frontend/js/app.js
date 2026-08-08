@@ -841,32 +841,48 @@
         sel.addEventListener('change', refreshLogs);
     }
 
-    // 日志行着色器: 解析时间戳/级别/消息, 提高可读性与对比度
+    // 日志行着色器: 支持 vLLM/llama.cpp/引擎/服务多格式, 按级别着色, 提升对比度
     const LOG_LEVEL_COLOR = {
-        'DEBUG': 'var(--text-muted)',
-        'INFO': 'var(--cyan)',
-        'WARNING': 'var(--warning)',
-        'WARN': 'var(--warning)',
-        'ERROR': 'var(--error)',
-        'CRITICAL': 'var(--error)',
+        'DEBUG': '#8b90a8',
+        'INFO': '#7dd3fc',
+        'WARNING': '#fbbf24',
+        'WARN': '#fbbf24',
+        'ERROR': '#f87171',
+        'CRITICAL': '#f87171',
     };
+    const TS_RE = /(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:,\d+)?|\d{2}-\d{2} \d{2}:\d{2}:\d{2})/;
+    const LEVEL_RE = /\b(DEBUG|INFO|WARNING|WARN|ERROR|CRITICAL)\b/;
     function renderLogLines(logs) {
         if (!logs || !logs.length) return '(empty)';
         return logs.map(function (line) {
             const raw = String(line);
             if (!raw.trim()) return '';
-            // 堆栈/缩进行(以空格/制表开头, 无级别标记): 降强调
-            if (/^\s+/.test(raw) && !/^\d{4}-\d{2}-\d{2}/.test(raw)) {
+            const trimmed = raw.replace(/^\s+/, '');
+            const isStack = /^(\s+|\([^)]*pid=\d+\)|Process |Traceback|File "|\s+File |\s+raise|\s+return|\s+\^+)/.test(raw);
+            const lvMatch = trimmed.match(LEVEL_RE);
+            const lv = lvMatch ? lvMatch[1].toUpperCase() : (isStack ? 'TRACE' : '');
+            const tsMatch = trimmed.match(TS_RE);
+            // 堆栈: 灰但更亮, 保留堆栈感
+            if (isStack && !lv) {
+                if (/Traceback|Process |^File|\^+$/.test(raw)) {
+                    return '<div class="log-line log-stack-head">' + escapeHtml(raw) + '</div>';
+                }
                 return '<div class="log-line log-stack">' + escapeHtml(raw) + '</div>';
             }
-            const m = raw.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:,\d+)?)\s*\[?([A-Za-z]+)\]?\s?(.*)$/);
-            if (m) {
-                const lv = (m[2] || 'INFO').toUpperCase();
+            if (lv) {
                 const color = LOG_LEVEL_COLOR[lv] || 'var(--text)';
-                return '<div class="log-line">'
-                    + '<span class="log-ts">' + escapeHtml(m[1]) + ' </span>'
-                    + '<span class="log-lv" style="color:' + color + ';font-weight:600;">[' + escapeHtml(lv) + ']</span> '
-                    + '<span class="log-txt">' + escapeHtml(m[3]) + '</span>'
+                let head = '';
+                let rest = raw;
+                if (tsMatch) {
+                    // 把时间戳单独高亮
+                    const tsInline = raw.indexOf(tsMatch[1]);
+                    head = '<span class="log-ts">' + escapeHtml(tsMatch[1]) + '</span>';
+                    rest = raw.slice(0, tsInline) + raw.slice(tsInline + tsMatch[1].length);
+                }
+                return '<div class="log-line log-lv-line" data-lv="' + escapeHtml(lv) + '">'
+                    + head
+                    + '<span class="log-lv" style="color:' + color + ';font-weight:700;">[' + escapeHtml(lv) + ']</span> '
+                    + '<span class="log-txt">' + escapeHtml(rest) + '</span>'
                     + '</div>';
             }
             return '<div class="log-line log-plain">' + escapeHtml(raw) + '</div>';
