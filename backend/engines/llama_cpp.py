@@ -162,6 +162,8 @@ class LlamaCppEngine(BaseEngine):
             cmd += ["--seed", str(params["seed"])]
         if params.get("max_tokens") is not None:
             cmd += ["--n-predict", str(params["max_tokens"])]
+        if params.get("reasoning_budget_enabled") and params.get("reasoning_budget"):
+            cmd += ["--reasoning-budget", str(params["reasoning_budget"])]
         if params.get("embeddings"):
             cmd += ["--embeddings"]
         if params.get("reranking"):

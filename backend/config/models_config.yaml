@@ -219,6 +219,19 @@ chat_model:
       min: 0
       max: 4294967295
       engine: "llama_cpp"
+    - name: "reasoning_budget_enabled"
+      label: "限制思考 Token (--reasoning-budget)"
+      description: "开启后给 Qwen 等思考模型设定思考过程 token 上限，避免思考把回复预算占满导致空回复。"
+      type: "boolean"
+      default: false
+      engine: "llama_cpp"
+    - name: "reasoning_budget"
+      label: "思考预算值 (token)"
+      type: "number"
+      default: 8192
+      min: 0
+      max: 131072
+      engine: "llama_cpp"
 
     # ================= vLLM =================
     - name: "tensor_parallel_size"
