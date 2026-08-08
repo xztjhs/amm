@@ -207,26 +207,25 @@ class DownloadBridge:
             task.detail = "下载中..."
 
             def _poll():
-                stall_start = None
+                last_growth = time.time()
+                last_dl = 0
                 while True:
                     if task.proc.poll() is not None:
                         break
                     self._read_progress(task)
-                    # 停滞检测: 5 分钟无进度增长 && 未取消, 则终止
-                    if task.status == "downloading" and task.speed == 0 and task.downloaded > 0:
-                        if stall_start is None:
-                            stall_start = time.time()
-                        elif time.time() - stall_start > 300:
-                            logger.warning(f"Download {task.task_id} stalled, terminating")
-                            try:
-                                task.proc.terminate()
-                            except Exception:
-                                pass
-                            task.status = "failed"
-                            task.error = "下载停滞超时(5分钟无进度), 已终止。请检查代理/网络后重试(支持断点续传)"
-                            break
-                    else:
-                        stall_start = None
+                    # 停滞检测: downloaded 在 90s 内无增长则终止(比 speed 更稳, 不受抖动影响)
+                    if task.downloaded > last_dl:
+                        last_dl = task.downloaded
+                        last_growth = time.time()
+                    if task.downloaded > 0 and (time.time() - last_growth) > 90:
+                        logger.warning(f"Download {task.task_id} no progress in 90s, terminating")
+                        try:
+                            task.proc.terminate()
+                        except Exception:
+                            pass
+                        task.status = "failed"
+                        task.error = "下载无进展超过90秒, 已终止。请检查代理/网络后重试(支持断点续传)"
+                        break
                     time.sleep(2)
             tp = threading.Thread(target=_poll, daemon=True)
             tp.start()
@@ -286,7 +285,7 @@ class DownloadBridge:
             if t.status in ("downloading", "pending"):
                 self._read_progress(t)
             tasks.append(t.to_dict())
-        tasks.sort(key=lambda x: x["created"], reverse=True)
+        tasks.sort(key=lambda x: x.get("created_at", 0), reverse=True)
         return self._json({"tasks": tasks[:20], "count": len(tasks)})
 
     async def cancel(self, req) -> web.Response:

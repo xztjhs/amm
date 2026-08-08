@@ -15,6 +15,7 @@ import os
 import sys
 import json
 import time
+import re
 import threading
 import traceback
 from pathlib import Path
@@ -130,17 +131,40 @@ def op_revisions():
 # 下载执行（含进度统计）
 # =====================================================================
 def cache_size_bytes():
+    """统计仅当前模型对应子目录的占用(而非整个 cache), 保证进度准确。"""
     total = 0
     try:
         root = Path(cache)
         if not root.exists():
             return 0
-        for p in root.rglob("*"):
-            try:
-                if p.is_file() and ".download-progress" not in str(p):
-                    total += p.stat().st_size
-            except Exception:
-                pass
+        # 定位目标模型子目录
+        targets = []
+        try:
+            if source == "huggingface":
+                safe = re.sub(r"[^A-Za-z0-9._-]", "--", model_id.replace("/", "--"))
+                tgt_dir = root / ("models--" + safe)
+                if tgt_dir.exists():
+                    targets.append(tgt_dir)
+            else:
+                safe = re.sub(r"[^A-Za-z0-9._-]", "--", model_id.replace("/", "--"))
+                cand = root / "models" / safe
+                cand2 = root / "models" / model_id
+                if cand.exists():
+                    targets.append(cand)
+                if cand2.exists():
+                    targets.append(cand2)
+        except Exception:
+            targets = []
+        if not targets:
+            # 兜底: 只统计 cache 下最近修改的文件(增量), 避免历史模型干扰
+            return total
+        for t in targets:
+            for p in t.rglob("*"):
+                try:
+                    if p.is_file() and ".download-progress" not in str(p):
+                        total += p.stat().st_size
+                except Exception:
+                    pass
     except Exception:
         pass
     return total
