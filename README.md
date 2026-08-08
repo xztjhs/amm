@@ -15,6 +15,10 @@
 
 ![AMM Dashboard 预览](./docs/screenshots/01-dashboard.png)
 
+![AMM Models 配置预览](./docs/screenshots/02b-models-chat-config.png)
+
+![AMM Playground 推理测试预览](./docs/screenshots/03-playground-chat.png)
+
 > 更多产品截图见 [docs/screenshots/](./docs/screenshots/)（Dashboard / Models / Playground / Logs / Settings）
 
 ## 特性
