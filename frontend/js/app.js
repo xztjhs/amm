@@ -404,6 +404,17 @@
             </div>`;
         });
         container.innerHTML = html;
+        if (config.t2i_model) refreshT2iVramModels();
+        bindParamChange('t2i');
+    }
+
+    // t2i 参数/高级设置变化时刷新显存估算
+    function bindParamChange(modelId) {
+        const sel = document.querySelectorAll(
+            `input[id^=param-${modelId}-], select[id^=param-${modelId}-], select[id^=adv-${modelId}-], input[id^=adv-${modelId}-]`
+        );
+        sel.forEach(el => el.addEventListener('input', refreshT2iVramModels));
+        sel.forEach(el => el.addEventListener('change', refreshT2iVramModels));
     }
 
     // ---- 显存估算 (diffusers T2I / Qwen-Image-25B) v0.7.2 ----
@@ -421,16 +432,21 @@
         const storeB = _dtypeBytes(quant);    // 权重存储字节
         const actB = _dtypeBytes(compute);     // 激活字节
         const paramB = 26;                      // Qwen-Image-25B 近似总参 (含 T5-ish text encoder + transformer + VAE)
+        const REF_LATENT = 16384;              // 1024x1024 -> latent 128x128 tokens
+        const BASE_ACT_GB = 9.0;               // 1MP (1024x1024) 时的激活峰值估算 (GB)
 
         // 1) 静态权重 (存 GPU by default, offload 时部分下 CPU)
         const weights = paramB * storeB;         // GB  -> FP8 26GB / BF16 52GB / FP32 104GB
 
-        // 2) 激活内存: latent = 1/8 分辨率; 峰值约正比 latent tokens x num_images x actB
+        // 2) 激活: 随 latent tokens 线性 + num_images 系数 + compute 精度 + 步数慢增
         const latentToken = (width/8)*(height/8);
-        const actFactor = (compute==='fp32'?1.6:1.0);  // fp32 激活更大
-        const act = latentToken * nimg * actB / 1e6 * 0.9 * actFactor * (steps>60?1.15:1.0);
+        const actScale = latentToken / REF_LATENT;
+        const mult = 1 + 0.08*(nimg-1);
+        const computeFactor = actB/2;           // bf16/fp16=1, fp32=2
+        const stepFactor = 1 + 0.004*steps;
+        const act = BASE_ACT_GB * actScale * mult * computeFactor * stepFactor;
 
-        // 3) 运行时/固定开销: CUDA context + 低分辨率小图片的最低基线
+        // 3) 固定开销
         const fixed = 2.0;   // GB: CUDA context, 临时张量
 
         // 4) offload 策略对显存驻留的影响
@@ -446,7 +462,7 @@
             fixed_mb: Math.round(fixed*1024),
             offload,
             is_oom: resident > 84.0,
-            note: `铺位${quant.toUpperCase()}·计算${compute.toUpperCase()}·offload=${offload}`,
+            note: `存储${quant.toUpperCase()}·计算${compute.toUpperCase()}·offload=${offload}`,
         };
     }
 
@@ -954,8 +970,34 @@
         });
         // 填充 Playground 模型选择 (chat + vision)
         await populatePlaygroundModels();
-        // 显示本地会话历史
-        renderChatHistory();
+        // T2I: 显存实时估算 + 输入变化刷新
+        setupT2iVram();
+
+    }
+
+    // ---- T2I 显存估算 (Playground) ----
+    function setupT2iVram() {
+        refreshT2iVramPlayground();
+        ['pgT2IWidth','pgT2IHeight','pgT2ISteps','pgT2INum'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.addEventListener('input', refreshT2iVramPlayground); el.addEventListener('change', refreshT2iVramPlayground); }
+        });
+    }
+    async function refreshT2iVramPlayground() {
+        const box = document.getElementById('pgT2IVram');
+        if (!box) return;
+        let adv = { quant: 'fp8', compute_dtype: 'bf16', offload: 'gpu' };
+        try { const r = await apiGet('/instances/t2i/advanced'); if (r && r.settings) adv = r.settings || {}; } catch(e) {}
+        const g = (id, d) => { const el = document.getElementById(id); return el ? parseFloat(el.value) : d; };
+        const est = estimateT2iVram({
+            quant: adv.quant || '', compute_dtype: adv.compute_dtype || 'bf16', offload: adv.offload || 'gpu',
+            width: g('pgT2IWidth',1024), height: g('pgT2IHeight',1024),
+            num_images: g('pgT2INum',1), num_steps: g('pgT2ISteps',28),
+        });
+        const color = est.is_oom ? 'var(--error)' : 'var(--success)';
+        box.innerHTML = `<span>💾 估算显存 <strong style="color:${color}">${fmtMb(est.mb)}</strong></span>
+            <span style="opacity:.75">权重 ${fmtMb(est.weights_mb)} + 激活 ${fmtMb(est.act_mb)} + 固定 ${fmtMb(est.fixed_mb)}</span>
+            ${est.is_oom ? '<b style="color:var(--error)">⚠ 超85G!</b>' : ''}`;
     }
 
     async function populatePlaygroundModels() {
@@ -1233,6 +1275,8 @@
         const height = parseInt(document.getElementById('pgT2IHeight').value);
         const steps = parseInt(document.getElementById('pgT2ISteps').value);
         const guidance = parseFloat(document.getElementById('pgT2IGuidance').value);
+        const num = Math.min(Math.max(parseInt(document.getElementById('pgT2INum').value||'1'),1),4);
+        const seed = parseInt(document.getElementById('pgT2ISeed').value || '-1');
         const result = document.getElementById('pgT2IResult');
         const t0 = Date.now();
         const timer = startLiveTimer(result, t0);
@@ -1241,17 +1285,25 @@
             const resp = await fetch('/v1/images/generations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: prompt, width: width, height: height, num_inference_steps: steps, guidance_scale: guidance, n: 1, save_to_disk: true }),
+                body: JSON.stringify({ prompt: prompt, width: width, height: height, num_inference_steps: steps, guidance_scale: guidance, n: num, seed: seed, save_to_disk: true }),
             });
             const data = await resp.json();
             stopLiveTimer(timer);
             const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
             if (data.data && data.data[0] && data.data[0].b64_json) {
-                let extra = '';
-                if (data.download_urls && data.download_urls.length) {
-                    extra = `<div style="margin-top:8px;font-size:12px;"><a href="${data.download_urls[0]}" target="_blank" style="color:var(--accent)">💾 下载图片文件</a> <span style="color:var(--text-muted)">(${data.saved_paths && data.saved_paths[0] || ''})</span></div>`;
-                }
-                result.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" style="max-width:100%;border-radius:8px;"><div style="margin-top:8px;color:var(--text-muted);font-size:12px;">提交到完成耗时 ${elapsed}s</div>' + extra;
+                // 图片卡片网格 (支持多图)
+                const imgs = data.data.map((d,i) => {
+                    const dl = (data.download_urls && data.download_urls[i]) || '';
+                    return `<div class="pg-img-card">
+                        <img src="data:image/png;base64,${d.b64_json}" alt="生成图 ${i+1}" loading="lazy">
+                        <div class="pg-img-meta">${width}×${height} · #${i+1}</div>
+                        ${dl ? `<a class="pg-img-dl" href="${dl}" target="_blank" title="下载">⬇ 下载</a>` : ''}
+                    </div>`;
+                }).join('');
+                const total = data.saved_paths && data.saved_paths.length ? data.saved_paths.join('<br>') : '';
+                result.innerHTML = `<div class="pg-img-grid ${data.data.length>1?'multi':''}">${imgs}</div>
+                    <div style="margin-top:10px;font-size:12px;color:var(--text-muted);text-align:center;">提交到完成耗时 ${elapsed}s</div>
+                    ${total ? `<div style="margin-top:6px;font-size:11px;color:var(--text-muted);text-align:center;word-break:break-all;">💾 ${total}</div>` : ''}`;
             } else {
                 result.innerHTML = '<div class="pg-placeholder" style="color:var(--error)">' + escapeHtml(JSON.stringify(data)) + '</div>';
             }
