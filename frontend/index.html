@@ -340,17 +340,16 @@ AI 用于图像识别与自然语言处理
                     </div>
 
                     <!-- 目标落盘位置 -->
-                    <div style="display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px;align-items:end;margin-bottom:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;">
-                        <div>
-                            <label style="font-size:11px;color:var(--text-muted)">目标父目录 (可选, 留空存到 /models 根)</label>
-                            <input id="dlTargetParent" class="form-input" placeholder="如 vllm / diffusion" value="">
-                        </div>
-                        <div>
-                            <label style="font-size:11px;color:var(--text-muted)">文件夹名称 (可选, 默认=模型短名)</label>
-                            <input id="dlTargetFolder" class="form-input" placeholder="留空则用模型短名" value="">
+                    <div style="display:flex;gap:8px;align-items:end;margin-bottom:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;">
+                        <div style="flex:1;">
+                            <label style="font-size:11px;color:var(--text-muted)">目标目录 (可选, 留空存到默认 zoo 快照)</label>
+                            <div style="display:flex;gap:6px;">
+                                <input id="dlTargetDir" class="form-input" placeholder="相对 /models 的路径, 如 vllm/Qwen3-4B" value="">
+                                <button type="button" class="btn btn-sm" onclick="window.openDownloadDirBrowser()">📂 浏览</button>
+                            </div>
                         </div>
                         <div style="font-size:11px;color:var(--text-muted);padding-bottom:8px;line-height:1.5;">
-                            落盘至 <code style="color:var(--accent)">/models/{父目录/文件夹名}</code>，与<br>引擎浏览路径保持一致
+                            指定后模型文件将直接落盘至<br><code style="color:var(--accent)">/models/{目标目录}</code>，可与引擎路径一致
                         </div>
                     </div>
 

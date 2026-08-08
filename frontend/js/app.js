@@ -1883,8 +1883,7 @@
         const source = document.getElementById('dlSource')?.value || 'modelscope';
         const category = document.getElementById('dlCategory')?.value || '';
         const rev = (window.__dlSelectedRev || {}).revision || '';
-        const target_parent = document.getElementById('dlTargetParent')?.value.trim() || '';
-        const target_folder = document.getElementById('dlTargetFolder')?.value.trim() || '';
+        const target_dir = document.getElementById('dlTargetDir')?.value.trim() || '';
         const cbs = document.querySelectorAll('.dl-file-cb');
         let files = [];
         if (cbs.length) files = Array.from(cbs).filter(c => c.checked).map(c => c.value);
@@ -1894,7 +1893,7 @@
         const r = await apiPost('/models/download', {
             model_id: modelId, source: source, category: category,
             revision: rev, files: files, total: total, total_files: total_files,
-            target_parent: target_parent, target_folder: target_folder,
+            target_dir: target_dir,
         });
         if (r && r.ok) {
             toast('✅ 已提交下载任务 ' + r.task_id, 'success');
@@ -2077,7 +2076,7 @@
             html += `<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">`;
             html += `<button class="btn btn-sm btn-primary" onclick="vgPickSrc('${escapeHtml(relDir)}')">✔ 选当前目录作为模型</button>`;
             html += `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">HF 模型目录应含 config.json/model_index.json</div></div>`;
-        } else if (qState.mode==='out' || qState.mode==='vout') {
+        } else if (qState.mode==='out' || qState.mode==='vout' || qState.mode==='dld') {
             html += '<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px;">';
             html += `<button class="btn btn-sm btn-primary" onclick="qPickDirTarget()">✔ 选当前目录作输出</button> `;
             html += `<button class="btn btn-sm" onclick="qNewDir()">➕ 新建子目录</button>`;
@@ -2108,12 +2107,25 @@
             document.getElementById('vgOut').value = d;
             closeFileBrowser();
             toast('vLLM→GGUF 输出目录: /models/' + d, 'info');
+        } else if (qState.mode === 'dld') {
+            document.getElementById('dlTargetDir').value = d;
+            closeFileBrowser();
+            toast('下载目标目录: /models/' + d, 'info');
         } else {
             document.getElementById('quOut').value = d;
             closeFileBrowser();
             toast('输出目录: /models/' + d, 'info');
         }
     }
+    // 模型下载目标目录浏览器（复用 fileBrowserModal）
+    function openDownloadDirBrowser() {
+        qState = { mode: 'dld', curDir: '' };
+        const m = document.getElementById('fileBrowserModal');
+        m.classList.add('active');
+        document.getElementById('fileBrowserTitle').textContent = '📂 选择下载目标目录 (任选/可新建)';
+        qLoadDir('');
+    }
+    window.openDownloadDirBrowser = openDownloadDirBrowser;
     // vLLM 源选中 (文件或目录)
     async function vgPickSrc(path) {
         document.getElementById('vgSrc').value = path;

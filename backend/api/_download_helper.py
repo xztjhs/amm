@@ -30,9 +30,8 @@ files = json.loads(os.environ.get("AMM_FILES", "[]") or "[]")
 proxy = json.loads(os.environ.get("AMM_PROXY", "{}") or "{}")
 progress_file = os.environ.get("AMM_PROGRESS", "")
 total_ref = int(os.environ.get("AMM_TOTAL", "0") or 0)
-# 目标落盘(可选): 下载完成后将真实模型文件整理到 MODELS_DIR/父目录/文件夹名
-target_parent = os.environ.get("AMM_TARGET_PARENT", "") or ""
-target_folder = os.environ.get("AMM_TARGET_FOLDER", "") or ""
+# 目标落盘(可选): 下载完成后将真实模型文件整理到 MODELS_DIR/目标目录
+target_dir = os.environ.get("AMM_TARGET_DIR", "") or ""
 models_dir = os.environ.get("AMM_MODELS_DIR", "/models")
 
 
@@ -236,22 +235,20 @@ def _monitor():
 
 
 def _relocate_to_target(snapshot: str) -> str:
-    """把下载完成的快照目录整理到 MODELS_DIR/<父目录>/<文件夹名>/。
+    """把下载完成的快照目录整理到 MODELS_DIR/<目标目录>/。
 
+    target_dir 为相对 MODELS_DIR 的路径(可多级, 直接作为最终模型存放目录)。
     解析 HF/ModelScope 快照里的 symlink -> 真实文件, 复制(同盘硬链, 跨盘复制)
     到目标目录, 生成与现有 /models/vllm/Qwen3-4B 一致的扁平结构。
     """
-    if not snapshot or not target_folder:
+    if not snapshot or not target_dir:
         return snapshot
     src = Path(snapshot)
     if not src.is_dir():
         raise RuntimeError(f"下载完成但快照目录不存在: {snapshot}")
-    parent = (models_dir.rstrip("/") + "/" + target_parent.strip("/")).rstrip("/") if target_parent else models_dir
-    dst = Path(parent) / target_folder
+    dst = Path(models_dir) / target_dir
     dst.mkdir(parents=True, exist_ok=True)
-
-    seen_dirs = set()
-    copied = moved = 0
+    moved = 0
 
     def _real(p: Path) -> Path:
         # 解析 symlink 得到真实文件(快照典型结构)
@@ -277,7 +274,7 @@ def _relocate_to_target(snapshot: str) -> str:
             if target.exists():
                 continue  # 断点续传/重复下载场景下已存在, 跳过
             target.parent.mkdir(parents=True, exist_ok=True)
-            # 同文件系统: 先尝试硬链接省空间, 失败(跨设备/已存在)回退复制
+            # 同文件系统: 先尝试硬链接省空间, 失败(跨设备)回退复制
             try:
                 os.link(str(true_f), str(target))
                 moved += 1
