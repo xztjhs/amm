@@ -1,5 +1,21 @@
 # AMM Changelog
 
+## v0.6 — 2026-08-08
+
+### 🚀 启动命令编排 (Chat/LLM/VLM llama_cpp/vllm)
+- Models→Chat/LLM/VLM 新增「启动命令编排」卡片：
+  - 按参数一键生成实际启动命令行（`llama-server` / `vllm` 完整参数）
+  - 支持人工修改命令行，点「保存为启动脚本」写入 `scripts/<model>.sh`
+  - 「清除自定义」恢复自动生成；Start/Stop/Restart 优先执行自定义脚本
+- 后端：`/api/instances/{id}/command`(GET/PUT/DELETE)、`/api/instances/{id}/command/preview`(POST)
+- `ModelInstance.startup_command` 持久化；`start_model` 检测到自定义命令时用 `bash scripts/<id>.sh` 启动
+- 实测：chat 模型经脚本启动成功（含 `--reasoning-budget`），推理返回正常
+
+### 🧠 llama_cpp reasoning-budget
+- models_config 新增 `reasoning_budget_enabled` + `reasoning_budget`(默认8192)
+- llama_cpp build_command 支持 `--reasoning-budget`，限制 Qwen3 思考 token 防空回复
+- Playground Chat 默认 max_tokens 1024→16384
+
 ## v0.4 — 2026-08-07
 
 ### 📥 模型自动下载 (Task 2)
