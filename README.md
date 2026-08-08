@@ -45,21 +45,21 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│            AMM Web UI (Frontend)             │
-│   Dashboard │ Models │ GPU │ Logs │ Settings │
-└─────────────┬───────────────────────────────┘
-              │ REST API
-┌─────────────▼───────────────────────────────┐
-│          AMM Backend Server                  │
+│             AMM Web UI (Frontend)           │
+│  Dashboard │ Models │ GPU │ Logs │ Settings │
+└─────────────────────┬───────────────────────┘
+                      │ REST API
+┌─────────────────────▼───────────────────────┐
+│              AMM Backend Server             │
 │  ┌──────────┬──────────┬──────────────────┐ │
 │  │ Engine   │ Version  │ Model Manager    │ │
 │  │ Registry │ Manager  │ (Lifecycle)      │ │
 │  └────┬─────┴────┬─────┴────────┬─────────┘ │
 │       │          │              │           │
-│  ┌────▼────┐ ┌──▼───┐    ┌─────▼──────┐   │
-│  │llama.cpp│ │vLLM  │    │Diffusers   │   │
-│  │ (GGUF)  │ │(safet│    │(ModelScope)│   │
-│  └─────────┘ └──────┘    └────────────┘   │
+│  ┌────▼────┐  ┌──▼───┐    ┌─────▼──────┐    │
+│  │llama.cpp│  │vLLM  │    │Diffusers   │    │
+│  │ (GGUF)  │  │(safet│    │(ModelScope)│    │
+│  └─────────┘  └──────┘    └────────────┘    │
 └─────────────────────────────────────────────┘
 ```
 
@@ -177,7 +177,7 @@ python3.11 /amm/backend/server.py
 | `/v1/images/generations` | POST | 文生图 (T2I) |
 | `/v1/videos/generations` | POST | 视频生成 (T2V/I2V, video_type=t2v\|i2v) |
 
-### 文件浏览 / 预设 (v0.2)
+### 文件浏览 / 预设
 
 | 接口 | 方法 | 说明 |
 |------|------|------|
@@ -185,7 +185,7 @@ python3.11 /amm/backend/server.py
 | `/api/fs/discover` | GET | 按引擎发现模型文件 |
 | `/api/instances/preset` | GET/POST | 查找/应用/保存预设配置 |
 
-### 运维 (v0.2)
+### 运维 
 
 | 接口 | 方法 | 说明 |
 |------|------|------|
@@ -194,17 +194,17 @@ python3.11 /amm/backend/server.py
 
 ## 引擎支持矩阵
 
-| 模型类别 | llama.cpp | vLLM | Diffusers |
-|----------|:---------:|:----:|:---------:|
-| Chat / LLM | ✅ | ✅ | ❌ |
-| Embedding | ✅ | ❌ (v0.6.1 移除) | ❌ |
-| ASR | ✅ | ❌ | ❌ |
-| TTS | ✅ | ❌ | ❌ |
-| Reranker | ✅ | ❌ | ❌ |
-| OCR | ✅ | ❌ | ❌ |
-| Text-to-Image | ❌ | ❌ | ✅ |
-| Text-to-Video | ❌ | ❌ | ✅ |
-| Image-to-Video | ❌ | ❌ | ✅ |
+|   模型类别     | llama.cpp | vLLM | Diffusers |
+|----------------|:---------:|:----:|:---------:|
+| Chat / LLM     |     ✅    |  ✅  |     ❌    |
+| Embedding      |     ✅    |  ❌  |     ❌    |
+| ASR            |     ✅    |  ❌  |     ❌    |
+| TTS            |     ✅    |  ❌  |     ❌    |
+| Reranker       |     ✅    |  ❌  |     ❌    |
+| OCR            |     ✅    |  ❌  |     ❌    |
+| Text-to-Image  |     ❌    |  ❌  |     ✅    |
+| Text-to-Video  |     ❌    |  ❌  |     ✅    |
+| Image-to-Video |     ❌    |  ❌  |     ✅    |
 
 ## 配置模型
 
