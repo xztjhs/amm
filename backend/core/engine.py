@@ -131,17 +131,35 @@ class BaseEngine(ABC):
 
     async def start_process(self, cmd: List[str], log_path: str) -> asyncio.subprocess.Process:
         """启动引擎子进程"""
+        import os as _os
         log_dir = os.path.dirname(log_path)
-        os.makedirs(log_dir, exist_ok=True)
+        _os.makedirs(log_dir, exist_ok=True)
+        # 注入引擎 venv 的 bin 到 PATH, 使 flashinfer/常用工具可用 (v0.6 fix ninja)
+        env = dict(_os.environ)
+        _venv_bins = self._find_engine_venv_bins(cmd)
+        if _venv_bins:
+            env["PATH"] = ":".join(_venv_bins) + ":" + env.get("PATH", "")
         with open(log_path, 'a', encoding='utf-8') as log_file:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
-                preexec_fn=os.setsid,
+                preexec_fn=_os.setsid,
+                env=env,
             )
         logger.info(f"[{self.engine_type}] 进程启动 PID={process.pid}: {' '.join(cmd[:5])}...")
         return process
+
+    def _find_engine_venv_bins(self, cmd: List[str]) -> list:
+        """从命令的 python 解释器路径推断 venv/bin 目录(不含则自动补全). v0.6"""
+        if not cmd:
+            return []
+        py = cmd[0]
+        if not py or "/venv/bin/python" not in py:
+            return []
+        binsdir = os.path.dirname(py)  # .../venv/bin
+        # 若无 ninja 也 ok; 只需返回 bin 目录即可
+        return [binsdir] if os.path.isdir(binsdir) else []
 
     def _descendant_pids(self, root_pid: int) -> List[int]:
         """递归收集 root_pid 的所有后代 PID（含脱离原进程组的子进程）。
