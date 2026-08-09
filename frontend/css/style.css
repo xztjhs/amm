@@ -1180,6 +1180,7 @@ body {
     background: var(--bg-input); border: 1px solid var(--border);
     border-radius: 8px; padding: 12px; overflow-x: auto;
     font-size: 12px; font-family: monospace; line-height: 1.6;
+    white-space: pre; overflow-wrap: normal; word-break: normal;
 }
 .help-content pre code { background: none; border: none; padding: 0; }
 .help-content table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }

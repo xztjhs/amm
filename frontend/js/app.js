@@ -2247,7 +2247,13 @@
         const inline = s => s
             .replace(/`([^`]+)`/g, (m, c) => '<code>' + esc(c) + '</code>')
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, t, u) => '<a href="' + u + '" target="_blank">' + t + '</a>');
+            .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => {
+                u = (u || '').trim();
+                if (/^https?:\/\//i.test(u) || /^mailto:/i.test(u)) {
+                    return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + t + '</a>';
+                }
+                return '<a href="#" class="help-md-link" data-file="' + esc(u) + '">' + t + '</a>';
+            });
         let lines = (mdText || '').split(/\n/);
         let out = [], inPre = false, inTable = false, tableRows = [];
         // 单元格解析与表格输出（tpipe 需在函数作用域，供循环外收尾 flush 使用）
@@ -2268,7 +2274,7 @@
                 else { out.push('<pre><code>'); inPre = true; }
                 continue;
             }
-            if (inPre) { out.push(esc(line)); continue; }
+            if (inPre) { out.push(esc(line) + '\n'); continue; }
             if (/^\|/.test(t) && /\|$/.test(t)) {
                 if (!inTable) { inTable = true; tableRows = []; }
                 tableRows.push(line);
@@ -2328,7 +2334,35 @@
                 html = html.replace(re, '<mark class="hl">$1</mark>');
             }
             content.innerHTML = html;
+            wireHelpLinks(content);
         } catch (e) { console.error(e); }
+    }
+
+    function resolveDocFile(raw) {
+        const docs = __docs.docs || [];
+        let name = String(raw || '').replace(/^\.\//, '').replace(/^[#/]+/, '').trim();
+        if (!name) return null;
+        const clean = name.replace(/\.md$/i, '');
+        const norm = s => s.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '');
+        const nc = norm(clean);
+        let hit = docs.find(d => d.file === name || d.file === clean + '.md' || norm(d.file) === nc);
+        if (hit) return hit.file;
+        const n = (name.match(/^(\d+)/) || [])[1];
+        if (n) { hit = docs.find(d => d.file.startsWith(n + '-')); if (hit) return hit.file; }
+        hit = docs.find(d => d.title && norm(d.title) === nc);
+        if (hit) return hit.file;
+        return docs.find(d => d.title && norm(d.title).includes(nc)) || null;
+    }
+    function wireHelpLinks(container) {
+        container.querySelectorAll('a.help-md-link').forEach(a => {
+            const raw = a.getAttribute('data-file');
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const f = resolveDocFile(raw);
+                if (f) openHelpDoc(f);
+                else { a.style.textDecoration = 'line-through'; a.title = '无法定位该章节'; }
+            });
+        });
     }
 
     function openHelp() {
