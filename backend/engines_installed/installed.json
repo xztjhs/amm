@@ -1,0 +1,12 @@
+{
+  "llama_cpp_b4727": {
+    "engine_type": "llama_cpp",
+    "version": "b4727",
+    "install_path": "/amm/backend/engines_installed/llama_cpp/b4727"
+  },
+  "vllm_0.8.5": {
+    "engine_type": "vllm",
+    "version": "0.8.5",
+    "install_path": "/amm/backend/engines_installed/vllm/0.8.5"
+  }
+}

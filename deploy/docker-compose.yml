@@ -1,0 +1,59 @@
+
+# AMM - Docker Compose
+# ======================================
+# 不使用 Dockerfile，用基础镜像 + install.sh 在容器内安装
+# 启动: docker compose up -d
+# 进入容器: docker exec -it amm-server bash
+# 安装: bash /amm/deploy/install.sh
+# 启动服务: python3.11 /amm/backend/server.py
+# ======================================
+
+version: "3.9"
+
+services:
+  amm-server:
+    image: rockylinux:9
+    container_name: amm-server
+    runtime: nvidia
+    ports:
+      # 统一 Web 入口: 容器内 80，宿主映射 <WEB_PORT>
+      #   WebUI 页面 + /api/* + OpenAI 兼容 /v1/* (http://host:<WEB_PORT>)
+      - "<WEB_PORT>:80"
+      # HTTPS 预留
+      - "<HTTPS_PORT>:443"
+      # 模型推理服务端口（容器内部使用）
+      - "18081:18081"
+      - "18082:18082"
+      - "18083:18083"
+      - "18084:18084"
+      - "18085:18085"
+      - "18086:18086"
+      - "18087:18087"
+      - "18088:18088"
+      - "18089:18089"
+    volumes:
+      # 将项目代码挂载到 /amm (读写，方便调试)
+      - ./:/amm
+      # 模型文件目录 (只读)
+      - <HOST_MODELS_PATH>:/models:ro
+      # 日志目录 (读写)
+      - ./logs:/amm/logs
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - PYTHONUNBUFFERED=1
+      - HF_HOME=/models/huggingface
+      - MODELSCOPE_CACHE=/models/modelscope
+    restart: unless-stopped
+    # 容器启动后进入交互模式，手动运行 install.sh
+    tty: true
+    stdin_open: true
+    # 容器入口脚本：启动 sshd + AMM Web 服务（替换 sleep infinity）
+    command: ["/bin/bash", "/amm/deploy/docker-entrypoint.sh"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

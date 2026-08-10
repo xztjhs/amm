@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMM - AI Models Manage</title>
+    <link rel="stylesheet" href="css/style.css?v=0.9">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%233b82f6'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='sans'>AI</text></svg>">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <svg class="logo" viewBox="0 0 32 32" width="28" height="28">
+                <rect width="32" height="32" rx="6" fill="url(#logoGrad)"/>
+                <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                <text x="16" y="22" font-size="16" font-weight="bold" text-anchor="middle" fill="white" font-family="system-ui">AI</text>
+            </svg>
+            <span class="brand-text">AMM</span>
+            <span class="brand-sub">AI Models Manage</span>
+        </div>
+        <nav class="topbar-nav">
+            <a href="#" class="nav-item active" data-tab="dashboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item" data-tab="models">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Models
+            </a>
+            <a href="#" class="nav-item" data-tab="playground">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Playground
+            </a>
+            <a href="#" class="nav-item" data-tab="logs">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 17"/><line x1="12" y1="17" x2="20" y2="17"/></svg>
+                Logs
+            </a>
+            <a href="#" class="nav-item" data-tab="tools">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Tools
+            </a>
+            <a href="#" class="nav-item" data-tab="settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+            </a>
+        </nav>
+        <div class="topbar-status">
+            <button id="helpToggle" class="help-toggle" title="用户手册" aria-label="帮助手册">📚 <span class="help-badge" id="helpBadge">手册</span></button>
+            <select id="refreshInterval" class="refresh-select" title="页面刷新间隔" aria-label="刷新间隔">
+                <option value="100">0.1s</option>
+                <option value="250">0.25s</option>
+                <option value="500" selected>0.5s</option>
+                <option value="1000">1s</option>
+                <option value="2000">2s</option>
+                <option value="5000">5s</option>
+                <option value="10000">10s</option>
+                <option value="30000">30s</option>
+                <option value="60000">1min</option>
+                <option value="300000">5min</option>
+            </select>
+            <button id="themeToggle" class="theme-toggle" title="切换浅色/深色主题" aria-label="Theme toggle">🌙</button>
+            <span id="serverStatus" class="status-dot offline"></span>
+            <span id="serverStatusText">Offline</span>
+            <span id="clock" class="clock"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div class="page-header"><h1>Dashboard</h1><p class="subtitle">AI 模型管理面板 · 系统概览</p></div>
+            <div class="cards-grid" id="systemCards">
+                <div class="card cpu-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg></div><div class="card-info"><span class="card-label">CPU</span><span class="card-value" id="cpuValue">--</span></div><div class="card-bar"><div class="card-bar-fill" id="cpuBar" style="width:0%"></div></div></div>
+                <div class="card mem-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/></svg></div><div class="card-info"><span class="card-label">Memory</span><span class="card-value" id="memValue">--</span></div><div class="card-bar"><div class="card-bar-fill mem-bar" id="memBar" style="width:0%"></div></div></div>
+                <div class="card disk-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div class="card-info"><span class="card-label">Disk</span><span class="card-value" id="diskValue">--</span></div><div class="card-bar"><div class="card-bar-fill disk-bar" id="diskBar" style="width:0%"></div></div></div>
+                <div class="card uptime-card"><div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="card-info"><span class="card-label">Uptime</span><span class="card-value" id="uptimeValue">--</span></div></div>
+            </div>
+            <h2 class="section-title">GPU 状态</h2>
+            <div class="gpu-grid dashboard-gpu" id="dashboardGPU"></div>
+            <h2 class="section-title" id="diffTasksTitle" style="display:none">Diffusers 推理任务</h2>
+            <div id="dashboardDiffTasks" class="diff-task-list"></div>
+            <h2 class="section-title">Model Status</h2>
+            <div class="models-grid dashboard-models" id="dashboardModels"></div>
+        </section>
+
+        <!-- Models Tab -->
+        <section id="tab-models" class="tab-content">
+            <div class="page-header"><h1>Models</h1><p class="subtitle">九类 AI 模型配置与管理 · 可选择推理引擎</p></div>
+            <div class="models-detail-grid" id="modelsDetail"></div>
+        </section>
+
+        <!-- Playground Tab -->
+        <section id="tab-playground" class="tab-content">
+            <div class="page-header"><h1>Playground</h1><p class="subtitle">推理测试 · Chat / Image / API 调试</p></div>
+            <div class="playground-panel">
+                <div class="playground-tabs">
+                    <button class="pg-tab active" data-pg="chat">💬 Chat</button>
+                    <button class="pg-tab" data-pg="embedding">🧬 Embedding</button>
+                    <button class="pg-tab" data-pg="asr">🎙️ ASR</button>
+                    <button class="pg-tab" data-pg="tts">🔊 TTS</button>
+                    <button class="pg-tab" data-pg="rerank">📊 Rerank</button>
+                    <button class="pg-tab" data-pg="ocr">👁️ OCR</button>
+                    <button class="pg-tab" data-pg="image">🖼️ T2I</button>
+                    <button class="pg-tab" data-pg="video">🎬 T2V</button>
+                    <button class="pg-tab" data-pg="i2v">🖌️ I2V</button>
+                </div>
+                <!-- Chat Playground -->
+                <div id="pg-chat" class="pg-content active">
+                    <div class="pg-chat-config">
+                        <div class="pg-form-row"><label>模型</label><select id="pgChatModel" class="form-select" onchange="loadChatHistory()"></select></div>
+                        <div class="pg-form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                            <div><label>Temperature</label><input type="number" id="pgChatTemp" class="form-input" value="0.7" min="0" max="2" step="0.1"></div>
+                            <div><label>Max Tokens</label><input type="number" id="pgChatMaxTokens" class="form-input" value="16384" min="16" max="32768"></div>
+                            <div><label>Top-P</label><input type="number" id="pgChatTopP" class="form-input" value="0.9" min="0" max="1" step="0.05"></div>
+                        </div>
+                        <div class="pg-form-row"><label>系统提示 (System)</label><textarea id="pgChatSystem" class="form-input" rows="1" placeholder="可选的 system prompt"></textarea></div>
+                        <div class="pg-form-row">
+                            <label>上传图片(视觉)</label><input type="file" id="pgChatImage" accept="image/*" class="form-input">
+                            <button class="btn btn-sm" onclick="clearChatImage()" style="margin-left:8px">✕ 清除图片</button>
+                            <button class="btn btn-sm" onclick="clearChatHistory()" style="margin-left:8px">🗑 清空会话</button>
+                        </div>
+                    </div>
+                    <div class="pg-chat-messages" id="pgChatMessages"><div class="pg-chat-welcome">选择模型并启动后，在此测试对话；支持图片与多轮会话参数。</div></div>
+                    <div class="pg-chat-input">
+                        <textarea id="pgChatInput" placeholder="输入消息..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage()}"></textarea>
+                        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+                <!-- Embedding Playground -->
+                <div id="pg-embedding" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>文本 (用 | 分隔多条)</label><textarea id="pgEmbInput" rows="3">AMM is an AI model management platform|向量检索测试句子|如何优化推理性能</textarea></div>
+                        <button class="btn btn-primary" onclick="runEmbedding()">⏱ 测试 Embedding</button>
+                    </div>
+                    <div class="pg-perf" id="pgEmbPerf"></div>
+                    <pre class="pg-result-code" id="pgEmbResult"><div class="pg-placeholder">点击测试, 将显示向量维度/耗时/吞吐</div></pre>
+                </div>
+                <!-- ASR Playground -->
+                <div id="pg-asr" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>音频文件 (wav/mp3)</label><input type="file" id="pgAsrFile" accept="audio/*" class="form-input"></div>
+                        <button class="btn btn-primary" onclick="runASR()">⏱ 测试 ASR</button>
+                    </div>
+                    <div class="pg-perf" id="pgAsrPerf"></div>
+                    <div class="pg-result-code" id="pgAsrResult"><div class="pg-placeholder">上传音频点击测试</div></div>
+                </div>
+                <!-- TTS Playground -->
+                <div id="pg-tts" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>文本</label><textarea id="pgTtsInput" rows="2">你好，我是 AMM 平台的声音模型，正在测试语音合成性能。</textarea></div>
+                        <button class="btn btn-primary" onclick="runTTS()">⏱ 测试 TTS</button>
+                    </div>
+                    <div class="pg-perf" id="pgTtsPerf"></div>
+                    <div class="pg-result-code" id="pgTtsResult"><div class="pg-placeholder">点击测试生成语音</div></div>
+                </div>
+                <!-- Rerank Playground -->
+                <div id="pg-rerank" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Query</label><input type="text" id="pgRerankQuery" class="form-input" value="什么是人工智 能"></div>
+                        <div class="pg-form-row"><label>候选文档 (每题一行)</label><textarea id="pgRerankDocs" rows="4">人工智能是计算机科学的分支
+AI 用于图像识别与自然语言处理
+今天天气很好适合出门散步</textarea></div>
+                        <button class="btn btn-primary" onclick="runRerank()">⏱ 测试 Rerank</button>
+                    </div>
+                    <div class="pg-perf" id="pgRerankPerf"></div>
+                    <div class="pg-result-code" id="pgRerankResult"><div class="pg-placeholder">点击测试重排序</div></div>
+                </div>
+                <!-- OCR Playground -->
+                <div id="pg-ocr" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>图片 (含文字)</label><input type="file" id="pgOcrFile" accept="image/*" class="form-input"></div>
+                        <button class="btn btn-primary" onclick="runOCR()">⏱ 测试 OCR</button>
+                    </div>
+                    <div class="pg-perf" id="pgOcrPerf"></div>
+                    <div class="pg-result-code" id="pgOcrResult"><div class="pg-placeholder">上传图片点击测试文字识别</div></div>
+                </div>
+                <!-- T2I Playground -->
+                <div id="pg-image" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt 提示词</label><textarea id="pgT2IPrompt" rows="3" placeholder="a cat in space" style="color:var(--text)">a beautiful sunset over mountains, digital art</textarea></div>
+                        <div class="pg-form-row" style="flex-direction:row;gap:10px;">
+                            <div style="flex:1;"><label>Width 宽度</label><input type="number" id="pgT2IWidth" value="1024" min="512" max="2048" step="64"></div>
+                            <div style="flex:1;"><label>Height 高度</label><input type="number" id="pgT2IHeight" value="1024" min="512" max="2048" step="64"></div>
+                        </div>
+                        <div class="pg-form-row" style="flex-direction:row;gap:14px;">
+                            <div style="flex:1;"><label>Steps 步数</label><input type="number" id="pgT2ISteps" value="28" min="10" max="100"></div>
+                            <div style="flex:1;"><label>Guidance 引导</label><input type="number" id="pgT2IGuidance" value="5.0" min="1" max="20" step="0.5"></div>
+                            <div style="flex:1;"><label>Images 数量</label><input type="number" id="pgT2INum" value="1" min="1" max="4"></div>
+                        </div>
+                        <div class="pg-form-row"><label>Seed 种子 (-1 随机)</label><input type="number" id="pgT2ISeed" value="-1"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgT2ISaveDisk" checked> 同时落盘到 /amm/verification  (Save to disk)</label></div>
+                        <div class="pg-vram" id="pgVram-t2i">估算显存: 计算中…</div>
+                        <div class="pg-adv" id="pgAdv-t2i">模型高级参数: 加载中…</div>
+                        <button class="btn btn-primary" onclick="generateImage()">Generate Image 生成图片</button>
+                    </div>
+                    <div class="pg-result pg-result-img" id="pgT2IResult"><div class="pg-placeholder">点击 Generate 生成图片</div></div>
+                </div>
+                <!-- T2V Playground (Wan2.2-T2V-A14B) -->
+                <div id="pg-video" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt</label><textarea id="pgT2VPrompt" rows="3" placeholder="Two anthropomorphic cats in comfy boxing gear...">A red panda jumping between bamboo stalks, slow motion, cinematic</textarea></div>
+                        <div class="pg-form-row"><label>Resolution</label><select id="pgT2VResolution" class="form-select"><option value="480p">480p (832×480)</option><option value="720p">720p (1280×720) — 需 ≥96G 显存</option></select></div>
+                        <div class="pg-form-row"><label>Frames</label><input type="number" id="pgT2VFrames" value="81" min="17" max="161" step="4"></div>
+                        <div class="pg-form-row"><label>Steps</label><input type="number" id="pgT2VSteps" value="40" min="10" max="100"></div>
+                        <div class="pg-form-row"><label>Guidance (高噪)</label><input type="number" id="pgT2VGuidance" value="4.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Guidance_2 (低噪, Wan2.2 MoE)</label><input type="number" id="pgT2VGuidance2" value="3.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Seed (-1 随机)</label><input type="number" id="pgT2VSeed" value="-1"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgT2VSaveDisk"> 同时落盘到 /amm/verification</label></div>
+                        <div class="pg-vram" id="pgVram-t2v">估算显存: 计算中…</div>
+                        <div class="pg-adv" id="pgAdv-t2v">模型高级参数: 加载中…</div>
+                        <button class="btn btn-primary" onclick="generateVideo()">Generate Video</button>
+                        <span id="pgT2VHint" style="margin-left:12px;color:var(--text-muted);font-size:12px;"></span>
+                    </div>
+                    <div class="pg-result" id="pgT2VResult"><div class="pg-placeholder">点击 Generate 生成 5s 视频 (480P 推荐 5-15 分钟)</div></div>
+                </div>
+                <!-- I2V Playground (Wan2.2-I2V-A14B) -->
+                <div id="pg-i2v" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Prompt</label><textarea id="pgI2VPrompt" rows="3" placeholder="描述动态变化...">The cat slowly turns its head toward the camera and blinks</textarea></div>
+                        <div class="pg-form-row"><label>First Frame (PNG/JPG)</label><input type="file" id="pgI2VImage" accept="image/*"></div>
+                        <div class="pg-form-row"><label>Resolution</label><select id="pgI2VResolution" class="form-select"><option value="480p">480p</option></select></div>
+                        <div class="pg-form-row"><label>Frames</label><input type="number" id="pgI2VFrames" value="81" min="17" max="161" step="4"></div>
+                        <div class="pg-form-row"><label>Steps</label><input type="number" id="pgI2VSteps" value="40" min="10" max="100"></div>
+                        <div class="pg-form-row"><label>Guidance</label><input type="number" id="pgI2VGuidance" value="5.0" min="1" max="20" step="0.5"></div>
+                        <div class="pg-form-row"><label>Seed (-1 随机)</label><input type="number" id="pgI2VSeed" value="-1"></div>
+                        <div class="pg-form-row"><label><input type="checkbox" id="pgI2VSaveDisk"> 同时落盘到 /amm/verification</label></div>
+                        <div class="pg-vram" id="pgVram-i2v">估算显存: 计算中…</div>
+                        <div class="pg-adv" id="pgAdv-i2v">模型高级参数: 加载中…</div>
+                        <button class="btn btn-primary" onclick="generateI2V()">Generate Video</button>
+                    </div>
+                    <div class="pg-result" id="pgI2VResult"><div class="pg-placeholder">上传首帧图后点击 Generate 生成视频</div></div>
+                </div>
+                <!-- API Debug -->
+                <div id="pg-api" class="pg-content">
+                    <div class="pg-form">
+                        <div class="pg-form-row"><label>Endpoint</label><select id="pgApiEndpoint" class="form-select">
+                            <option value="/api/health">GET /api/health</option>
+                            <option value="/api/system">GET /api/system</option>
+                            <option value="/api/engines">GET /api/engines</option>
+                            <option value="/api/instances">GET /api/instances</option>
+                            <option value="/v1/models">GET /v1/models</option>
+                        </select></div>
+                        <button class="btn btn-primary" onclick="callApi()">Call API</button>
+                    </div>
+                    <pre class="pg-result-code" id="pgApiResult"><div class="pg-placeholder">点击 Call API 查看结果</div></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- GPU Tab -->
+        <section id="tab-gpu" class="tab-content">
+            <div class="page-header"><h1>GPU Monitor</h1><p class="subtitle">GPU 运行状态实时监控</p></div>
+            <div class="gpu-grid" id="gpuGrid"></div>
+        </section>
+
+        <!-- Logs Tab -->
+        <section id="tab-logs" class="tab-content">
+            <div class="page-header"><h1>Logs</h1><p class="subtitle">模型运行日志实时查看</p></div>
+            <div class="logs-toolbar">
+                <select id="logModelSelect" class="form-select"><option value="">-- 选择模型 --</option></select>
+                <input type="number" id="logLines" class="form-input" value="100" min="10" max="500">
+                <button id="refreshLogs" class="btn btn-primary">Refresh</button>
+                <label class="checkbox-label"><input type="checkbox" id="autoRefreshLogs" checked> Auto</label>
+            </div>
+            <pre class="log-viewer" id="logViewer">Select a model to view logs...</pre>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="tab-settings" class="tab-content">
+            <div class="page-header"><h1>Settings</h1><p class="subtitle">服务器配置 · 引擎管理 · 版本安装</p></div>
+            <div class="settings-panel" id="settingsPanel">
+                <div class="setting-group">
+                    <h3>⚙️ 服务配置 (Server)</h3>
+                    <div class="form-row"><label>API Host:</label><code id="cfgHost">--</code></div>
+                    <div class="form-row"><label>API Port:</label><code id="cfgPort">--</code></div>
+                    <div class="form-row"><label>Models Dir:</label><code id="cfgModelsDir">--</code></div>
+                    <div class="form-row"><label>Logs Dir:</label><code id="cfgLogsDir">--</code></div>
+                    <div class="form-row"><label>版本:</label><code id="cfgVersion">--</code></div>
+                </div>
+
+                <div class="setting-group" id="systemActions">
+                    <h3>🔧 运维操作</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                        <button class="btn btn-sm" onclick="window.reloadServerConfig()">🔄 重载配置</button>
+                        <button class="btn btn-sm btn-primary" onclick="window.restartServer()">🔄 重启服务</button>
+                        <button class="btn btn-sm" onclick="window.downloadServerLog()">📥 下载服务日志</button>
+                    </div>
+                </div>
+
+                <div class="setting-group" id="engineManagementPanel">
+                    <h3>推理引擎管理 (Engine Management)</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">
+                        混合引擎架构: 可在网页上按需安装、卸载不同版本的推理引擎。安装后即可在 Models 页面为每类模型选择引擎。
+                    </p>
+                    <div class="engine-list" id="engineList"></div>
+                </div>
+
+                </div>
+
+        </section>
+
+        <!-- Tools Tab -->
+        <section id="tab-tools" class="tab-content">
+            <div class="page-header"><h1>Tools</h1><p class="subtitle">模型工具 · 下载 · GGUF 量化 · 格式转换</p></div>
+            <div class="settings-panel" id="toolsPanel">
+
+                <div class="setting-group" id="modelDownloadPanel">
+                <h3>📥 模型自动下载 (Model Download)</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+                        从 ModelScope 或 HuggingFace 下载模型到 /models。支持代理、版本选择、断点续传、速度/剩余时间显示。
+                    </p>
+
+                    <!-- 代理设置 -->
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;border:1px dashed var(--border);border-radius:8px;background:var(--bg-input);">
+                        <label style="font-size:12px;font-weight:600;white-space:nowrap;">🌐 HTTP 代理</label>
+                        <label class="switch" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;">
+                            <input type="checkbox" id="dlProxyEnabled" onchange="window.toggleProxyInput()">
+                            <span>开启</span>
+                        </label>
+                        <input id="dlProxyUrl" class="form-input" placeholder="http://host:port" style="flex:1;" disabled>
+                        <button class="btn btn-sm" onclick="window.saveProxy()">💾 保存代理</button>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:end;margin-bottom:8px;">
+                        <div><label style="font-size:11px;color:var(--text-muted)">源</label>
+                            <select id="dlSource" class="form-select" onchange="window.loadDownloadVersions()">
+                                <option value="modelscope">ModelScope (国内优先)</option>
+                                <option value="huggingface">HuggingFace</option>
+                            </select></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">模型 ID (如 Qwen/Qwen-Image-2512)</label>
+                            <input id="dlModelId" class="form-input" placeholder="组织/模型名" onkeydown="if(event.key==='Enter')window.loadDownloadVersions()"></div>
+                        <div><label style="font-size:11px;color:var(--text-muted)">类别(可选)</label>
+                            <select id="dlCategory" class="form-select"><option value="">—</option><option>chat</option><option>embedding</option><option>asr</option><option>tts</option><option>t2i</option><option>t2v</option><option>i2v</option></select></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                        <button class="btn btn-sm" onclick="window.loadDownloadVersions()">🔍 查询版本与文件</button>
+                        <button class="btn btn-primary btn-sm" onclick="window.startModelDownload()">⬇️ 开始下载</button>
+                        <button class="btn btn-sm" onclick="window.refreshDownloadStatus()">🔄 刷新任务</button>
+                    </div>
+
+                    <!-- 目标落盘位置 -->
+                    <div style="display:flex;gap:8px;align-items:end;margin-bottom:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;">
+                        <div style="flex:1;">
+                            <label style="font-size:11px;color:var(--text-muted)">目标目录 (可选, 留空存到默认 zoo 快照)</label>
+                            <div style="display:flex;gap:6px;">
+                                <input id="dlTargetDir" class="form-input" placeholder="相对 /models 的路径, 如 vllm/Qwen3-4B" value="">
+                                <button type="button" class="btn btn-sm" onclick="window.openDownloadDirBrowser()">📂 浏览</button>
+                            </div>
+                        </div>
+                        <div style="font-size:11px;color:var(--text-muted);padding-bottom:8px;line-height:1.5;">
+                            指定后模型文件将直接落盘至<br><code style="color:var(--accent)">/models/{目标目录}</code>，可与引擎路径一致
+                        </div>
+                    </div>
+
+                    <!-- 版本选择 -->
+                    <div id="dlVersionPanel" style="display:none;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+                        <div style="font-size:12px;font-weight:600;margin-bottom:6px;">📁 模型版本 (revision)</div>
+                        <div id="dlVersions"></div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">
+                            <button class="btn btn-xs" onclick="window.selectAllVersionFiles()">全选文件</button>
+                            <button class="btn btn-xs" onclick="window.deselectAllVersionFiles()">清空选择</button>
+                            <span id="dlFilesStats" style="margin-left:8px;"></span>
+                        </div>
+                        <div id="dlVersionFiles" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;max-height:220px;overflow-y:auto;"></div>
+                    </div>
+
+                    <div class="download-task-list" id="downloadTaskList"><p style="color:var(--text-muted);font-size:12px">暂无下载任务</p></div>
+                </div>
+
+            <div class="setting-group" id="quantizePanel">
+                <div class="setting-card-inner">
+                    <h3>⚗️ GGUF 量化转换</h3>
+                    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">用 llama-quantize 把已转换/下载的 GGUF 重量化为不同精度。</p>
+                    <div style="display:grid;grid-template-columns:2fr auto 1fr;gap:8px;margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:11px;color:var(--text-muted)">源 GGUF 文件</label>
+                            <div style="display:flex;gap:6px;"><input id="quSrc" class="form-input" placeholder="如 Qwen/xxx/Qwen.gguf" readonly>
+                            <button class="btn btn-sm" type="button" onclick="openQuantizeSrcBrowser()">📂 浏览</button></div>
+                        </div>
+                        <div>
+                            <label style="font-size:11px;color:var(--text-muted)">精度类型</label>
+                            <select id="quType" class="form-select">
+                                <option value="q4_k_m">q4_k_m (MoE推荐)</option>
+                                <option value="q4_k">q4_k</option>
+                                <option value="fp16">fp16</option>
+                                <option value="bf16">bf16</option>
+                                <option value="f32">f32</option>
+                                <option value="q8_0">q8_0</option>
+                                <option value="q6_k">q6_k</option>
+                                <option value="q4_0">q4_0</option>
+                                <option value="iq4_xs">iq4_xs</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:11px;color:var(--text-muted)">输出文件夹</label>
+                            <div style="display:flex;gap:6px;"><input id="quOut" class="form-input" placeholder="默认源同目录">
+                            <button type="button" class="btn btn-sm" onclick="openQuantizeOutBrowser()">📂</button></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-primary btn-sm" onclick="window.startQuantize()">⚗️ 开始转换</button>
+                        <button class="btn btn-sm" onclick="window.refreshQuantize()">🔄 刷新任务</button>
+                    </div>
+                </div>
+                <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">📋 转换任务</div>
+                    <div class="quantize-task-list" id="quantizeTaskList"><p style="color:var(--text-muted);font-size:12px">暂无转换任务</p></div>
+                </div>
+            </div>
+
+                <div class="setting-group" id="vllm2ggufPanel">
+                    <div class="setting-card-inner">
+                        <h3>🧬 vLLM → GGUF 模型转换 (给 llama.cpp)</h3>
+                        <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+                            把 vLLM 使用的 Safetensors 模型（HF/Diffusers 目录）转换为 GGUF，供 llama.cpp 使用，可带量化精度。
+                        </p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                            <div>
+                                <label style="font-size:11px;color:var(--text-muted)">源模型 (vllm 的 safetensors 目录/文件)</label>
+                                <div style="display:flex;gap:6px;"><input id="vgSrc" class="form-input" placeholder="如 Qwen/Qwen3-4B" readonly>
+                                <button type="button" class="btn btn-sm" onclick="openVgSrcBrowser()">📂 选择</button></div>
+                            </div>
+                            <div>
+                                <label style="font-size:11px;color:var(--text-muted)">量化精度</label>
+                                <select id="vgQuant" class="form-select">
+                                    <option value="q4_k_m">q4_k_m (推荐, MoE)</option>
+                                    <option value="q4_0">q4_0</option>
+                                    <option value="q5_k_m">q5_k_m</option>
+                                    <option value="q6_k">q6_k</option>
+                                    <option value="q8_0">q8_0</option>
+                                    <option value="f16">f16</option>
+                                    <option value="bf16">bf16</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                            <div>
+                                <label style="font-size:11px;color:var(--text-muted)">输出目录</label>
+                                <div style="display:flex;gap:6px;"><input id="vgOut" class="form-input" placeholder="/models/...">
+                                <button type="button" class="btn btn-sm" onclick="openVgOutBrowser()">📂 选择</button></div>
+                            </div>
+                            <div>
+                                <label style="font-size:11px;color:var(--text-muted)">模型名(输出文件名)</label>
+                                <input id="vgName" class="form-input" placeholder="model">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-primary btn-sm" onclick="window.startVllm2Gguf()">🧬 转换</button>
+                            <button class="btn btn-sm" onclick="window.refreshVgTask()">🔄 刷新任务</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+                        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">📋 转换任务</div>
+                        <div class="vllm2gguf-task-list" id="vgTaskList"><p style="color:var(--text-muted);font-size:12px">暂无转换任务</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Model File Browser Modal -->
+    <div class="modal-overlay" id="fileBrowserModal">
+        <div class="modal modal-lg"><div class="modal-header"><h2 id="fileBrowserTitle">📂 浏览模型文件</h2><button class="modal-close" onclick="closeFileBrowser()">&times;</button></div><div class="modal-body" id="fileBrowserBody"></div></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal"><div class="modal-header"><h2 id="modalTitle">Model Detail</h2><button class="modal-close" onclick="closeModal()">&times;</button></div><div class="modal-body" id="modalBody"></div></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span id="footerVersion">AMM <em data-ver></em> · Hybrid Engine</span>
+        <span>|</span>
+        <span>vLLM · llama.cpp · Diffusers</span>
+        <span>|</span>
+        <span id="lastUpdate">Last update: --</span>
+    </footer>
+
+    <!-- 用户手册 / 帮助搜索弹窗 -->
+    <div id="helpModal" class="help-modal" style="display:none">
+        <div class="help-modal-box">
+            <div class="help-modal-head">
+                <h3>📖 AMM 用户手册</h3>
+                <span class="help-modal-ver" id="helpModalVer"></span>
+                <button id="helpClose" class="btn btn-sm btn-secondary" style="margin-left:auto">✕ 关闭</button>
+            </div>
+            <div class="help-modal-body">
+                <div class="help-toc" id="helpToc"></div>
+                <div class="help-content" id="helpContent">
+                    <p style="color:var(--muted)">选择左侧章节，或在右上角搜索。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js?v=0.9"></script>
+</body>
+</html>
