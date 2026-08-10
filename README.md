@@ -8,8 +8,8 @@
 
 ## 项目信息
 
-- **负责人（撞强）**：xt@pcd.name ｜ 微信：13808230006
-- **MaaS 服务供应商**：北京积算（icompify）— <https://www.icompify.com/>
+- **负责人**：<YOUR_CONTACT> ｜ 微信：<YOUR_WECHAT>
+- **MaaS 服务供应商**：<YOUR_COMPANY> — <https://www.example.com/>
 
 ### 界面预览
 

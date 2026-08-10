@@ -49,3 +49,10 @@ models/
 credentials.json
 *.pem
 *.key
+
+# Build artifacts & archives
+*.tar.gz
+*.zip
+*.7z
+backend/engines_installed/**/bin/*.so
+backend/engines_installed/**/bin/llama-*
