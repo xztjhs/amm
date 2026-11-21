@@ -1,0 +1,27 @@
+# Whisper-large-v3 — 语音识别
+id: whisper-large-v3
+name: Whisper-large-v3
+category: asr
+description: OpenAI Whisper 大模型，多语种语音转写，支持时间戳。
+tags: [asr, whisper, multilingual]
+vram_hint_gb: 6
+sources:
+  - provider: modelscope
+    repo_id: openai/whisper-large-v3
+  - provider: huggingface
+    repo_id: openai/whisper-large-v3
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 4096
+      n_gpu_layers: -1
+  - engine: llama_cpp
+    version: latest
+    flavor: cpu
+    params:
+      ctx_size: 4096
+      n_gpu_layers: 0
+      threads: 12
+quantization: []

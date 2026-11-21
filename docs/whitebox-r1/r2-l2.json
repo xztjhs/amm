@@ -1,0 +1,1557 @@
+{
+ "generated_at": "2026-11-16 21:47:01",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 95,
+ "pass": 93,
+ "fail": 2,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 93,
+   "FAIL": 2,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 95
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "G-01",
+   "name": "刷新间隔逐档切换并持久化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.0
+  },
+  {
+   "id": "G-02",
+   "name": "主题切换生效且持久化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.43
+  },
+  {
+   "id": "G-03",
+   "name": "服务器状态点与时钟在走",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.13
+  },
+  {
+   "id": "G-04",
+   "name": "帮助手册弹窗打开/关闭",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.19
+  },
+  {
+   "id": "G-05",
+   "name": "7 个导航页数据不串（每页有独有元素）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.72
+  },
+  {
+   "id": "G-06",
+   "name": "GPU Monitor 页可达性（D1 回归）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "nav_entry": true,
+    "section_exists": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.57
+  },
+  {
+   "id": "D-01",
+   "name": "四张系统卡数值与进度条一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.11
+  },
+  {
+   "id": "D-02",
+   "name": "Model Status 与 /api/instances 一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "ui_cards": 12,
+    "api_instances": 11
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.07
+  },
+  {
+   "id": "D-03",
+   "name": "GPU 卡数值与 nvidia-smi 接近",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "gpu_name": "NVIDIA RTX A5000"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.09
+  },
+  {
+   "id": "D-04",
+   "name": "实例状态变化在 3s 内反映到卡片",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "before_len": 793,
+    "after_len": 791
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 7.15
+  },
+  {
+   "id": "W-01",
+   "name": "向导四步联动渲染",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.66
+  },
+  {
+   "id": "W-02",
+   "name": "切换类别后引擎与参数重载",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "engine_after_switch": null
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.15
+  },
+  {
+   "id": "W-03",
+   "name": "文件浏览器：打开/上下级/选文件回填",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "entries": 24
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.68
+  },
+  {
+   "id": "W-04",
+   "name": "UID 自动推荐随模型文件变化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid_placeholder": "qwen3-embedding-0.6b",
+    "name_placeholder": "Qwen3-Embedding-0.6B"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.47
+  },
+  {
+   "id": "W-05",
+   "name": "裸家族名 UID 实时风险提示",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.83
+  },
+  {
+   "id": "W-06",
+   "name": "量化后缀 UID 风险提示",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.02
+  },
+  {
+   "id": "W-07",
+   "name": "wizPayload 与实际提交字段一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "payload_keys": [
+     "{",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "m",
+     "o",
+     "d",
+     "e",
+     "l",
+     "_",
+     "t",
+     "y",
+     "p",
+     "e",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "e",
+     "m",
+     "b",
+     "e",
+     "d",
+     "d",
+     "i",
+     "n",
+     "g",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "e",
+     "n",
+     "g",
+     "i",
+     "n",
+     "e",
+     "_",
+     "t",
+     "y",
+     "p",
+     "e",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "l",
+     "l",
+     "a",
+     "m",
+     "a",
+     "_",
+     "c",
+     "p",
+     "p",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "e",
+     "n",
+     "g",
+     "i",
+     "n",
+     "e",
+     "_",
+     "v",
+     "e",
+     "r",
+     "s",
+     "i",
+     "o",
+     "n",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "b",
+     "1",
+     "2",
+     "3",
+     "8",
+     "1",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "f",
+     "l",
+     "a",
+     "v",
+     "o",
+     "r",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "c",
+     "u",
+     "d",
+     "a",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "m",
+     "o",
+     "d",
+     "e",
+     "l",
+     "_",
+     "f",
+     "i",
+     "l",
+     "e",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "Q",
+     "w",
+     "e",
+     "n",
+     "/",
+     "Q",
+     "w",
+     "e",
+     "n",
+     "3",
+     "-",
+     "E",
+     "m",
+     "b",
+     "e",
+     "d",
+     "d",
+     "i",
+     "n",
+     "g",
+     "-",
+     "0",
+     ".",
+     "6",
+     "B",
+     "-",
+     "G",
+     "G",
+     "U",
+     "F",
+     "/",
+     "Q",
+     "w",
+     "e",
+     "n",
+     "3",
+     "-",
+     "E",
+     "m",
+     "b",
+     "e",
+     "d",
+     "d",
+     "i",
+     "n",
+     "g",
+     "-",
+     "0",
+     ".",
+     "6",
+     "B",
+     "-",
+     "Q",
+     "8",
+     "_",
+     "0",
+     ".",
+     "g",
+     "g",
+     "u",
+     "f",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "p",
+     "a",
+     "r",
+     "a",
+     "m",
+     "e",
+     "t",
+     "e",
+     "r",
+     "s",
+     "\"",
+     ":",
+     " ",
+     "{",
+     "}",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "r",
+     "e",
+     "p",
+     "l",
+     "i",
+     "c",
+     "a",
+     "s",
+     "\"",
+     ":",
+     " ",
+     "1",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "m",
+     "o",
+     "d",
+     "e",
+     "l",
+     "_",
+     "u",
+     "i",
+     "d",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "q",
+     "w",
+     "e",
+     "n",
+     "3",
+     "-",
+     "e",
+     "m",
+     "b",
+     "e",
+     "d",
+     "d",
+     "i",
+     "n",
+     "g",
+     "-",
+     "0",
+     ".",
+     "6",
+     "b",
+     "\"",
+     ",",
+     "\n",
+     " ",
+     " ",
+     "\"",
+     "m",
+     "o",
+     "d",
+     "e",
+     "l",
+     "_",
+     "n",
+     "a",
+     "m",
+     "e",
+     "\"",
+     ":",
+     " ",
+     "\"",
+     "Q",
+     "w",
+     "e",
+     "n",
+     "3",
+     "-",
+     "E",
+     "m",
+     "b",
+     "e",
+     "d",
+     "d",
+     "i",
+     "n",
+     "g",
+     "-",
+     "0",
+     ".",
+     "6",
+     "B",
+     "\"",
+     "\n",
+     "}"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.62
+  },
+  {
+   "id": "W-08",
+   "name": "真实启动 embedding 实例（0.6B）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "elapsed_s": 0.1,
+    "body": {
+     "success": true,
+     "model_id": "wb-embed",
+     "status": "running",
+     "pid": 756,
+     "engine": "llama_cpp",
+     "model_uid": "wb-embed",
+     "port": 18100
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.09
+  },
+  {
+   "id": "W-09",
+   "name": "启动后 /v1/models 带 name 与 capabilities",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "W-10",
+   "name": "embedding 实例真实出向量",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "elapsed_s": 0.03,
+    "dim": 1024
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 5.04
+  },
+  {
+   "id": "W-11",
+   "name": "缺模型文件启动返回可读错误",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "实例 wb-badfile 已存在"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "W-12",
+   "name": "重复 UID 被拒绝",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-01",
+   "name": "运行中统计条与列表一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "ui": "2 / 3",
+    "api": 2
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.14
+  },
+  {
+   "id": "R-02",
+   "name": "列表包含 wb-embed 且字段齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.63
+  },
+  {
+   "id": "R-03",
+   "name": "Stop→Start 状态机流转",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.06
+  },
+  {
+   "id": "R-04",
+   "name": "Restart 保持 running 且端口不变",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'model_id': 'wb-embed', 'status': 'running', 'pid': 873, 'engine': 'llama_cpp'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.06
+  },
+  {
+   "id": "R-05",
+   "name": "改参数后生效并持久化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True}",
+    "nested_payload_ignored": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.06
+  },
+  {
+   "id": "R-06",
+   "name": "启动命令预览与实际一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "has_args": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-07",
+   "name": "实例日志可读",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "lines": 30
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-08",
+   "name": "另存为模版生成 custom yaml",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'template': {'id': 'wb-embed', 'name': 'Qwen3-Embedding-0.6B', 'category': 'embedding', 'description': '由实例 wb-embed 导出的模版', 'tags': ['exported', 'dynamic'], 'sources': [], 'engines'",
+    "template_id": "wb-embed"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R-09",
+   "name": "并发双击 Start 幂等（只起一个进程）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "concurrent_responses": [
+     "{'error': '模型 wb-embed 已在运行中'}",
+     "{'error': '模型 wb-embed 已在运行中'}",
+     "{'error': '模型 wb-embed 已在运行中'}"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R-10",
+   "name": "实例详情字段完整",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "T-01",
+   "name": "模版列表加载与统计",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.18
+  },
+  {
+   "id": "T-02",
+   "name": "分类过滤生效",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "all": 16,
+    "embedding": 4
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.54
+  },
+  {
+   "id": "T-03",
+   "name": "关键词搜索",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.08
+  },
+  {
+   "id": "T-04",
+   "name": "模版详情抽屉打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "detail_len": 722
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.52
+  },
+  {
+   "id": "T-05",
+   "name": "模版详情含引擎/下载源/部署表单",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "T-06",
+   "name": "新建模版编辑器可打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.82
+  },
+  {
+   "id": "T-07",
+   "name": "模版 categories 接口与 UI 一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "asr": 2,
+    "chat": 1,
+    "embedding": 4,
+    "image": 2,
+    "ocr": 2,
+    "reranker": 2,
+    "tts": 2,
+    "video": 1
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.08
+  },
+  {
+   "id": "T-08",
+   "name": "按模版部署创建实例",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "tpl": "wb-embed",
+    "status": 200,
+    "resp": "{'success': True, 'model_id': 'qwen3-embedding-0.6b-2', 'status': 'running', 'pid': 979, 'engine': 'llama_cpp', 'model_uid': 'qwen3-embedding-0.6b-2', 'port': 18102, 'template_id': 'wb-embed'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.12
+  },
+  {
+   "id": "P-01",
+   "name": "9 个子页签切换且面板对应",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.68
+  },
+  {
+   "id": "P-02",
+   "name": "Embedding Playground 真实出结果",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "result_head": "[\n  {\n    \"index\": 0,\n    \"dim\": 1024,\n    \"preview\": [\n      -0.04745948314666748,\n      -0.017855945974588394,\n      -0.01114480011165142\n    ]\n  },\n  {\n    \"index\": 1,\n    \"dim\": 1024,\n    \"preview"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.69
+  },
+  {
+   "id": "P-03",
+   "name": "Chat 页签元素齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.08
+  },
+  {
+   "id": "P-04",
+   "name": "Chat 清空会话有 confirm",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.25
+  },
+  {
+   "id": "P-05",
+   "name": "参数边界值被前端约束",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "P-06",
+   "name": "T2I 面板参数与显存估算",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "vram_text": "💾 估算显存 38.0 GB 权重 26.0 GB + 激活 10.0 GB + 固定 2.0 GB"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.08
+  },
+  {
+   "id": "P-07",
+   "name": "T2V/I2V 面板元素齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.63
+  },
+  {
+   "id": "P-08",
+   "name": "ASR/TTS/Rerank/OCR 面板齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.41
+  },
+  {
+   "id": "K-01",
+   "name": "统计卡与 usage 接口一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "ui_providers": "1",
+    "api_providers": 1
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.09
+  },
+  {
+   "id": "K-02",
+   "name": "Provider 类型切换自动填 Base URL",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "base_value": "",
+    "placeholder": "https://api.deepseek.com/v1"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.37
+  },
+  {
+   "id": "K-03",
+   "name": "创建/读取/删除 provider（可逆）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "create_status": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.07
+  },
+  {
+   "id": "K-04",
+   "name": "Provider 保存不填 Key 不破坏已有 Key",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-05",
+   "name": "可用模型清单合并本地+provider",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "count": 15
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-06",
+   "name": "签发 Key：明文只回一次，列表只显示掩码",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "key_id": "CgvpYAhz",
+    "masked": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-07",
+   "name": "Key 改名/改限额",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'key_id': 'CgvpYAhz', 'key': 'sk-amm-...YAhz'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-08",
+   "name": "无效 Key 鉴权失败",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-09",
+   "name": "白名单外模型被拒",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 404,
+    "resp": "{'error': {'message': '未找到模型: other-model-xyz'}}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-10",
+   "name": "用量报表结构",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "totals": {
+     "requests": 2,
+     "total_tokens": 531,
+     "cost_cny": 0.0373,
+     "total_tokens_fmt": "531"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-11",
+   "name": "账单 CSV 可导出且带 BOM",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "bytes": 116
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-12",
+   "name": "详单 CSV 可导出",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-13",
+   "name": "模型元数据覆盖生效",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'model_id': 'wb-embed', 'meta': {'category': 'embedding', 'note': '白盒测试标记', 'input_price': 1.5, 'output_price': 2.5}}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-14",
+   "name": "默认 Key 状态接口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L-01",
+   "name": "两个子页签互斥切换",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 5.46
+  },
+  {
+   "id": "L-02",
+   "name": "文件日志查询有内容",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 5.21
+  },
+  {
+   "id": "L-03",
+   "name": "级别过滤减少结果",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "error_view_len": 181
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.18
+  },
+  {
+   "id": "L-04",
+   "name": "自动刷新开关启停",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.38
+  },
+  {
+   "id": "L-05",
+   "name": "调用历史列表加载",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "count_text": "17 条 · 第 1/1 页",
+    "list_len": 1049
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.56
+  },
+  {
+   "id": "L-06",
+   "name": "调用历史展开显示输入/输出/性能",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.82
+  },
+  {
+   "id": "L-07",
+   "name": "文件管理弹窗可打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "display": "block"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.11
+  },
+  {
+   "id": "L-08",
+   "name": "日志来源接口与 UI 下拉一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "sources": "{'logs_dir': '/amm/logs', 'server_log': [{'name': 'amm_server.log', 'source': 'server', 'size_bytes': 466987, 'modified': '2026-11-16T21:46:15'}, {'name': 'dbg-embed_server.log', 'source': 'dbg-embed'"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L-09",
+   "name": "导出当前筛选返回内容",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "bytes": 29227
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-01",
+   "name": "服务配置区显示与 API 一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.59
+  },
+  {
+   "id": "S-02",
+   "name": "PyPI 镜像预设可选",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "S-03",
+   "name": "客户端分组名保存并反映到 /v1/models owned_by",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: 'data'\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 959, in _\n    owners = {m.get(\"owned_by\") for m in models[\"data\"] if m.get(\"port\")}\nKeyError: 'data'\n",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'node_name': 'amm-wb'}"
+   },
+   "screenshot": "shots/S-03.png",
+   "destructive": false,
+   "duration": 0.06
+  },
+  {
+   "id": "S-04",
+   "name": "分组名空值被拒",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-05",
+   "name": "引擎管理列表渲染",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "engine_items": 4
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.07
+  },
+  {
+   "id": "S-06",
+   "name": "重载配置成功",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'ok': True, 'message': '配置已重载'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.14
+  },
+  {
+   "id": "S-07",
+   "name": "下载服务日志",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "S-08",
+   "name": "pip 镜像保存与读回",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "orig": "https://mirrors.aliyun.com/pypi/simple/"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "X-01",
+   "name": "下载面板元素齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.6
+  },
+  {
+   "id": "X-02",
+   "name": "HF 镜像预设切换生效",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.34
+  },
+  {
+   "id": "X-03",
+   "name": "代理开关联动输入框禁用态",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.3
+  },
+  {
+   "id": "X-04",
+   "name": "HF Token 打码显示不泄露明文",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "keys": [
+     "hf_endpoint",
+     "hf_token_masked",
+     "has_hf_token"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "X-05",
+   "name": "查询模型版本与文件列表",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "panel_display": "block"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 21.64
+  },
+  {
+   "id": "X-06",
+   "name": "量化面板字段齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "X-07",
+   "name": "三处目录浏览器各自可打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.96
+  },
+  {
+   "id": "X-08",
+   "name": "下载任务状态接口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-45",
+   "name": "结束运行实例并释放端口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'model_uid': 'wb-embed'}",
+    "released_port": 18100
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 2.03
+  },
+  {
+   "id": "L2-46",
+   "name": "删除自定义模版",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "template": "wb-embed",
+    "status": 200,
+    "resp": "{'success': True, 'id': 'wb-embed'}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.08
+  },
+  {
+   "id": "L2-47",
+   "name": "吊销虚拟 Key",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-48",
+   "name": "删除 provider",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "delete_status": 200
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-49",
+   "name": "日志清理（清空内容）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "files_resp": "{'files': [{'name': 'amm_server.log', 'source': 'amm_server', 'size_mb': 0.47, 'mtime': 1794836820.6942983}, {'name': 'wb-embed_server.log', 'source': 'wb-embed_server', 'size_mb':",
+    "cleanup": {
+     "status": 200,
+     "resp": "{'success': True, 'mode': 'truncate', 'files': ['amm_server.log', 'embedding-2_server.log', 'wb-embed_server.log', 'embedding_server.log', 'qwen3-embedding-0.6b_server.log', 'e1-em"
+    }
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-50",
+   "name": "重启服务后自动恢复",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "restart_status": 200,
+    "resp": "{'ok': True, 'message': '配置已重载并刷新实例; 完整重启请: docker restart AMM'}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 2.11
+  },
+  {
+   "id": "L2-51",
+   "name": "引擎卸载（选未使用的小引擎）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "target": [
+     "sentence_transformers",
+     "6.3.0",
+     "cpu"
+    ],
+    "status": 200,
+    "resp": "{'ok': True, 'message': 'sentence_transformers 6.3.0-cpu 已卸载'}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.12
+  },
+  {
+   "id": "L2-52",
+   "name": "清除默认 Key 后 /v1 恢复免鉴权",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 清除后应免鉴权 期望=200 实际=401\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 1209, in _\n    R.eq(st4, 200, \"清除后应免鉴权\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 213, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: 清除后应免鉴权 期望=200 实际=401\n",
+   "evidence": {
+    "generated": true,
+    "after_generate_no_key": 401,
+    "delete_status": 200,
+    "after_clear_no_key": 401
+   },
+   "screenshot": "shots/L2-52.png",
+   "destructive": true,
+   "duration": 0.01
+  }
+ ]
+}

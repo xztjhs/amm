@@ -1,0 +1,35 @@
+# Qwen3-VL-2B-Instruct-GGUF — OCR / 多模态识别（官方 GGUF，演示用）
+id: qwen3-vl-2b-instruct
+name: Qwen3-VL-2B-Instruct-GGUF
+category: ocr
+description: 通义千问3 视觉语言 2B 官方 GGUF，可做 OCR / 文档理解 / 图片问答；需 mmproj 视觉投影。
+tags: [ocr, vlm, qwen3, gguf, demo]
+vram_hint_gb: 4
+context_length: 32768
+model_file: "amm/Qwen3VL-2B-Instruct-Q4_K_M.gguf"
+sources:
+  - provider: huggingface
+    repo_id: Qwen/Qwen3-VL-2B-Instruct-GGUF
+    files: [Qwen3VL-2B-Instruct-Q4_K_M.gguf, mmproj-Qwen3VL-2B-Instruct-F16.gguf]
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 8192
+      n_gpu_layers: -1
+      flash_attn: true
+      mmproj: "amm/mmproj-Qwen3VL-2B-Instruct-F16.gguf"
+  - engine: llama_cpp
+    version: latest
+    flavor: cpu
+    params:
+      ctx_size: 8192
+      n_gpu_layers: 0
+      threads: 12
+      mmproj: "amm/mmproj-Qwen3VL-2B-Instruct-F16.gguf"
+parameters:
+  - { name: ctx_size, label: 上下文长度, type: number, default: 8192, min: 512, max: 32768 }
+  - { name: n_gpu_layers, label: GPU 层数, type: number, default: -1, min: -1, max: 256 }
+  - { name: mmproj, label: 视觉投影 mmproj, type: string, default: "amm/mmproj-Qwen3VL-2B-Instruct-F16.gguf" }
+quantization: [Q4_K_M, Q8_0, F16]

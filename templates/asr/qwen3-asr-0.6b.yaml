@@ -1,0 +1,36 @@
+# Qwen3-ASR-0.6B — 语音识别（官方 0.6B + mmproj，演示用）
+id: qwen3-asr-0.6b
+name: Qwen3-ASR-0.6B
+category: asr
+description: 通义千问3 官方 0.6B 语音识别模型，多语种转写；GGUF 需同时加载 mmproj 音频投影。
+tags: [asr, qwen3, audio, demo]
+vram_hint_gb: 3
+model_file: "amm/Qwen3-ASR-0.6B-Q8_0.gguf"
+sources:
+  - provider: huggingface
+    repo_id: ggml-org/Qwen3-ASR-0.6B-GGUF
+    files: [Qwen3-ASR-0.6B-Q8_0.gguf, mmproj-Qwen3-ASR-0.6B-Q8_0.gguf]
+  - provider: huggingface
+    repo_id: Qwen/Qwen3-ASR-0.6B
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 4096
+      n_gpu_layers: -1
+      flash_attn: true
+      mmproj: "amm/mmproj-Qwen3-ASR-0.6B-Q8_0.gguf"
+  - engine: llama_cpp
+    version: latest
+    flavor: cpu
+    params:
+      ctx_size: 4096
+      n_gpu_layers: 0
+      threads: 8
+      mmproj: "amm/mmproj-Qwen3-ASR-0.6B-Q8_0.gguf"
+parameters:
+  - { name: ctx_size, label: 上下文长度, type: number, default: 4096, min: 512, max: 16384 }
+  - { name: n_gpu_layers, label: GPU 层数, type: number, default: -1, min: -1, max: 256 }
+  - { name: mmproj, label: 音频投影 mmproj, type: string, default: "ggml-org/Qwen3-ASR-0.6B-GGUF/mmproj-Qwen3-ASR-0.6B-Q8_0.gguf" }
+quantization: [Q8_0, BF16]

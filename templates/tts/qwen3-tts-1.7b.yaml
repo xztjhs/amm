@@ -1,0 +1,37 @@
+# Qwen3-TTS-12Hz-0.6B-Base — 语音合成（官方 0.6B，社区 GGUF 量化，演示用）
+id: qwen3-tts-1.7b
+name: Qwen3-TTS-12Hz-1.7B-Base
+category: tts
+description: 通义千问3 官方 12Hz 1.7B 语音合成基底模型（想用 0.6B 需自行用官方脚本转换，社区 GGUF 与 llama-tts 架构不兼容）。需 llama.cpp 的 llama-tts 工具。
+tags: [tts, qwen3, audio, demo]
+vram_hint_gb: 4
+model_file: "amm/Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M.gguf"
+sources:
+  - provider: huggingface
+    repo_id: ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF
+    files: [Qwen3-TTS-12Hz-1.7B-Base-Q4_K_M.gguf, mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf]
+  - provider: huggingface
+    repo_id: Qwen/Qwen3-TTS-12Hz-1.7B-Base
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 4096
+      n_gpu_layers: -1
+      tts_lang: zh
+      mmproj: "amm/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
+  - engine: llama_cpp
+    version: latest
+    flavor: cpu
+    params:
+      ctx_size: 4096
+      n_gpu_layers: 0
+      tts_lang: zh
+      mmproj: "amm/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf"
+parameters:
+  - { name: ctx_size, label: 上下文长度, type: number, default: 4096, min: 512, max: 8192 }
+  - { name: n_gpu_layers, label: GPU 层数, type: number, default: -1, min: -1, max: 256 }
+  - { name: tts_lang, label: 语音语言, type: select, default: zh, options: [zh, en, de, it, pt, es, ja, ko, fr, ru] }
+  - { name: mmproj, label: 音频投影 mmproj, type: string, default: "amm/mmproj-Qwen3-TTS-12Hz-1.7B-Base-bf16.gguf" }
+quantization: [Q4_K_M, Q8_0]

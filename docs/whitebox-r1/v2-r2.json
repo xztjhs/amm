@@ -1,0 +1,284 @@
+{
+ "generated_at": "2026-11-17 01:23:31",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 16,
+ "pass": 16,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "R2": {
+   "PASS": 16,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 16
+  }
+ },
+ "console_errors": [
+  "error: GET /system: TypeError: Failed to fetch\n    at apiGet (http://<YOUR_HOST>:60009/js/app.js?v=1.9:104:32)\n    at refreshAll (http://<YOUR_HOST>:60009/js/app.js?v=1.9:182:33)\n    at async HTMLDocument.init (http://<YOUR_HOST>:60009/js/app.js?v=1.9:47:9)"
+ ],
+ "failed_requests": [
+  "GET http://<YOUR_HOST>:60009/api/system net::ERR_ABORTED"
+ ],
+ "results": [
+  {
+   "id": "R2-01",
+   "name": "回归 D3：引擎列表已缓存（<1s）",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "times": [
+     0.008,
+     0.003,
+     0.003
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.92
+  },
+  {
+   "id": "R2-02",
+   "name": "回归 D1：GPU 页有导航入口且可切换",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.86
+  },
+  {
+   "id": "R2-03",
+   "name": "回归 D2：API Debug 页签可点且面板激活",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.12
+  },
+  {
+   "id": "R2-04",
+   "name": "回归 DEV-04：名称建议与 UID 不同且保留大小写",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid": "qwen3-embedding-0.6b",
+    "name": "Qwen3-Embedding-0.6B"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.11
+  },
+  {
+   "id": "R2-05",
+   "name": "回归 DEV-01：embeddings/rerank 写调用历史",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "output": "[embedding] 2 条输入 → 0 维向量",
+    "provider": "local"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.34
+  },
+  {
+   "id": "R2-06",
+   "name": "动态按钮：实例行操作全部可点",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "buttons": [
+     "Start",
+     "Stop",
+     "Restart",
+     "结束运行",
+     "💾"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.43
+  },
+  {
+   "id": "R2-07",
+   "name": "模型详情弹窗可打开并含参数区",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "openModelDetail_exists": true,
+    "display": "flex",
+    "title": "🧬 Qwen3-Embedding-0.6B"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 7.0
+  },
+  {
+   "id": "R2-08",
+   "name": "Log Center 调用历史分页边界",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "returned": 5,
+    "limit": 5
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R2-09",
+   "name": "调用历史关键字过滤",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "filter": "r2-emb",
+    "n": 3
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R2-10",
+   "name": "文件浏览器：上级目录与进入子目录",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "entries": 12,
+    "after_up": 12,
+    "has_qUp": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 5.6
+  },
+  {
+   "id": "R2-11",
+   "name": "模版部署表单含模型名称字段",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.77
+  },
+  {
+   "id": "R2-12",
+   "name": "Playground Chat 选模型下拉有内容",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "options": 2
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.07
+  },
+  {
+   "id": "R2-13",
+   "name": "修复无回归：/api/engines/catalog 仍正常",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "elapsed_s": 0.01,
+    "keys": [
+     "engines",
+     "engines_root"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R2-14",
+   "name": "修复无回归：实例体积字段仍然有值",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "sizes": [
+     [
+      "b12381",
+      908.6
+     ],
+     [
+      "b12433",
+      261.8
+     ],
+     [
+      "b12433",
+      229.4
+     ],
+     [
+      "0.33.0",
+      9390.5
+     ],
+     [
+      "0.39.0",
+      8528.7
+     ],
+     [
+      "6.3.0",
+      8351.8
+     ]
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R2-15",
+   "name": "修复无回归：并发请求引擎列表不重复扫描",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "concurrent_5_total_s": 0.01,
+    "each": [
+     0.003,
+     0.003,
+     0.006,
+     0.006,
+     0.005
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R2-16",
+   "name": "修复无回归：鉴权中间件语义正确",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "no_key": 200,
+    "with_default_no_key_header": 401,
+    "after_clear": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.02
+  }
+ ]
+}

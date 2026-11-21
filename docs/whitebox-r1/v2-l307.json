@@ -1,0 +1,35 @@
+{
+ "generated_at": "2026-11-17 01:14:18",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 1,
+ "pass": 0,
+ "fail": 1,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L3": {
+   "PASS": 0,
+   "FAIL": 1,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 1
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "L3-07",
+   "name": "E7 流式全链：调用历史记真实输出",
+   "layer": "L3",
+   "status": "FAIL",
+   "detail": "断言失败: 流式 status 期望=200 实际=401\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l3.py\", line 275, in _\n    R.eq(st, 200, \"流式 status\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 213, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: 流式 status 期望=200 实际=401\n",
+   "evidence": {
+    "used_tmp_key": true
+   },
+   "screenshot": "shots/L3-07.png",
+   "destructive": false,
+   "duration": 2.57
+  }
+ ]
+}

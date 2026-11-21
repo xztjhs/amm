@@ -1,0 +1,21 @@
+# Wan2.2-A14B — 文生视频 / 图生视频
+id: wan2.2-a14b
+name: Wan2.2-A14B
+category: video
+description: 万相 2.2 A14B MoE 视频生成，支持文生视频与图生视频，FP8 下 24G 显存可跑。
+tags: [t2v, i2v, diffusion, moe]
+vram_hint_gb: 22
+sources:
+  - provider: modelscope
+    repo_id: Wan-AI/Wan2.2-T2V-A14B
+  - provider: huggingface
+    repo_id: Wan-AI/Wan2.2-T2V-A14B
+engines:
+  - engine: diffusers
+    version: "0.39.0"
+    params:
+      quant: fp8
+      compute_dtype: bf16
+      offload: group
+      boundary_ratio: 0.875
+quantization: [fp8, bf16]

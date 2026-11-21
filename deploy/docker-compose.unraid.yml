@@ -1,0 +1,39 @@
+# AMM — Unraid 单容器部署
+# WebUI + /api/* + OpenAI 兼容 /v1/* 统一入口: http://<YOUR_HOST>:60008
+services:
+  amm:
+    image: amm:rocky9-cu132
+    container_name: amm
+    hostname: amm
+    restart: unless-stopped
+    runtime: nvidia
+    ports:
+      - "60008:80"
+    volumes:
+      - /path/to/amm:/amm
+      - /path/to/models:/models
+      # v1.0 R8: 引擎独立挂载，在线替换引擎不必重建/重启容器镜像
+      - /path/to/amm-engines:/opt/amm-engines
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - PYTHONUNBUFFERED=1
+      - TZ=Asia/Shanghai
+      - AMM_ROOT=/amm
+      - MODELS_DIR=/models
+      - PYTHONPATH=/amm/backend
+      # v1.0 R8: 引擎根目录指向主机挂载卷（cpu/cuda 各版本共存）
+      - AMM_ENGINES_ROOT=/opt/amm-engines
+      - HF_HOME=/amm/data/huggingface
+      - MODELSCOPE_CACHE=/amm/data/modelscope
+      - AMM_AUTO_RELEASE=full
+      - AMM_AUTO_RELEASE_GPU=1
+      - AMM_START_PRELOAD=0
+    command: ["/bin/bash", "/amm/deploy/docker-entrypoint.sh"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

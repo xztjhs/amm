@@ -1,0 +1,146 @@
+{
+ "generated_at": "2026-11-17 01:25:48",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 9,
+ "pass": 6,
+ "fail": 0,
+ "skip": 3,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 6,
+   "FAIL": 0,
+   "SKIP": 3,
+   "BLOCKED": 0,
+   "total": 9
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "K-07",
+   "name": "Key 改名/改限额",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "K-06 未留下测试 Key（鉴权状态被重置）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-45",
+   "name": "结束运行实例并释放端口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'model_uid': 'wb-embed'}",
+    "released_port": 18104
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 2.03
+  },
+  {
+   "id": "L2-46",
+   "name": "删除自定义模版",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "template": "wb-embed",
+    "status": 200,
+    "resp": "{'success': True, 'id': 'wb-embed'}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.08
+  },
+  {
+   "id": "L2-47",
+   "name": "吊销虚拟 Key",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "无测试 Key",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-48",
+   "name": "删除 provider",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "delete_status": 200
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-49",
+   "name": "日志清理（清空内容）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "files_resp": "{'files': [{'name': 'amm_server.log', 'source': 'amm_server', 'size_mb': 1.85, 'mtime': 1794849948.0433052}, {'name': 'wb-embed_server.log', 'source': 'wb-embed_server', 'size_mb':",
+    "cleanup": {
+     "status": 200,
+     "resp": "{'success': True, 'mode': 'truncate', 'files': ['amm_server.log', 'embedding-2_server.log', 'wb-embed_server.log', 'embedding_server.log', 'qwen3-embedding-0.6b_server.log', 'e1-em"
+    }
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-50",
+   "name": "重启服务后自动恢复",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "restart_status": 200,
+    "resp": "{'ok': True, 'message': '配置已重载并刷新实例; 完整重启请: docker restart AMM'}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 2.12
+  },
+  {
+   "id": "L2-51",
+   "name": "引擎卸载（选未使用的小引擎）",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "无 cpu 构建可卸载",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-52",
+   "name": "清除默认 Key 后 /v1 恢复免鉴权",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "generated": true,
+    "after_generate_no_key": 401,
+    "delete_status": 200,
+    "after_clear_no_key": 200,
+    "remaining_virtual_keys": 0
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.02
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+# CosyVoice2 — 语音合成
+id: cosyvoice2
+name: CosyVoice2
+category: tts
+description: 阿里 CosyVoice2 语音合成，支持零样本音色克隆与情感控制。
+tags: [tts, voice-clone, chinese]
+vram_hint_gb: 8
+sources:
+  - provider: modelscope
+    repo_id: iic/CosyVoice2-0.5B
+  - provider: huggingface
+    repo_id: FunAudioLLM/CosyVoice2-0.5B
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 4096
+      n_gpu_layers: -1
+quantization: []

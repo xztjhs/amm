@@ -1,0 +1,21 @@
+# PaddleOCR-VL — 图文识别
+id: paddleocr-vl
+name: PaddleOCR-VL
+category: ocr
+description: PaddleOCR 视觉语言模型，支持复杂版面、表格与公式识别。
+tags: [ocr, layout, table]
+vram_hint_gb: 8
+sources:
+  - provider: modelscope
+    repo_id: PaddlePaddle/PaddleOCR-VL
+  - provider: huggingface
+    repo_id: PaddlePaddle/PaddleOCR-VL
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 8192
+      n_gpu_layers: -1
+      mmproj: mmproj-PaddleOCR-VL-f16.gguf
+quantization: []

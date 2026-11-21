@@ -1,0 +1,413 @@
+{
+ "generated_at": "2026-11-17 01:22:40",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 25,
+ "pass": 24,
+ "fail": 0,
+ "skip": 1,
+ "blocked": 0,
+ "by_layer": {
+  "L4": {
+   "PASS": 24,
+   "FAIL": 0,
+   "SKIP": 1,
+   "BLOCKED": 0,
+   "total": 25
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "L4-01",
+   "name": "路由：运行中实例精确命中",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "resolve": {
+     "target": "local",
+     "model": "l4-route",
+     "port": 18106,
+     "category": "embedding",
+     "reason": "local-match"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.33
+  },
+  {
+   "id": "L4-02",
+   "name": "路由：prefix-local 强制本地",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "resolve": {
+     "target": "none",
+     "error": "本地实例未运行: embedding"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-03",
+   "name": "路由：不存在的模型必须是 none+error，不许回退",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "resolve": {
+     "target": "none",
+     "error": "未找到模型: no-such-model-abc"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-04",
+   "name": "路由：provider 前缀指向未注册 provider",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "resolve": {
+     "target": "none",
+     "error": "provider 前缀非法: provider/nonexist/model-x"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-05",
+   "name": "embedding 兜底：category=embedding 可直接用",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.33
+  },
+  {
+   "id": "L4-06",
+   "name": "embedding 兜底：未指定 model 时自动挑 embedding 实例",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 503,
+    "elapsed_s": 0.0
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-07",
+   "name": "embedding 兜底：chat 实例调用应给可读报错",
+   "layer": "L4",
+   "status": "SKIP",
+   "detail": "环境前置缺失：无 running 的 chat 实例",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-08",
+   "name": "UID 派生：跳过组织目录（meta/Qwen）",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid": "llama-3.1-8b",
+    "status": 400
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.09
+  },
+  {
+   "id": "L4-09",
+   "name": "UID 派生：剥掉量化后缀",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid": "l4-q8-test-Q8_0",
+    "warnings": [
+     "实例 UID「l4-q8-test-Q8_0」里没有 embedding 身份关键词，客户端（如 Cherry Studio）会按模型名注册表模糊匹配，可能被认成聊天模型并丢掉 embedding 能力。建议改用带类别的 uid，例如 embedding-…",
+     "实例 UID「l4-q8-test-Q8_0」带量化/格式后缀，客户端注册表匹配不到，会被当成无能力的自定义模型。建议去掉量化后缀。"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.32
+  },
+  {
+   "id": "L4-10",
+   "name": "UID 派生：超长名称被截断",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid_len": 22,
+    "uid": "qwen3-embedding-0.6b-5"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.09
+  },
+  {
+   "id": "L4-11",
+   "name": "校验：缺 model_type",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "缺少 model_type (模型类别)"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-12",
+   "name": "校验：缺 engine_type",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-13",
+   "name": "校验：未知引擎",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "未知引擎: not_exist"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-14",
+   "name": "校验：引擎不支持该类别",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "supported": [
+     "image",
+     "video"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-15",
+   "name": "校验：parameters 不是对象",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "parameters 必须是对象"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-16",
+   "name": "校验：非 JSON 请求体",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-17",
+   "name": "端口分配：动态实例端口在 18100-18499",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "dynamic_ports": [
+     18105,
+     18104,
+     18100,
+     18102,
+     18101,
+     18103
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-18",
+   "name": "端口分配：固定场景端口不被动态占用",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "fixed": [
+     80
+    ],
+    "dynamic": [
+     18100,
+     18101,
+     18102,
+     18103,
+     18104,
+     18105
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L4-19",
+   "name": "XSS：模型名带脚本标签被转义",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "name_saved": null,
+    "rendered_raw_script": false
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.26
+  },
+  {
+   "id": "L4-20",
+   "name": "XSS：node_name 带引号不破坏配置",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "error": "None"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.13
+  },
+  {
+   "id": "L4-21",
+   "name": "注入：模型名含换行/控制字符",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "name": "None"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.32
+  },
+  {
+   "id": "L4-22",
+   "name": "SSE：流式响应分片完整且以 [DONE] 结束",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "bytes": 2067,
+    "has_done": true,
+    "sse_lines": 7
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.41
+  },
+  {
+   "id": "L4-23",
+   "name": "幂等：重复 launch 同一 uid 被拒且不泄漏端口",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "results": [
+     [
+      200,
+      null,
+      18106
+     ],
+     [
+      400,
+      "实例 l4-idem 已存在",
+      null
+     ]
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.32
+  },
+  {
+   "id": "L4-24",
+   "name": "并发：同时 stop 同一实例不报 5xx",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "codes": [
+     200,
+     200,
+     200
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.49
+  },
+  {
+   "id": "L4-25",
+   "name": "边界：/v1/models 不含 stopped 实例",
+   "layer": "L4",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "present": false
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.33
+  }
+ ]
+}

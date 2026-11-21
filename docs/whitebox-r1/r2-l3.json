@@ -1,0 +1,185 @@
+{
+ "generated_at": "2026-11-16 21:51:36",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 10,
+ "pass": 9,
+ "fail": 1,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L3": {
+   "PASS": 9,
+   "FAIL": 1,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 10
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "L3-01",
+   "name": "E1 从模版部署到真实对话全链",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "calls": 3,
+    "output_head": "[embedding] 1 条输入 → 1024 维向量"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.11
+  },
+  {
+   "id": "L3-02",
+   "name": "E2 实例生命周期与端口回收",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "first_port": 18104,
+    "reuse_port": 18104
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.24
+  },
+  {
+   "id": "L3-03",
+   "name": "E3 计费闭环：限额 Key 超额被拒",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "first_call_status": 401,
+    "statuses": [
+     401,
+     401,
+     401,
+     401,
+     401,
+     401
+    ],
+    "usage_rows": 0
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 10.38
+  },
+  {
+   "id": "L3-04",
+   "name": "E4 客户端兼容：uid 形态与注册表归一化",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "derived_uid": "qwen3-embedding-0.6b-4",
+    "normalized": "qwen3-embedding-4"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.08
+  },
+  {
+   "id": "L3-06",
+   "name": "E6 高频轮询 40s 稳定性",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "requests": 706,
+    "errors": [],
+    "p50_ms": 2.5,
+    "p95_ms": 3.5,
+    "max_ms": 161.6
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 40.08
+  },
+  {
+   "id": "L3-07",
+   "name": "E7 流式全链：调用历史记真实输出",
+   "layer": "L3",
+   "status": "FAIL",
+   "detail": "断言失败: 流式 status 期望=200 实际=401\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l3.py\", line 263, in _\n    R.eq(st, 200, \"流式 status\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 213, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: 流式 status 期望=200 实际=401\n",
+   "evidence": {},
+   "screenshot": "shots/L3-07.png",
+   "destructive": false,
+   "duration": 2.34
+  },
+  {
+   "id": "L3-08",
+   "name": "E8 权限矩阵",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "no_key": 200,
+    "bad_key": 401,
+    "good_key": 200,
+    "virtual_key": 200,
+    "after_cleanup": 401
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.02
+  },
+  {
+   "id": "L3-09",
+   "name": "E9 重启后模版与配置持久",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "templates_before": 15,
+    "templates_after": 15,
+    "node_before": "amm",
+    "node_after": "amm"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.27
+  },
+  {
+   "id": "L3-10",
+   "name": "E10 并发启停不串",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "results": {
+     "e10-0": {
+      "status": 200,
+      "port": 18104,
+      "error": null
+     },
+     "e10-1": {
+      "status": 200,
+      "port": 18105,
+      "error": null
+     }
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.14
+  },
+  {
+   "id": "L3-05",
+   "name": "E5 故障恢复：服务重启后状态完整",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "instance": "e5-persist",
+    "keys_n": 1
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 4.19
+  }
+ ]
+}

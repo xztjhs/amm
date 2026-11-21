@@ -1,0 +1,22 @@
+# AMM - Python Dependencies
+# ===========================
+# Core Web Framework
+aiohttp>=3.9.0
+aiofiles>=23.0.0
+
+# Configuration
+PyYAML>=6.0
+
+# System Monitoring
+psutil>=5.9.0
+GPUtil>=1.4.0
+nvidia-ml-py>=12.0.0
+
+# Optional: for vLLM engine (installed via version manager)
+# vllm>=0.7.0
+
+# Optional: for Diffusers engine (installed via version manager)
+# diffusers>=0.31.0
+# transformers>=4.46.0
+# accelerate>=0.33.0
+# torch>=2.4.0

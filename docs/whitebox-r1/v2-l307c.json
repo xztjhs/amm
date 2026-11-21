@@ -1,0 +1,36 @@
+{
+ "generated_at": "2026-11-17 01:20:31",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 1,
+ "pass": 1,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L3": {
+   "PASS": 1,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 1
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "L3-07",
+   "name": "E7 流式全链：调用历史记真实输出",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "output_head": "The user just wants me to reply \"",
+    "len": 33
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.83
+  }
+ ]
+}

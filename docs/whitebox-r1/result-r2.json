@@ -1,0 +1,279 @@
+{
+ "generated_at": "2026-11-16 21:42:39",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 16,
+ "pass": 14,
+ "fail": 2,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "R2": {
+   "PASS": 14,
+   "FAIL": 2,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 16
+  }
+ },
+ "console_errors": [
+  "error: GET /system: TypeError: Failed to fetch\n    at apiGet (http://<YOUR_HOST>:60009/js/app.js?v=1.8:102:32)\n    at refreshAll (http://<YOUR_HOST>:60009/js/app.js?v=1.8:180:33)\n    at async HTMLDocument.init (http://<YOUR_HOST>:60009/js/app.js?v=1.8:45:9)"
+ ],
+ "failed_requests": [
+  "GET http://<YOUR_HOST>:60009/api/system net::ERR_ABORTED"
+ ],
+ "results": [
+  {
+   "id": "R2-01",
+   "name": "回归 D3：引擎列表已缓存（<1s）",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "times": [
+     0.007,
+     0.003,
+     0.003
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.92
+  },
+  {
+   "id": "R2-02",
+   "name": "回归 D1：GPU 页有导航入口且可切换",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.71
+  },
+  {
+   "id": "R2-03",
+   "name": "回归 D2：API Debug 页签可点且面板激活",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.14
+  },
+  {
+   "id": "R2-04",
+   "name": "回归 DEV-04：名称建议与 UID 不同且保留大小写",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "uid": "qwen3-embedding-0.6b",
+    "name": "Qwen3-Embedding-0.6B"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.11
+  },
+  {
+   "id": "R2-05",
+   "name": "回归 DEV-01：embeddings/rerank 写调用历史",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "output": "[embedding] 2 条输入 → 1024 维向量",
+    "provider": "local"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 7.23
+  },
+  {
+   "id": "R2-06",
+   "name": "动态按钮：实例行操作全部可点",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "buttons": [
+     "Start",
+     "Stop",
+     "Restart",
+     "结束运行",
+     "💾"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.2
+  },
+  {
+   "id": "R2-07",
+   "name": "模型详情弹窗可打开并含参数区",
+   "layer": "R2",
+   "status": "FAIL",
+   "detail": "断言失败: 模型详情弹窗未响应点击\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_r2.py\", line 172, in _\n    R.ok(disp != \"none\" or opened, \"模型详情弹窗未响应点击\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 209, in ok\n    raise AssertionError(msg)\nAssertionError: 模型详情弹窗未响应点击\n",
+   "evidence": {
+    "clicked": false,
+    "modal_display": "none"
+   },
+   "screenshot": "shots/R2-07.png",
+   "destructive": false,
+   "duration": 5.62
+  },
+  {
+   "id": "R2-08",
+   "name": "Log Center 调用历史分页边界",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "returned": 5,
+    "limit": 5
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R2-09",
+   "name": "调用历史关键字过滤",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "filter": "r2-emb",
+    "n": 1
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R2-10",
+   "name": "文件浏览器：上级目录与进入子目录",
+   "layer": "R2",
+   "status": "FAIL",
+   "detail": "异常: Page.evaluate: TypeError: Cannot read properties of undefined (reading 'split')\n    at fbUp (http://<YOUR_HOST>:60009/js/app.js?v=1.8:2538:38)\n    at eval (eval at evaluate (:302:30), <anonymous>:1:23)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:302:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 178, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_r2.py\", line 206, in _\n    R.js(\"window.fbUp && window.fbUp()\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 244, in js\n    return self.page.evaluate(expr)\nplaywright._impl._errors.Error: Page.evaluate: TypeError: Cannot read properties of undefined (reading 'split')\n    at fbUp (http://<YOUR_HOST>:60009/js/app.js?v=1.8:2538:38)\n    at eval (eval at evaluate (:302:30), <anonymous>:1:23)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:302:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n",
+   "evidence": {},
+   "screenshot": "shots/R2-10.png",
+   "destructive": false,
+   "duration": 3.63
+  },
+  {
+   "id": "R2-11",
+   "name": "模版部署表单含模型名称字段",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 8.78
+  },
+  {
+   "id": "R2-12",
+   "name": "Playground Chat 选模型下拉有内容",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "options": 2
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.08
+  },
+  {
+   "id": "R2-13",
+   "name": "修复无回归：/api/engines/catalog 仍正常",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "elapsed_s": 7.94,
+    "keys": [
+     "engines",
+     "engines_root"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 7.94
+  },
+  {
+   "id": "R2-14",
+   "name": "修复无回归：实例体积字段仍然有值",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "sizes": [
+     [
+      "b12381",
+      908.6
+     ],
+     [
+      "b12433",
+      261.8
+     ],
+     [
+      "b12433",
+      229.4
+     ],
+     [
+      "0.33.0",
+      9390.5
+     ],
+     [
+      "0.39.0",
+      8528.7
+     ],
+     [
+      "6.3.0",
+      18.6
+     ]
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R2-15",
+   "name": "修复无回归：并发请求引擎列表不重复扫描",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "concurrent_5_total_s": 0.01,
+    "each": [
+     0.004,
+     0.004,
+     0.006,
+     0.007,
+     0.007
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R2-16",
+   "name": "修复无回归：鉴权中间件语义正确",
+   "layer": "R2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "no_key": 200,
+    "with_default_no_key_header": 401,
+    "after_clear": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  }
+ ]
+}

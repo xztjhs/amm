@@ -1,0 +1,304 @@
+{
+ "generated_at": "2026-11-17 01:25:28",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 19,
+ "pass": 19,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "N": {
+   "PASS": 19,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 19
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "N-01",
+   "name": "#10 品牌：保存后顶栏与标题栏同步",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.93
+  },
+  {
+   "id": "N-02",
+   "name": "#10 品牌：LOGO 用作 favicon",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "logo": "/assets/logo.png",
+    "favicon": "/assets/logo.png"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 3.07
+  },
+  {
+   "id": "N-03",
+   "name": "#10 品牌：空名称被拒",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "项目名称不能为空"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-04",
+   "name": "#10 品牌：超长名称被拒",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-05",
+   "name": "#7 文件管理：列出允许根目录",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "roots": [
+     "/amm",
+     "/models",
+     "/amm/logs",
+     "/amm/data",
+     "/amm/templates",
+     "/amm/verification"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-06",
+   "name": "#7 文件管理：浏览/写入/读取/删除闭环",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "N-07",
+   "name": "#7 文件管理：上传与下载",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "N-08",
+   "name": "#7 文件管理：路径越权被拒",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "blocked": [
+     {
+      "path": "/etc/passwd",
+      "status": 403
+     },
+     {
+      "path": "/amm/../../etc/shadow",
+      "status": 403
+     },
+     {
+      "path": "/root",
+      "status": 403
+     },
+     {
+      "path": "/proc/self/environ",
+      "status": 403
+     }
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "N-09",
+   "name": "#7 文件管理：新建目录与改名",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "N-10",
+   "name": "#9 目录配置：读取与状态",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "keys": [
+     "models_dir",
+     "logs_dir",
+     "data_dir",
+     "templates_dir",
+     "verification_dir"
+    ]
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-11",
+   "name": "#9 目录配置：不存在/相对路径被拒",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "nonexistent": 400,
+    "relative": 400
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-12",
+   "name": "#9 目录配置：保存有效路径并还原",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'changed': {'data_dir': '/amm/data'}, 'needs_restart': True}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.13
+  },
+  {
+   "id": "N-13",
+   "name": "#2 鉴权开关：关闭后免 Key，开启后 401",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "disabled": 200,
+    "enabled": 401
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.02
+  },
+  {
+   "id": "N-14",
+   "name": "#2 鉴权开关：无 confirm 被拒",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "需要显式确认：请在请求体传 {\"confirm\": true}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "N-15",
+   "name": "#2 鉴权开关：有虚拟 Key 时也能关闭",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "after_issue": 401,
+    "after_disable": 200,
+    "kept_keys": 1
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.02
+  },
+  {
+   "id": "N-16",
+   "name": "#3 launch 返回 ready=True",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "ready": true,
+    "wait_ms": 252,
+    "total_s": 0.29
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.3
+  },
+  {
+   "id": "N-17",
+   "name": "#3 launch 后立刻请求不 500",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.04
+  },
+  {
+   "id": "N-18",
+   "name": "#4 日志轮转已启用",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "log_max_bytes_env": "default 50MB",
+    "has_rotated_files": null
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.04
+  },
+  {
+   "id": "N-19",
+   "name": "#1 拆分后 8 个页面全部可用且无 JS 错误",
+   "layer": "N",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "tabs": 8,
+    "new_console_errors": []
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 10.6
+  }
+ ]
+}

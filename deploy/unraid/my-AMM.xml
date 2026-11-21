@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>AMM</Name>
+  <Repository>amm:rocky9-cu132</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP/>
+  <MyMAC/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/xztjhs/amm</Support>
+  <Project>https://github.com/xztjhs/amm</Project>
+  <ReadMe>https://github.com/xztjhs/amm/blob/master/README.md</ReadMe>
+  <Overview>AMM - AI Models Manage. AI 模型统一管理与推理调度平台：九类模型（Chat/Embedding/Reranker/ASR/TTS/OCR/T2I/T2V/I2V），四种推理引擎（llama.cpp/vLLM/Diffusers/sentence-transformers），OpenAI 兼容 API，Web 可视化管理。支持引擎在线装卸、动态实例、Token Router 计费、日志中心、文件管理。</Overview>
+  <Category>AI: Tools:</Category>
+  <WebUI>http://[IP]:[PORT:60008]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/xztjhs/amm/master/deploy/unraid/my-AMM.xml</TemplateURL>
+  <!-- 图标由 AMM 自身托管（内网自足，不依赖外网）。
+       注意 dockerMan 的 getIcon() 只做 download_url，不做 [IP]/[PORT] 替换，
+       所以这里必须写实际可达地址；首次加载后会缓存为 AMM-icon.png。 -->
+  <Icon>http://YOUR_HOST:60008/assets/logo-128.png</Icon>
+  <ExtraParams>--runtime nvidia --restart unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1794913558</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="WebUI/API" Target="80" Default="80" Mode="tcp" Description="WebUI + /api + /v1 统一入口" Type="Port" Display="always" Required="true" Mask="false">60008</Config>
+  <Config Name="App Root" Target="/amm" Default="/path/to/amm" Mode="rw" Description="程序与数据目录（代码+SQLite+配置）" Type="Path" Display="always" Required="true" Mask="false">/path/to/amm</Config>
+  <Config Name="Models" Target="/models" Default="/path/to/models" Mode="rw" Description="模型文件目录（GGUF / safetensors）" Type="Path" Display="always" Required="true" Mask="false">/path/to/models</Config>
+  <Config Name="Engines" Target="/opt/amm-engines" Default="/path/to/amm-engines" Mode="rw" Description="推理引擎目录（主机挂载，支持在线装卸）" Type="Path" Display="always" Required="true" Mask="false">/path/to/amm-engines</Config>
+  <Config Name="AMM_ENGINES_ROOT" Target="AMM_ENGINES_ROOT" Default="/opt/amm-engines" Mode="" Description="引擎根目录" Type="Variable" Display="always" Required="false" Mask="false">/opt/amm-engines</Config>
+  <Config Name="NVIDIA_VISIBLE_DEVICES" Target="NVIDIA_VISIBLE_DEVICES" Default="all" Mode="" Description="GPU 可见设备" Type="Variable" Display="always" Required="false" Mask="false">all</Config>
+  <Config Name="NVIDIA_DRIVER_CAPABILITIES" Target="NVIDIA_DRIVER_CAPABILITIES" Default="compute,utility" Mode="" Description="驱动能力" Type="Variable" Display="always" Required="false" Mask="false">compute,utility</Config>
+  <Config Name="AMM_ROOT" Target="AMM_ROOT" Default="/amm" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">/amm</Config>
+  <Config Name="MODELS_DIR" Target="MODELS_DIR" Default="/models" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">/models</Config>
+  <Config Name="PYTHONPATH" Target="PYTHONPATH" Default="/amm/backend" Mode="" Description="" Type="Variable" Display="advanced" Required="false" Mask="false">/amm/backend</Config>
+  <Config Name="HF_HOME" Target="HF_HOME" Default="/amm/data/huggingface" Mode="" Description="HuggingFace 缓存" Type="Variable" Display="advanced" Required="false" Mask="false">/amm/data/huggingface</Config>
+  <Config Name="MODELSCOPE_CACHE" Target="MODELSCOPE_CACHE" Default="/amm/data/modelscope" Mode="" Description="ModelScope 缓存" Type="Variable" Display="advanced" Required="false" Mask="false">/amm/data/modelscope</Config>
+  <Config Name="AMM_AUTO_RELEASE" Target="AMM_AUTO_RELEASE" Default="full" Mode="" Description="空闲时释放显存策略" Type="Variable" Display="advanced" Required="false" Mask="false">full</Config>
+  <Config Name="AMM_START_PRELOAD" Target="AMM_START_PRELOAD" Default="0" Mode="" Description="启动时是否预加载 diffusers 模型" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="AMM_LOG_MAX_BYTES" Target="AMM_LOG_MAX_BYTES" Default="52428800" Mode="" Description="单日志文件上限（默认 50MB）" Type="Variable" Display="advanced" Required="false" Mask="false">52428800</Config>
+  <Config Name="AMM_LOG_BACKUPS" Target="AMM_LOG_BACKUPS" Default="5" Mode="" Description="日志保留份数" Type="Variable" Display="advanced" Required="false" Mask="false">5</Config>
+  <Config Name="TZ" Target="TZ" Default="Asia/Shanghai" Mode="" Description="时区" Type="Variable" Display="advanced" Required="false" Mask="false">Asia/Shanghai</Config>
+  <TailscaleStateDir/>
+</Container>

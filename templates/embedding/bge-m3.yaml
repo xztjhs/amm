@@ -1,0 +1,34 @@
+# BGE-M3 — 多语言向量模型（CPU/GPU 双跑）
+id: bge-m3
+name: BGE-M3
+category: embedding
+description: BAAI 多语言嵌入模型，支持稠密/稀疏/多向量检索，中英文效果稳定。
+tags: [embedding, multilingual, retrieval]
+context_length: 8192
+vram_hint_gb: 2
+sources:
+  - provider: modelscope
+    repo_id: BAAI/bge-m3
+  - provider: huggingface
+    repo_id: BAAI/bge-m3
+engines:
+  - engine: sentence_transformers
+    version: "3.3.1"
+    flavor: cuda
+    params:
+      batch_size: 64
+      normalize: true
+      max_seq_length: 8192
+  - engine: sentence_transformers
+    version: "3.3.1"
+    flavor: cpu
+    params:
+      batch_size: 16
+      normalize: true
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      embeddings: true
+      ctx_size: 8192
+quantization: []

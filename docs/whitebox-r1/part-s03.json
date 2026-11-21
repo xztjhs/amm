@@ -1,0 +1,36 @@
+{
+ "generated_at": "2026-11-16 21:48:08",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 1,
+ "pass": 1,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 1,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 1
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "S-03",
+   "name": "客户端分组名保存并反映到 /v1/models owned_by",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'node_name': 'amm-wb'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.13
+  }
+ ]
+}

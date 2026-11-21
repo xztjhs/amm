@@ -1,0 +1,1148 @@
+{
+ "generated_at": "2026-11-16 20:44:32",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 95,
+ "pass": 30,
+ "fail": 56,
+ "skip": 9,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 30,
+   "FAIL": 56,
+   "SKIP": 9,
+   "BLOCKED": 0,
+   "total": 95
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "D-01",
+   "name": "四张系统卡数值与进度条一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 115, in _\n    R.goto_tab(\"dashboard\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\n",
+   "evidence": {},
+   "screenshot": "shots/D-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "D-02",
+   "name": "Model Status 与 /api/instances 一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 128, in _\n    R.goto_tab(\"dashboard\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\n",
+   "evidence": {},
+   "screenshot": "shots/D-02.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "D-03",
+   "name": "GPU 卡数值与 nvidia-smi 接近",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 142, in _\n    R.goto_tab(\"dashboard\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\n",
+   "evidence": {},
+   "screenshot": "shots/D-03.png",
+   "destructive": false,
+   "duration": 30.15
+  },
+  {
+   "id": "D-04",
+   "name": "实例状态变化在 3s 内反映到卡片",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 153, in _\n    R.goto_tab(\"dashboard\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n\n",
+   "evidence": {},
+   "screenshot": "shots/D-04.png",
+   "destructive": false,
+   "duration": 30.02
+  },
+  {
+   "id": "G-01",
+   "name": "刷新间隔逐档切换并持久化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.42
+  },
+  {
+   "id": "G-02",
+   "name": "主题切换生效且持久化",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.39
+  },
+  {
+   "id": "G-03",
+   "name": "服务器状态点与时钟在走",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.13
+  },
+  {
+   "id": "G-04",
+   "name": "帮助手册弹窗打开/关闭",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.wait_for_selector: Timeout 6000ms exceeded.\nCall log:\n  - waiting for locator(\"#helpModal.active, #helpModal[style*='display: block']\") to be visible\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 84, in _\n    R.page.wait_for_selector(\"#helpModal.active, #helpModal[style*='display: block']\",\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 8770, in wait_for_selector\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 6000ms exceeded.\nCall log:\n  - waiting for locator(\"#helpModal.active, #helpModal[style*='display: block']\") to be visible\n\n",
+   "evidence": {},
+   "screenshot": "shots/G-04.png",
+   "destructive": false,
+   "duration": 6.06
+  },
+  {
+   "id": "G-05",
+   "name": "7 个导航页数据不串（每页有独有元素）",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"dashboard\" class=\"nav-item active\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 96, in _\n    R.goto_tab(tab)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"dashboard\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"dashboard\" class=\"nav-item active\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/G-05.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "G-06",
+   "name": "GPU Monitor 页可达性（D1 回归）",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: D1: tab-gpu 页面存在但导航无入口，用户无法进入\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 106, in _\n    R.ok(not (has_section and not has_nav),\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: D1: tab-gpu 页面存在但导航无入口，用户无法进入\n",
+   "evidence": {
+    "nav_entry": false,
+    "section_exists": true
+   },
+   "screenshot": "shots/G-06.png",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-01",
+   "name": "统计卡与 usage 接口一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"router\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"router\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 591, in _\n    R.goto_tab(\"router\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"router\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"router\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/K-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "K-02",
+   "name": "Provider 类型切换自动填 Base URL",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"router\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"router\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 602, in _\n    R.goto_tab(\"router\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"router\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"router\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/K-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "K-03",
+   "name": "创建/读取/删除 provider（可逆）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "create_status": 200
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-04",
+   "name": "Provider 保存不填 Key 不破坏已有 Key",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 无 provider 可测\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 629, in _\n    R.ok(provs, \"无 provider 可测\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 无 provider 可测\n",
+   "evidence": {},
+   "screenshot": "shots/K-04.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-05",
+   "name": "可用模型清单合并本地+provider",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 模型清单为空\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 643, in _\n    R.ok(len(data) > 0, \"模型清单为空\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 模型清单为空\n",
+   "evidence": {},
+   "screenshot": "shots/K-05.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-06",
+   "name": "签发 Key：明文只回一次，列表只显示掩码",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "key_id": "Mw4NfNaA",
+    "masked": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.15
+  },
+  {
+   "id": "K-07",
+   "name": "Key 改名/改限额",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'key_id': 'Mw4NfNaA', 'key': 'sk-amm-...fNaA'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-08",
+   "name": "无效 Key 鉴权失败",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-09",
+   "name": "白名单外模型被拒",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 404,
+    "resp": "{'error': {'message': '未找到模型: other-model-xyz'}}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-10",
+   "name": "用量报表结构",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "totals": {
+     "requests": 0,
+     "total_tokens": 0,
+     "cost_cny": 0.0,
+     "total_tokens_fmt": "0"
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-11",
+   "name": "账单 CSV 可导出且带 BOM",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "bytes": 78
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-12",
+   "name": "详单 CSV 可导出",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-13",
+   "name": "模型元数据覆盖生效",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 覆盖后找不到模型\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 719, in _\n    R.ok(m, \"覆盖后找不到模型\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 覆盖后找不到模型\n",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'model_id': 'wb-embed', 'meta': {'category': 'embedding', 'note': '白盒测试标记', 'input_price': 1.5, 'output_price': 2.5}}"
+   },
+   "screenshot": "shots/K-13.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-14",
+   "name": "默认 Key 状态接口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L-01",
+   "name": "两个子页签互斥切换",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"logs\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"logs\" class=\"nav-item\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 734, in _\n    R.goto_tab(\"logs\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"logs\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"logs\" class=\"nav-item\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "L-02",
+   "name": "文件日志查询有内容",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"logs\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"logs\" class=\"nav-item\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 748, in _\n    R.goto_tab(\"logs\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"logs\\\"]\")\n    - locator resolved to <a href=\"#\" data-tab=\"logs\" class=\"nav-item\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "L-03",
+   "name": "级别过滤减少结果",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcLevel\")\n    - locator resolved to <select id=\"lcLevel\" class=\"form-select\" onchange=\"window.lcRefresh()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 759, in _\n    R.page.select_option(\"#lcLevel\", \"ERROR\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 11974, in select_option\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcLevel\")\n    - locator resolved to <select id=\"lcLevel\" class=\"form-select\" onchange=\"window.lcRefresh()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-03.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "L-04",
+   "name": "自动刷新开关启停",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.check: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcAuto\")\n    - locator resolved to <input id=\"lcAuto\" type=\"checkbox\" onchange=\"window.lcAutoToggle()\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 771, in _\n    R.page.check(\"#lcAuto\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 12270, in check\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.check: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcAuto\")\n    - locator resolved to <input id=\"lcAuto\" type=\"checkbox\" onchange=\"window.lcAutoToggle()\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-04.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "L-05",
+   "name": "调用历史列表加载",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcTabCalls\")\n    - locator resolved to <button class=\"lc-tab\" id=\"lcTabCalls\" onclick=\"window.lcSwitch('calls')\">调用历史（输入/输出/性能）</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 780, in _\n    R.page.click(\"#lcTabCalls\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 10783, in click\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcTabCalls\")\n    - locator resolved to <button class=\"lc-tab\" id=\"lcTabCalls\" onclick=\"window.lcSwitch('calls')\">调用历史（输入/输出/性能）</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-05.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "L-06",
+   "name": "调用历史展开显示输入/输出/性能",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "无调用记录",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L-07",
+   "name": "文件管理弹窗可打开",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcTabFile\")\n    - locator resolved to <button id=\"lcTabFile\" class=\"lc-tab active\" onclick=\"window.lcSwitch('file')\">文件日志</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 804, in _\n    R.page.click(\"#lcTabFile\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 10783, in click\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#lcTabFile\")\n    - locator resolved to <button id=\"lcTabFile\" class=\"lc-tab active\" onclick=\"window.lcSwitch('file')\">文件日志</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\n",
+   "evidence": {},
+   "screenshot": "shots/L-07.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "L-08",
+   "name": "日志来源接口与 UI 下拉一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "sources": "{'logs_dir': '/amm/logs', 'server_log': [{'name': 'amm_server.log', 'source': 'server', 'size_bytes': 214076, 'modified': '2026-11-16T20:31:51'}], 'instances': ['asr', 'chat', 'embedding', 'i2v', 'ocr"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L-09",
+   "name": "导出当前筛选返回内容",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "bytes": 5531
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-45",
+   "name": "结束运行实例并释放端口",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-46",
+   "name": "删除自定义模版",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-47",
+   "name": "吊销虚拟 Key",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-48",
+   "name": "删除 provider",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-49",
+   "name": "日志清理（清空内容）",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-50",
+   "name": "重启服务后自动恢复",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-51",
+   "name": "引擎卸载（选未使用的小引擎）",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "L2-52",
+   "name": "清除默认 Key 后 /v1 恢复免鉴权",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "破坏性用例未授权（--destructive）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.0
+  },
+  {
+   "id": "P-01",
+   "name": "9 个子页签切换且面板对应",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"playground\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"playground\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 496, in _\n    R.goto_tab(\"playground\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"playground\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"playground\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "P-02",
+   "name": "Embedding Playground 真实出结果",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"playground\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"playground\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 505, in _\n    R.goto_tab(\"playground\"); R.goto_pg(\"embedding\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"playground\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"playground\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "P-03",
+   "name": "Chat 页签元素齐全",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"chat\\\"]\")\n    - locator resolved to <button data-pg=\"chat\" class=\"pg-tab active\">💬 Chat</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 521, in _\n    R.goto_pg(\"chat\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 193, in goto_pg\n    self.page.click(f'.pg-tab[data-pg=\"{pg}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"chat\\\"]\")\n    - locator resolved to <button data-pg=\"chat\" class=\"pg-tab active\">💬 Chat</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-03.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "P-04",
+   "name": "Chat 清空会话有 confirm",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#pg-chat button:has-text('清空会话')\")\n    - locator resolved to <button class=\"btn btn-sm\" onclick=\"clearChatHistory()\">🗑 清空会话</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 535, in _\n    R.page.click(\"#pg-chat button:has-text('清空会话')\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 10783, in click\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#pg-chat button:has-text('清空会话')\")\n    - locator resolved to <button class=\"btn btn-sm\" onclick=\"clearChatHistory()\">🗑 清空会话</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-04.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "P-05",
+   "name": "参数边界值被前端约束",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "P-06",
+   "name": "T2I 面板参数与显存估算",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"image\\\"]\")\n    - locator resolved to <button class=\"pg-tab\" data-pg=\"image\">🖼️ T2I</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 553, in _\n    R.goto_pg(\"image\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 193, in goto_pg\n    self.page.click(f'.pg-tab[data-pg=\"{pg}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"image\\\"]\")\n    - locator resolved to <button class=\"pg-tab\" data-pg=\"image\">🖼️ T2I</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-06.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "P-07",
+   "name": "T2V/I2V 面板元素齐全",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"video\\\"]\")\n    - locator resolved to <button class=\"pg-tab\" data-pg=\"video\">🎬 T2V</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 565, in _\n    R.goto_pg(\"video\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 193, in goto_pg\n    self.page.click(f'.pg-tab[data-pg=\"{pg}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"video\\\"]\")\n    - locator resolved to <button class=\"pg-tab\" data-pg=\"video\">🎬 T2V</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-07.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "P-08",
+   "name": "ASR/TTS/Rerank/OCR 面板齐全",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"asr\\\"]\")\n    - locator resolved to <button data-pg=\"asr\" class=\"pg-tab\">🎙️ ASR</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 580, in _\n    R.goto_pg(pg)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 193, in goto_pg\n    self.page.click(f'.pg-tab[data-pg=\"{pg}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".pg-tab[data-pg=\\\"asr\\\"]\")\n    - locator resolved to <button data-pg=\"asr\" class=\"pg-tab\">🎙️ ASR</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\n",
+   "evidence": {},
+   "screenshot": "shots/P-08.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "R-01",
+   "name": "运行中统计条与列表一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 306, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"running\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/R-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "R-02",
+   "name": "列表包含 wb-embed 且字段齐全",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 318, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"running\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/R-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "R-03",
+   "name": "Stop→Start 状态机流转",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: stop 失败: 模型 wb-embed 未找到\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 328, in _\n    R.ok(not d.get(\"error\"), f\"stop 失败: {d.get('error')}\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: stop 失败: 模型 wb-embed 未找到\n",
+   "evidence": {},
+   "screenshot": "shots/R-03.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-04",
+   "name": "Restart 保持 running 且端口不变",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 重启后状态 期望='running' 实际=None\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 352, in _\n    R.eq(after.get(\"status\"), \"running\", \"重启后状态\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: 重启后状态 期望='running' 实际=None\n",
+   "evidence": {
+    "status": 200,
+    "resp": "{'error': '模型 wb-embed 未找到'}"
+   },
+   "screenshot": "shots/R-04.png",
+   "destructive": false,
+   "duration": 44.15
+  },
+  {
+   "id": "R-05",
+   "name": "改参数后生效并持久化",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: ctx_size 期望=8192 实际=None\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 361, in _\n    R.eq(inst.get(\"parameters\", {}).get(\"ctx_size\"), 8192, \"ctx_size\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: ctx_size 期望=8192 实际=None\n",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True}"
+   },
+   "screenshot": "shots/R-05.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-06",
+   "name": "启动命令预览与实际一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 预览为空: {'error': '模型 wb-embed 未找到'}\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 367, in _\n    R.ok(d.get(\"args\") or d.get(\"command\") or d.get(\"cmd\"), f\"预览为空: {d}\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 预览为空: {'error': '模型 wb-embed 未找到'}\n",
+   "evidence": {},
+   "screenshot": "shots/R-06.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-07",
+   "name": "实例日志可读",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "lines": 0
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-08",
+   "name": "另存为模版生成 custom yaml",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: status 期望=200 实际=400\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 382, in _\n    R.eq(st, 200, \"status\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: status 期望=200 实际=400\n",
+   "evidence": {
+    "status": 400,
+    "resp": "{'error': '实例不存在: wb-embed'}"
+   },
+   "screenshot": "shots/R-08.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "R-09",
+   "name": "并发双击 Start 幂等（只起一个进程）",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 同一 uid 应只有一条运行记录 期望=1 实际=0\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 398, in _\n    R.eq(len(same), 1, \"同一 uid 应只有一条运行记录\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: 同一 uid 应只有一条运行记录 期望=1 实际=0\n",
+   "evidence": {},
+   "screenshot": "shots/R-09.png",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "R-10",
+   "name": "实例详情字段完整",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: status 期望=200 实际=404\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 404, in _\n    R.eq(st, 200, \"status\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: status 期望=200 实际=404\n",
+   "evidence": {},
+   "screenshot": "shots/R-10.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-01",
+   "name": "服务配置区显示与 API 一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"settings\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"settings\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 831, in _\n    R.goto_tab(\"settings\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"settings\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"settings\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/S-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "S-02",
+   "name": "PyPI 镜像预设可选",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 镜像预设 1 < 2\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 841, in _\n    R.ok(opts >= 2, f\"镜像预设 {opts} < 2\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 镜像预设 1 < 2\n",
+   "evidence": {},
+   "screenshot": "shots/S-02.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-03",
+   "name": "客户端分组名保存并反映到 /v1/models owned_by",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: owned_by 未更新: set()\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 849, in _\n    R.ok(\"amm-wb\" in owners, f\"owned_by 未更新: {owners}\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: owned_by 未更新: set()\n",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'node_name': 'amm-wb'}"
+   },
+   "screenshot": "shots/S-03.png",
+   "destructive": false,
+   "duration": 0.07
+  },
+  {
+   "id": "S-04",
+   "name": "分组名空值被拒",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-05",
+   "name": "引擎管理列表渲染",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"settings\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"settings\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 861, in _\n    R.goto_tab(\"settings\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"settings\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"settings\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/S-05.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "S-06",
+   "name": "重载配置成功",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'ok': True, 'message': '配置已重载'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.11
+  },
+  {
+   "id": "S-07",
+   "name": "下载服务日志",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "S-08",
+   "name": "pip 镜像保存与读回",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "orig": "https://mirrors.aliyun.com/pypi/simple/"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "T-01",
+   "name": "模版列表加载与统计",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 415, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"templates\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/T-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "T-02",
+   "name": "分类过滤生效",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#tplCategory\")\n    - locator resolved to <select id=\"tplCategory\" class=\"form-select\" onchange=\"window.tplRefresh()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 425, in _\n    R.page.select_option(\"#tplCategory\", \"embedding\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 11974, in select_option\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#tplCategory\")\n    - locator resolved to <select id=\"tplCategory\" class=\"form-select\" onchange=\"window.tplRefresh()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/T-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "T-03",
+   "name": "关键词搜索",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#tplKeyword\")\n    - locator resolved to <input id=\"tplKeyword\" class=\"form-input\" placeholder=\"搜索模版名称 / 标签…\" onkeydown=\"if(event.key==='Enter'){window.tplRefresh()}\"/>\n    - fill(\"qwen\")\n  - attempting fill action\n    2 × waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n      - waiting 100ms\n    60 × waiting for element to be visible, enabled and editable\n       - element is not visible\n     - retrying fill action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 435, in _\n    R.page.fill(\"#tplKeyword\", \"qwen\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 10998, in fill\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#tplKeyword\")\n    - locator resolved to <input id=\"tplKeyword\" class=\"form-input\" placeholder=\"搜索模版名称 / 标签…\" onkeydown=\"if(event.key==='Enter'){window.tplRefresh()}\"/>\n    - fill(\"qwen\")\n  - attempting fill action\n    2 × waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n      - waiting 100ms\n    60 × waiting for element to be visible, enabled and editable\n       - element is not visible\n     - retrying fill action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/T-03.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "T-04",
+   "name": "模版详情抽屉打开",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 详情抽屉未显示\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 450, in _\n    R.ok(disp != \"none\", \"详情抽屉未显示\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 详情抽屉未显示\n",
+   "evidence": {},
+   "screenshot": "shots/T-04.png",
+   "destructive": false,
+   "duration": 2.51
+  },
+  {
+   "id": "T-05",
+   "name": "模版详情含引擎/下载源/部署表单",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 详情字段 「引擎」不在结果里: \nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 460, in _\n    R.contains(body, k, \"详情字段\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 180, in contains\n    raise AssertionError(f\"{msg} 「{needle}」不在结果里: {str(hay)[:300]}\")\nAssertionError: 详情字段 「引擎」不在结果里: \n",
+   "evidence": {},
+   "screenshot": "shots/T-05.png",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "T-06",
+   "name": "新建模版编辑器可打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 1.81
+  },
+  {
+   "id": "T-07",
+   "name": "模版 categories 接口与 UI 一致",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "asr": 2,
+    "chat": 2,
+    "embedding": 3,
+    "image": 2,
+    "ocr": 2,
+    "reranker": 2,
+    "tts": 2,
+    "video": 1
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.08
+  },
+  {
+   "id": "T-08",
+   "name": "按模版部署创建实例",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "tpl": "bge-m3",
+    "status": 200,
+    "resp": "{'success': True, 'model_id': 'embedding-2', 'status': 'running', 'pid': 2179, 'engine': 'sentence_transformers', 'model_uid': 'embedding-2', 'port': 18100, 'template_id': 'bge-m3'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.13
+  },
+  {
+   "id": "W-01",
+   "name": "向导四步联动渲染",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 167, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"launch\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "W-02",
+   "name": "切换类别后引擎与参数重载",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 178, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"launch\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "W-03",
+   "name": "文件浏览器：打开/上下级/选文件回填",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 191, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"launch\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-03.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "W-04",
+   "name": "UID 自动推荐随模型文件变化",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 204, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"launch\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-04.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "W-05",
+   "name": "裸家族名 UID 实时风险提示",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 218, in _\n    R.goto_tab(\"launch\"); R.goto_sub(\"launch\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"launch\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"launch\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-05.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "W-06",
+   "name": "量化后缀 UID 风险提示",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.inner_text: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator(\"#wiz-uidhint-launchWizard\")\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 231, in _\n    hint = R.text(\"#wiz-uidhint-launchWizard\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 197, in text\n    return (self.page.inner_text(sel, timeout=timeout) or \"\").strip()\nplaywright._impl._errors.TimeoutError: Page.inner_text: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator(\"#wiz-uidhint-launchWizard\")\n\n",
+   "evidence": {},
+   "screenshot": "shots/W-06.png",
+   "destructive": false,
+   "duration": 9.01
+  },
+  {
+   "id": "W-07",
+   "name": "wizPayload 与实际提交字段一致",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.evaluate: TypeError: window.wizPayload is not a function\n    at eval (eval at evaluate (:302:30), <anonymous>:1:23)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:302:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 238, in _\n    payload = R.js(\"JSON.stringify(window.wizPayload('launchWizard'))\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 207, in js\n    return self.page.evaluate(expr)\nplaywright._impl._errors.Error: Page.evaluate: TypeError: window.wizPayload is not a function\n    at eval (eval at evaluate (:302:30), <anonymous>:1:23)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:302:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n",
+   "evidence": {},
+   "screenshot": "shots/W-07.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "W-08",
+   "name": "真实启动 embedding 实例（0.6B）",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "elapsed_s": 0.2,
+    "body": {
+     "success": true,
+     "model_id": "wb-embed",
+     "status": "running",
+     "pid": 2598,
+     "engine": "llama_cpp",
+     "model_uid": "wb-embed",
+     "port": 18101
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.18
+  },
+  {
+   "id": "W-09",
+   "name": "启动后 /v1/models 带 name 与 capabilities",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "W-10",
+   "name": "embedding 实例真实出向量",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: status 期望=200 实际=500\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 277, in _\n    R.eq(st, 200, \"status\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 176, in eq\n    raise AssertionError(f\"{msg} 期望={want!r} 实际={got!r}\")\nAssertionError: status 期望=200 实际=500\n",
+   "evidence": {
+    "status": 500,
+    "elapsed_s": 0.01
+   },
+   "screenshot": "shots/W-10.png",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "W-11",
+   "name": "缺模型文件启动返回可读错误",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 400,
+    "error": "模型文件不存在: no/such/file.gguf"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.05
+  },
+  {
+   "id": "W-12",
+   "name": "重复 UID 被拒绝",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "X-01",
+   "name": "下载面板元素齐全",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"tools\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"tools\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 899, in _\n    R.goto_tab(\"tools\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"tools\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"tools\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    57 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/X-01.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "X-02",
+   "name": "HF 镜像预设切换生效",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#hfEndpointPreset\")\n    - locator resolved to <select class=\"form-select\" id=\"hfEndpointPreset\" onchange=\"window.hfPresetChange()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 908, in _\n    R.page.select_option(\"#hfEndpointPreset\", \"https://huggingface.co\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 11974, in select_option\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#hfEndpointPreset\")\n    - locator resolved to <select class=\"form-select\" id=\"hfEndpointPreset\" onchange=\"window.hfPresetChange()\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/X-02.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "X-03",
+   "name": "代理开关联动输入框禁用态",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.check: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#dlProxyEnabled\")\n    - locator resolved to <input type=\"checkbox\" id=\"dlProxyEnabled\" onchange=\"window.toggleProxyInput()\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 918, in _\n    R.page.check(\"#dlProxyEnabled\")\n  File \"/home/claw/.local/lib/python3.9/site-packages/playwright/sync_api/_generated.py\", line 12270, in check\n    self._sync(\nplaywright._impl._errors.TimeoutError: Page.check: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#dlProxyEnabled\")\n    - locator resolved to <input type=\"checkbox\" id=\"dlProxyEnabled\" onchange=\"window.toggleProxyInput()\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/X-03.png",
+   "destructive": false,
+   "duration": 30.0
+  },
+  {
+   "id": "X-04",
+   "name": "HF Token 打码显示不泄露明文",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "断言失败: 可能泄露 token: {\"settings\": {\"hf_endpoint\": \"https://hf-mirror.com\", \"hf_token_masked\": \"\", \"has_hf_token\": false}, \"presets\": [{\"url\": \"https://hf-mirror.com\", \"label\": \"hf-mirror.com（国内镜像，推荐）\"}, {\"url\": \"https://h\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 930, in _\n    R.ok(\"hf_\" not in raw or \"***\" in raw or \"...\" in raw, f\"可能泄露 token: {raw[:200]}\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 172, in ok\n    raise AssertionError(msg)\nAssertionError: 可能泄露 token: {\"settings\": {\"hf_endpoint\": \"https://hf-mirror.com\", \"hf_token_masked\": \"\", \"has_hf_token\": false}, \"presets\": [{\"url\": \"https://hf-mirror.com\", \"label\": \"hf-mirror.com（国内镜像，推荐）\"}, {\"url\": \"https://h\n",
+   "evidence": {},
+   "screenshot": "shots/X-04.png",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "X-05",
+   "name": "查询模型版本与文件列表",
+   "layer": "L2",
+   "status": "FAIL",
+   "detail": "异常: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"tools\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"tools\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\nTraceback (most recent call last):\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 141, in run_case\n    fn(r)\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/cases_l2.py\", line 936, in _\n    R.goto_tab(\"tools\")\n  File \"/home/claw/amm/work/AMM/scripts/whitebox/runner.py\", line 185, in goto_tab\n    self.page.click(f'.nav-item[data-tab=\"{tab}\"]')\nplaywright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".nav-item[data-tab=\\\"tools\\\"]\")\n    - locator resolved to <a href=\"#\" class=\"nav-item\" data-tab=\"tools\">…</a>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"helpModal\" class=\"help-modal\">…</div> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+   "evidence": {},
+   "screenshot": "shots/X-05.png",
+   "destructive": false,
+   "duration": 30.01
+  },
+  {
+   "id": "X-06",
+   "name": "量化面板字段齐全",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "X-07",
+   "name": "三处目录浏览器各自可打开",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 6.95
+  },
+  {
+   "id": "X-08",
+   "name": "下载任务状态接口",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  }
+ ]
+}

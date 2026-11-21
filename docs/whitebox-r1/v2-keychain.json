@@ -1,0 +1,64 @@
+{
+ "generated_at": "2026-11-17 01:26:15",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 3,
+ "pass": 3,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 3,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 3
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "K-06",
+   "name": "签发 Key：明文只回一次，列表只显示掩码",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "key_id": "FGkWcT3K",
+    "masked": true
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "K-07",
+   "name": "Key 改名/改限额",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'key_id': 'FGkWcT3K', 'key': 'sk-amm-...cT3K'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.01
+  },
+  {
+   "id": "L2-47",
+   "name": "吊销虚拟 Key",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True}"
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 0.01
+  }
+ ]
+}

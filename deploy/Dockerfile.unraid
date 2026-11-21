@@ -1,0 +1,81 @@
+FROM rockylinux:9
+
+ENV LANG=C.UTF-8 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    TZ=Asia/Shanghai
+
+RUN set -eux; \
+    sed -i -e "s|^mirrorlist=|#mirrorlist=|g" \
+           -e "s|^#baseurl=http://dl.rockylinux.org/\$contentdir|baseurl=https://mirrors.aliyun.com/rockylinux|g" \
+           /etc/yum.repos.d/rocky*.repo; \
+    printf "[main]\nmax_parallel_downloads=8\nretries=20\ntimeout=120\nminrate=1\ninstall_weak_deps=False\n" > /etc/dnf/dnf.conf; \
+    dnf clean all
+
+RUN dnf install -y \
+        python3.11 python3.11-devel python3.11-pip \
+        gcc gcc-c++ make cmake git wget tar \
+        openssh-server openssh-clients \
+        procps-ng psmisc findutils which sudo \
+        libgomp numactl-libs file \
+    && dnf clean all
+
+# ---- CUDA 13.2 runtime + compiler via direct rpm download (resumable) ----
+ARG CUDA_REPO=https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64
+ARG CUDA_VER=13.2.86
+RUN set -eux; \
+    mkdir -p /tmp/cuda; cd /tmp/cuda; \
+    pkgs="cuda-cudart-13-2-${CUDA_VER}-1 cuda-cudart-devel-13-2-${CUDA_VER}-1 \
+cuda-nvcc-13-2-${CUDA_VER}-1 cuda-crt-13-2-${CUDA_VER}-1 \
+cuda-nvrtc-13-2-${CUDA_VER}-1 cuda-nvrtc-devel-13-2-${CUDA_VER}-1 \
+cuda-nvml-devel-13-2-${CUDA_VER}-1 cuda-driver-devel-13-2-${CUDA_VER}-1 \
+libnvvm-13-2-${CUDA_VER}-1 \
+libcublas-13-2-13.4.1.3-1 libcublas-devel-13-2-13.4.1.3-1"; \
+    for p in $pkgs; do \
+        f="$p.x86_64.rpm"; \
+        curl -fsSL --http1.1 --retry 20 --retry-all-errors --retry-delay 2 \
+             -C - -o "$f" "$CUDA_REPO/$f"; \
+    done; \
+    ls -la; \
+    rpm -ivh --nodeps /tmp/cuda/*.rpm || rpm -Uvh --nodeps --replacepkgs /tmp/cuda/*.rpm; \
+    rm -rf /tmp/cuda
+
+# ---- CCCL (cub/thrust/libcudacxx) ----
+# 精简 CUDA 安装里没有 cccl 头文件，cmake 会因为
+# "CUDA::cudart includes non-existent path .../include/cccl" 而失败。
+RUN set -eux; \
+    cd /tmp; \
+    curl -fsSL --http1.1 --retry 20 --retry-all-errors -C - \
+         -o cccl.tar.gz https://github.com/NVIDIA/cccl/releases/download/v3.5.0/cccl-src-v3.5.0.tar.gz; \
+    tar xzf cccl.tar.gz; \
+    DST=/usr/local/cuda-13.2/targets/x86_64-linux/include/cccl; \
+    mkdir -p "$DST"; \
+    cp -r cccl-src-v3.5.0/libcudacxx/include/* "$DST"/ 2>/dev/null || true; \
+    cp -r cccl-src-v3.5.0/cub/cub "$DST"/cub; \
+    cp -r cccl-src-v3.5.0/thrust/thrust "$DST"/thrust; \
+    cp -r cccl-src-v3.5.0/cudax/include/* "$DST"/ 2>/dev/null || true; \
+    rm -rf /tmp/cccl*
+
+ENV CUDA_HOME=/usr/local/cuda-13.2 \
+    PATH=/usr/local/cuda-13.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/usr/local/cuda-13.2/lib64
+
+RUN mkdir -p /etc/pip && cat > /etc/pip.conf <<'PIPCFG'
+[global]
+index-url = https://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host = mirrors.aliyun.com
+PIPCFG
+COPY requirements.txt /tmp/requirements.txt
+RUN python3.11 -m pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && python3.11 -m pip install --no-cache-dir -r /tmp/requirements.txt \
+    && rm -f /tmp/requirements.txt
+
+RUN ssh-keygen -A && mkdir -p /run/sshd
+WORKDIR /amm
+EXPOSE 80 22
+
+# 健康检查：容器挂了能被 docker 发现（配合 --restart unless-stopped 自愈）
+# 用 python 而不是 curl，避免多装一个包
+HEALTHCHECK --interval=30s --timeout=6s --start-period=60s --retries=3 \
+    CMD python3.11 -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1/api/health', timeout=4).status==200 else 1)" || exit 1

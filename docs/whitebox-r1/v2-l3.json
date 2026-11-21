@@ -1,0 +1,188 @@
+{
+ "generated_at": "2026-11-17 01:22:00",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 10,
+ "pass": 10,
+ "fail": 0,
+ "skip": 0,
+ "blocked": 0,
+ "by_layer": {
+  "L3": {
+   "PASS": 10,
+   "FAIL": 0,
+   "SKIP": 0,
+   "BLOCKED": 0,
+   "total": 10
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "L3-01",
+   "name": "E1 从模版部署到真实对话全链",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "calls": 6,
+    "output_head": "[embedding] 1 条输入 → 0 维向量"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.36
+  },
+  {
+   "id": "L3-02",
+   "name": "E2 实例生命周期与端口回收",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "first_port": 18106,
+    "reuse_port": 18106
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 9.02
+  },
+  {
+   "id": "L3-03",
+   "name": "E3 计费闭环：限额 Key 超额被拒",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "first_call_status": 200,
+    "statuses": [
+     200,
+     200,
+     200,
+     200,
+     200,
+     200
+    ],
+    "usage_rows": 0
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 12.21
+  },
+  {
+   "id": "L3-04",
+   "name": "E4 客户端兼容：uid 形态与注册表归一化",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "derived_uid": "qwen3-embedding-0.6b-5",
+    "normalized": "qwen3-embedding-5"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.36
+  },
+  {
+   "id": "L3-06",
+   "name": "E6 高频轮询 40s 稳定性",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "requests": 704,
+    "errors": [],
+    "p50_ms": 2.6,
+    "p95_ms": 3.9,
+    "max_ms": 146.5
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 40.04
+  },
+  {
+   "id": "L3-07",
+   "name": "E7 流式全链：调用历史记真实输出",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "output_head": "OK",
+    "len": 2
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.39
+  },
+  {
+   "id": "L3-08",
+   "name": "E8 权限矩阵",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "no_key": 401,
+    "bad_key": 401,
+    "good_key": 200,
+    "virtual_key": 200,
+    "after_cleanup": 401
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.03
+  },
+  {
+   "id": "L3-09",
+   "name": "E9 重启后模版与配置持久",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "templates_before": 16,
+    "templates_after": 16,
+    "node_before": "amm",
+    "node_after": "amm"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 2.27
+  },
+  {
+   "id": "L3-10",
+   "name": "E10 并发启停不串",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "results": {
+     "e10-0": {
+      "status": 200,
+      "port": 18106,
+      "error": null
+     },
+     "e10-1": {
+      "status": 200,
+      "port": 18107,
+      "error": null
+     }
+    }
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 4.64
+  },
+  {
+   "id": "L3-05",
+   "name": "E5 故障恢复：服务重启后状态完整",
+   "layer": "L3",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "instance": "e5-persist",
+    "keys_n": 1
+   },
+   "screenshot": "",
+   "destructive": true,
+   "duration": 4.44
+  }
+ ]
+}

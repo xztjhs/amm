@@ -1,0 +1,76 @@
+{
+ "generated_at": "2026-11-17 01:12:20",
+ "base": "http://<YOUR_HOST>:60009",
+ "total": 4,
+ "pass": 3,
+ "fail": 0,
+ "skip": 1,
+ "blocked": 0,
+ "by_layer": {
+  "L2": {
+   "PASS": 3,
+   "FAIL": 0,
+   "SKIP": 1,
+   "BLOCKED": 0,
+   "total": 4
+  }
+ },
+ "console_errors": [],
+ "failed_requests": [],
+ "results": [
+  {
+   "id": "W-10",
+   "name": "embedding 实例真实出向量",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "elapsed_s": 0.06,
+    "dim": 1024
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.06
+  },
+  {
+   "id": "K-07",
+   "name": "Key 改名/改限额",
+   "layer": "L2",
+   "status": "SKIP",
+   "detail": "K-06 未留下测试 Key（鉴权状态被重置）",
+   "evidence": {},
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "K-08",
+   "name": "无效 Key 的行为符合当前鉴权状态",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 404,
+    "auth_enforced": false
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.0
+  },
+  {
+   "id": "S-03",
+   "name": "客户端分组名保存并反映到 /v1/models owned_by",
+   "layer": "L2",
+   "status": "PASS",
+   "detail": "",
+   "evidence": {
+    "status": 200,
+    "resp": "{'success': True, 'node_name': 'amm-wb'}"
+   },
+   "screenshot": "",
+   "destructive": false,
+   "duration": 0.13
+  }
+ ]
+}

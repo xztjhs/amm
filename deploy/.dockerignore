@@ -1,0 +1,33 @@
+# 构建上下文排除项
+# 目的：cuda-bundle 约 1GB，只应通过 Dockerfile 的 COPY cuda-bundle/xxx 精确取用，
+#      不要把整个仓库（含 data/、logs/、.git）一起塞进构建上下文。
+
+# 版本控制与运行时数据
+.git
+.gitignore
+data/
+logs/
+verification/
+patrol-reports/
+.cron-progress-report.md
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# 文档与测试（镜像不需要）
+docs/
+backend/tests/
+*.md
+!cuda-bundle-README.md
+
+# 本地备份
+*.bak-*
+*.old-*
+
+# 注意：以下必须保留在上下文里
+#   cuda-bundle/      Dockerfile COPY 用
+#   requirements.txt  Dockerfile COPY 用

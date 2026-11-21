@@ -1,0 +1,536 @@
+# -*- coding: utf-8 -*-
+"""
+AMM 下载辅助脚本（由 download_bridge.py 以子进程方式调用）。
+通过环境变量接收参数，规避 format 转义问题。
+
+OP:
+  revisions  - 查询模型版本/分支 + 每版本文件清单与大小
+  download   - 执行下载（代理/版本/文件子集/断点续传 + 进度 JSON 心跳）
+
+环境变量:
+  AMM_OP, AMM_SOURCE, AMM_MODEL, AMM_CACHE, AMM_REVISION,
+  AMM_FILES, AMM_PROXY, AMM_PROGRESS, AMM_TOTAL
+"""
+import os
+import sys
+import json
+import time
+import re
+import shutil
+import threading
+import traceback
+from pathlib import Path
+
+OP = os.environ.get("AMM_OP", "")
+source = os.environ.get("AMM_SOURCE", "huggingface")
+model_id = os.environ.get("AMM_MODEL", "")
+cache = os.environ.get("AMM_CACHE", "/models/zoo/huggingface")
+revision = os.environ.get("AMM_REVISION", "") or None
+files = json.loads(os.environ.get("AMM_FILES", "[]") or "[]")
+proxy = json.loads(os.environ.get("AMM_PROXY", "{}") or "{}")
+progress_file = os.environ.get("AMM_PROGRESS", "")
+total_ref = int(os.environ.get("AMM_TOTAL", "0") or 0)
+# 目标落盘(可选): 下载完成后将真实模型文件整理到 MODELS_DIR/目标目录
+target_dir = os.environ.get("AMM_TARGET_DIR", "") or ""
+models_dir = os.environ.get("AMM_MODELS_DIR", "/models")
+# HuggingFace 镜像站 + API Token（v1.1）
+hf_endpoint = (os.environ.get("AMM_HF_ENDPOINT", "") or "").strip().rstrip("/")
+hf_token = (os.environ.get("AMM_HF_TOKEN", "") or "").strip()
+
+
+def apply_proxy():
+    if proxy.get("enabled") and proxy.get("url"):
+        u = proxy["url"]
+        os.environ["HTTP_PROXY"] = u
+        os.environ["HTTPS_PROXY"] = u
+        os.environ["ALL_PROXY"] = u
+        os.environ["NO_PROXY"] = "localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,100.0.0.0/8"
+
+
+apply_proxy()
+os.environ["MODELSCOPE_CACHE"] = "/models/zoo/modelscope"
+os.environ["MODELSCOPE_DOMAIN"] = "modelscope.cn"
+os.environ["HF_HOME"] = "/models/huggingface"
+# 强制禁用 HF Xet CDN 协议。
+# 实测：走 hf-mirror 时 Xet 通道必断（peer closed connection），
+# 关掉后回退传统分块下载 + 自动续传，204MB 可稳定下完。
+os.environ["HF_HUB_DISABLE_XET"] = "1"
+# 默认镜像站：国内网络下 hf-mirror 的 308 之后由 CDN 提供数据，比直连官方稳定得多
+_DEFAULT_MIRROR = "https://hf-mirror.com"
+MIRROR_FALLBACK = "https://huggingface.co"
+
+
+def _apply_endpoint(ep: str):
+    if ep:
+        os.environ["HF_ENDPOINT"] = ep
+        os.environ["HUGGINGFACE_CO_URL_HOME"] = ep
+        return True
+    return False
+
+
+# 未显式配置时默认走镜像站
+hf_endpoint = hf_endpoint or _DEFAULT_MIRROR
+_apply_endpoint(hf_endpoint)
+if hf_token:
+    os.environ["HF_TOKEN"] = hf_token
+    os.environ["HUGGING_FACE_HUB_TOKEN"] = hf_token
+
+
+# =====================================================================
+# 版本/文件清单查询
+# =====================================================================
+def op_revisions():
+    out = {"versions": [], "error": ""}
+
+    def _hf_lookup(ep: str):
+        from huggingface_hub import HfApi
+        api = HfApi(endpoint=ep or None, token=hf_token or None)
+        refs = api.list_repo_refs(model_id)
+        entries = []
+        for r in (getattr(refs, "branches", None) or []):
+            entries.append({"revision": r.name, "type": "branch"})
+        for r in (getattr(refs, "tags", None) or []):
+            entries.append({"revision": r.name, "type": "tag"})
+        if not entries:
+            entries.append({"revision": "main", "type": "main"})
+        for e in entries:
+            try:
+                info = api.model_info(model_id, revision=e["revision"])
+                siblings = sorted({s.rfilename for s in info.siblings}, key=str.lower)
+                sizes = {}
+                try:
+                    paths = api.get_paths_info(model_id, revision=e["revision"],
+                                               paths=siblings)
+                    for item in (paths or []):
+                        sizes[item.path] = item.size
+                except Exception:
+                    pass
+                flist = [{"filename": f, "size": sizes.get(f)} for f in siblings]
+                e["files"] = flist
+                e["total_size"] = sum((f["size"] or 0) for f in flist)
+            except Exception as ex:
+                e["files"] = []
+                e["total_size"] = 0
+                e["error"] = str(ex)[-200:]
+        out["versions"] = entries
+        out["endpoint"] = ep or MIRROR_FALLBACK
+        return True
+
+    try:
+        if source == "huggingface":
+            try:
+                _hf_lookup(hf_endpoint)
+            except Exception as first_err:
+                # 镜像站不可用（308/429/404）时自动回退官方站
+                if hf_endpoint and hf_endpoint.rstrip("/") != MIRROR_FALLBACK:
+                    print(f"WARN mirror failed ({first_err}), fallback to {MIRROR_FALLBACK}",
+                          file=sys.stderr)
+                    _apply_endpoint(MIRROR_FALLBACK)
+                    _hf_lookup(MIRROR_FALLBACK)
+                else:
+                    raise
+        else:
+            from modelscope.hub.api import HubApi
+            api = HubApi()
+            branches = api.get_model_branches_and_tags(model_id)
+            br = branches.get("branches", []) if isinstance(branches, dict) else []
+            tg = branches.get("tags", []) if isinstance(branches, dict) else []
+            entries = [{"revision": b, "type": "branch"} for b in br]
+            entries += [{"revision": t, "type": "tag"} for t in tg]
+            if not entries:
+                entries.append({"revision": "master", "type": "main"})
+            for e in entries:
+                try:
+                    flist = api.get_model_files(model_id, revision=e["revision"])
+                    fs = []
+                    for f in flist or []:
+                        if isinstance(f, dict):
+                            fn = f.get("Path") or f.get("Name")
+                            sz = f.get("Size")
+                        else:
+                            fn = getattr(f, "Path", None) or getattr(f, "Name", None)
+                            sz = getattr(f, "Size", None)
+                        if not fn:
+                            continue
+                        try:
+                            sz = int(sz) if sz else None
+                        except Exception:
+                            sz = None
+                        fs.append({"filename": str(fn), "size": sz})
+                    e["files"] = fs
+                    e["total_size"] = sum((f["size"] or 0) for f in fs)
+                except Exception as ex:
+                    e["files"] = []
+                    e["total_size"] = 0
+                    e["error"] = str(ex)[-200:]
+            out["versions"] = entries
+    except Exception as e:
+        out["error"] = str(e)
+        out["trace"] = traceback.format_exc()[-800:]
+    sys.stdout.write(json.dumps(out, ensure_ascii=False))
+    sys.exit(0 if not out.get("error") else 1)
+
+
+# =====================================================================
+# 下载执行（含进度统计）
+# =====================================================================
+def cache_size_bytes():
+    """统计仅当前模型对应子目录的占用(而非整个 cache), 保证进度准确。"""
+    total = 0
+    try:
+        root = Path(cache)
+        if not root.exists():
+            return 0
+        # 定位目标模型子目录
+        targets = []
+        try:
+            if source == "huggingface":
+                safe = re.sub(r"[^A-Za-z0-9._-]", "--", model_id.replace("/", "--"))
+                tgt_dir = root / ("models--" + safe)
+                if tgt_dir.exists():
+                    targets.append(tgt_dir)
+            else:
+                safe = re.sub(r"[^A-Za-z0-9._-]", "--", model_id.replace("/", "--"))
+                cand = root / "models" / safe
+                cand2 = root / "models" / model_id
+                if cand.exists():
+                    targets.append(cand)
+                if cand2.exists():
+                    targets.append(cand2)
+        except Exception:
+            targets = []
+        if not targets:
+            # 兜底: 只统计 cache 下最近修改的文件(增量), 避免历史模型干扰
+            return total
+        for t in targets:
+            for p in t.rglob("*"):
+                try:
+                    if p.is_file() and ".download-progress" not in str(p):
+                        total += p.stat().st_size
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return total
+
+
+_state = {
+    "done": 0, "total": total_ref, "speed": 0.0, "eta": None,
+    "cur": model_id, "nfiles": 0, "ndone": 0, "detail": "",
+}
+_stop = threading.Event()
+
+
+def _write_prog():
+    try:
+        if not progress_file:
+            return
+        speed = _state["speed"]
+        done = _state["done"]
+        total = _state["total"]
+        eta = None
+        if speed > 0 and total > 0 and done < total:
+            eta = (total - done) / speed
+        payload = {
+            "downloaded": int(done), "total": int(total),
+            "speed": round(speed, 1),
+            "eta": eta,
+            "downloaded_files": int(_state["ndone"]),
+            "total_files": int(_state["nfiles"]),
+            "current_file": _state.get("cur", ""),
+            "detail": _state.get("detail", ""),
+        }
+        json.dump(payload, open(progress_file, "w"))
+    except Exception:
+        pass
+
+
+def _monitor():
+    pre = cache_size_bytes()
+    lastt = time.time()
+    while not _stop.is_set():
+        _stop.wait(2.0)
+        if _stop.is_set():
+            break
+        try:
+            cur = cache_size_bytes()
+            now = time.time()
+            dt = now - lastt
+            if dt >= 1:
+                sp = (cur - pre) / dt if dt > 0 else 0
+                if sp < 0:
+                    sp = 0
+                _state["speed"] = 0.5 * _state.get("speed", 0) + 0.5 * sp
+                pre, lastt = cur, now
+            _state["done"] = max(cur, _state.get("done", 0))
+            if _state["total"] and _state["done"] > _state["total"]:
+                _state["total"] = _state["done"]
+            mb = lambda x: x / 1048576.0 if x else 0
+            _state["detail"] = "正在下载 %s (%.1f / %s MB)" % (
+                model_id, mb(_state["done"]),
+                ("%.1f" % mb(_state["total"])) if _state["total"] else "?")
+            _write_prog()
+        except Exception:
+            pass
+
+
+def _relocate_to_target(snapshot: str) -> str:
+    """把下载完成的快照目录整理到 MODELS_DIR/<目标目录>/。
+
+    target_dir 为相对 MODELS_DIR 的路径(可多级, 直接作为最终模型存放目录)。
+    解析 HF/ModelScope 快照里的 symlink -> 真实文件, 复制(同盘硬链, 跨盘复制)
+    到目标目录, 生成与现有 /models/vllm/Qwen3-4B 一致的扁平结构。
+    """
+    if not snapshot or not target_dir:
+        return snapshot
+    src = Path(snapshot)
+    if not src.is_dir():
+        raise RuntimeError(f"下载完成但快照目录不存在: {snapshot}")
+    dst = Path(models_dir) / target_dir
+    dst.mkdir(parents=True, exist_ok=True)
+    moved = 0
+
+    def _real(p: Path) -> Path:
+        # 解析 symlink 得到真实文件(快照典型结构)
+        try:
+            if p.is_symlink():
+                return p.resolve()
+        except Exception:
+            pass
+        return p
+
+    for root, dirs, fnames in os.walk(src):
+        rootp = Path(root)
+        for fn in fnames:
+            f = rootp / fn
+            true_f = _real(f)
+            if not true_f.is_file():
+                continue
+            rel = true_f.relative_to(src) if _within(true_f, src) else f.relative_to(src)
+            # 跳过快照内部缓存/索引文件
+            if ".cache" in str(f).replace(os.sep, "/").lower() or str(f).endswith(".incomplete"):
+                continue
+            target = dst / rel
+            if target.exists():
+                continue  # 断点续传/重复下载场景下已存在, 跳过
+            target.parent.mkdir(parents=True, exist_ok=True)
+            # 同文件系统: 先尝试硬链接省空间, 失败(跨设备)回退复制
+            try:
+                os.link(str(true_f), str(target))
+                moved += 1
+            except OSError:
+                try:
+                    shutil.copy2(str(true_f), str(target))
+                    moved += 1
+                except Exception:
+                    pass
+    return str(dst)
+
+
+def _within(p: Path, root: Path) -> bool:
+    try:
+        p.relative_to(root)
+        return True
+    except Exception:
+        return False
+
+
+def _head_size(url: str) -> int:
+    """取远端文件大小（跟随 308/302）。失败返回 0。"""
+    import urllib.request
+    try:
+        req = urllib.request.Request(url, method="HEAD")
+        req.add_header("User-Agent", "AMM-Downloader/1.1")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            cl = r.headers.get("Content-Length")
+            return int(cl) if cl else 0
+    except Exception as e:
+        print(f"HEAD failed: {type(e).__name__} {str(e)[:120]}", file=sys.stderr, flush=True)
+        return 0
+
+
+def _http_range_download(url: str, dest: Path, expected: int = 0,
+                         max_rounds: int = 200) -> bool:
+    """用原生 HTTP Range 断点续传下载单个文件。
+
+    为什么不用 huggingface_hub：它的 httpx 通道在 hf-mirror 上会在
+    400-500MB 处被对端切断，且不跨进程续传。
+
+    关键点：必须知道期望大小并校验，否则对端提前断开会被误判成「下载完成」。
+    """
+    import urllib.request
+
+    expected = expected or _head_size(url)
+    if not expected:
+        raise RuntimeError(f"无法获取文件大小: {url}")
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    part = dest.with_suffix(dest.suffix + ".part")
+    if part.exists() and part.stat().st_size > expected:
+        part.unlink()
+
+    n = 0
+    while n < max_rounds:
+        n += 1
+        have = part.stat().st_size if part.exists() else 0
+        if have >= expected:
+            break
+        req = urllib.request.Request(url, method="GET")
+        req.add_header("User-Agent", "AMM-Downloader/1.1")
+        if have:
+            req.add_header("Range", f"bytes={have}-")
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                if have and resp.status != 206:
+                    # 服务端没按 Range 返回，只能从头来
+                    have = 0
+                    part.unlink(missing_ok=True)
+                mode = "ab" if have else "wb"
+                with open(part, mode) as f:
+                    while True:
+                        chunk = resp.read(1024 * 512)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        got = f.tell()
+                        _state["done"] = got
+                        _state["total"] = expected
+                        _state["detail"] = "正在下载 %s (%.1f / %.1f MB)" % (
+                            model_id, got / 1048576.0, expected / 1048576.0)
+                        _write_prog()
+        except Exception as e:
+            size_now = part.stat().st_size if part.exists() else 0
+            print(f"round {n} interrupted at {size_now}/{expected}B "
+                  f"({type(e).__name__} {str(e)[:100]})", file=sys.stderr, flush=True)
+            # 短退避：镜像对「间歇性长连接」比「密集重连」更宽容
+            time.sleep(min(5, 1 + (n % 3)))
+            continue
+
+        size_now = part.stat().st_size if part.exists() else 0
+        if size_now >= expected:
+            break
+        print(f"round {n} ended early at {size_now}/{expected}B, resuming",
+              file=sys.stderr, flush=True)
+        # 对端主动收尾（可能限流），给 3s 喘息再续，避免被判成爬虫
+        time.sleep(3)
+
+    size_now = part.stat().st_size if part.exists() else 0
+    if size_now < expected:
+        # 保留 .part，下一次重试会从这里续（bridge 层还有整任务重试）
+        raise RuntimeError(f"下载未完成: {size_now}/{expected}B（已保留断点）")
+    os.replace(part, dest)
+    _state["done"] = expected
+    _state["total"] = expected
+    return True
+
+
+def _hf_file_url(repo_id: str, filename: str, revision: str = "") -> str:
+    base = os.environ.get("HF_ENDPOINT", _DEFAULT_MIRROR).rstrip("/")
+    rev = revision or "main"
+    return f"{base}/{repo_id}/resolve/{rev}/{filename}"
+
+
+def op_download_http():
+    """直接用 HTTP Range 下载指定文件列表（绕过 huggingface_hub 的传输层）。"""
+    if not target_dir:
+        print("ERR http mode requires target_dir", file=sys.stderr)
+        sys.exit(1)
+    dst_dir = Path(models_dir) / target_dir
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    _stop.clear()
+    threading.Thread(target=_monitor, daemon=True).start()
+
+    ok = 0
+    for fn in files:
+        name = fn.split("/")[-1]
+        url = _hf_file_url(model_id, fn, revision or "")
+        dest = dst_dir / name
+        expected = _head_size(url)
+        if dest.exists() and dest.stat().st_size > 0:
+            if expected and dest.stat().st_size == expected:
+                print(f"skip complete {name} ({expected}B)", file=sys.stderr, flush=True)
+                ok += 1
+                continue
+            # 大小不符 = 之前的残缺文件，删掉重下
+            print(f"remove partial {name} ({dest.stat().st_size}/{expected}B)",
+                  file=sys.stderr, flush=True)
+            dest.unlink()
+        print(f"GET {url} ({expected}B)", file=sys.stderr, flush=True)
+        try:
+            _http_range_download(url, dest, expected=expected)
+            ok += 1
+            print(f"done {name} {dest.stat().st_size}B", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"ERR {name}: {type(e).__name__} {str(e)[:200]}", file=sys.stderr, flush=True)
+            sys.exit(1)
+    print("OK", str(dst_dir))
+    sys.exit(0)
+
+
+def op_download():
+    if progress_file:
+        os.makedirs(Path(progress_file).parent, exist_ok=True)
+    _stop.clear()
+    threading.Thread(target=_monitor, daemon=True).start()
+    try:
+        ok_path = ""
+        if source == "modelscope":
+            from modelscope import snapshot_download
+            kw = dict(cache_dir=cache)
+            if revision:
+                kw["revision"] = revision
+            if files:
+                kw["allow_file_pattern"] = files
+            p = snapshot_download(model_id, **kw)
+            ok_path = _relocate_to_target(p)
+        else:
+            from huggingface_hub import snapshot_download
+
+            def _snapshot(ep: str):
+                kw = dict(repo_id=model_id, cache_dir=cache,
+                          revision=revision or None,
+                          allow_patterns=files or None,
+                          max_workers=2)
+                if ep:
+                    kw["endpoint"] = ep
+                if hf_token:
+                    kw["token"] = hf_token
+                try:
+                    return snapshot_download(**kw)
+                except TypeError:
+                    # 老版本 huggingface_hub 不认 endpoint 参数，环境变量已生效
+                    kw.pop("endpoint", None)
+                    return snapshot_download(**kw)
+
+            try:
+                p = _snapshot(hf_endpoint)
+            except Exception as first_err:
+                if hf_endpoint and hf_endpoint.rstrip("/") != MIRROR_FALLBACK:
+                    print(f"WARN mirror failed ({type(first_err).__name__}), "
+                          f"fallback to {MIRROR_FALLBACK}", file=sys.stderr, flush=True)
+                    _apply_endpoint(MIRROR_FALLBACK)
+                    p = _snapshot(MIRROR_FALLBACK)
+                else:
+                    raise
+            ok_path = _relocate_to_target(p)
+        final = ok_path or p
+        print("OK", final)
+        sys.exit(0)
+    except SystemExit:
+        raise
+    except Exception as e:
+        tb = traceback.format_exc()
+        sys.stderr.write(tb[-1600:])
+        print("ERR", str(e)[-800:])
+        sys.exit(1)
+
+
+if OP == "revisions":
+    op_revisions()
+elif OP == "download_http":
+    op_download_http()
+elif OP == "download":
+    op_download()
+else:
+    print("BAD_OP")
+    sys.exit(2)

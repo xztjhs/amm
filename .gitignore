@@ -1,0 +1,68 @@
+# Logs
+logs/*.log
+logs/*.out
+logs/*.pid
+logs/*.err
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models (stored separately)
+models/
+*.gguf
+
+# Verification outputs (T2I PNG / T2V MP4 produced by diffusers bridge)
+verification/
+
+# Secrets
+.env
+credentials.json
+*.pem
+*.key
+backend/server.py.bak-*
+
+# Runtime state
+logs/state.json
+
+# pytest
+.pytest_cache/
+backend/tests/__pycache__/
+
+# 旧仓库 /data/xtao/amm 时代遗留（2026-08-12 停更），已归档至
+# /mnt/<disk>/backup/amm-patrol-reports-20261118
+patrol-reports/
+.cron-progress-report.md

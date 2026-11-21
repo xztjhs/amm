@@ -1,0 +1,29 @@
+# Qwen-Image Q2_K GGUF — 文生图（GGUF 量化，演示用）
+id: qwen-image-gguf
+name: Qwen-Image (GGUF Q2_K)
+category: image
+description: Qwen-Image 的 GGUF 量化版（Q2_K，约 7GB 权重），需 diffusers 支持 from_single_file + gguf 加载；显存紧张时优先选它。
+tags: [image, t2i, gguf, qwen-image, demo]
+vram_hint_gb: 12
+model_file: "amm/Qwen-image-Q2_K.gguf"
+sources:
+  - provider: huggingface
+    repo_id: city96/Qwen-Image-gguf
+    files: [qwen-image-Q2_K.gguf]
+  - provider: huggingface
+    repo_id: Qwen/Qwen-Image
+engines:
+  - engine: diffusers
+    version: "0.39.0"
+    flavor: cuda
+    params:
+      quant: gguf
+      offload: model
+      num_inference_steps: 28
+      guidance_scale: 5.0
+parameters:
+  - { name: width, label: 图片宽度, type: number, default: 1024, min: 512, max: 2048 }
+  - { name: height, label: 图片高度, type: number, default: 1024, min: 512, max: 2048 }
+  - { name: num_inference_steps, label: 推理步数, type: number, default: 28, min: 10, max: 100 }
+  - { name: guidance_scale, label: 引导强度, type: float, default: 5.0, min: 1.0, max: 20.0, step: 0.5 }
+quantization: [Q2_K, Q4_K_M, Q8_0]

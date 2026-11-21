@@ -1,0 +1,50 @@
+# Qwen3-Embedding-0.6B — 文本向量（官方 0.6B，演示用）
+id: qwen3-embedding-0.6b
+name: Qwen3-Embedding-0.6B
+category: embedding
+description: 通义千问3 官方 0.6B 向量模型，中英文检索效果好、显存占用小；GGUF 走 llama.cpp，safetensors 走 sentence-transformers。
+tags: [embedding, qwen3, multilingual, demo]
+context_length: 32768
+vram_hint_gb: 2
+model_file: "amm/Qwen3-Embedding-0.6B-Q8_0.gguf"
+sources:
+  - provider: huggingface
+    repo_id: Qwen/Qwen3-Embedding-0.6B-GGUF
+    files: [Qwen3-Embedding-0.6B-Q8_0.gguf]
+  - provider: modelscope
+    repo_id: Qwen/Qwen3-Embedding-0.6B-GGUF
+    files: [Qwen3-Embedding-0.6B-Q8_0.gguf]
+  - provider: huggingface
+    repo_id: Qwen/Qwen3-Embedding-0.6B
+engines:
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      ctx_size: 8192
+      n_gpu_layers: -1
+      embeddings: true
+      batch_size: 1024
+      flash_attn: true
+  - engine: llama_cpp
+    version: latest
+    flavor: cpu
+    params:
+      ctx_size: 8192
+      n_gpu_layers: 0
+      embeddings: true
+      batch_size: 512
+      threads: 8
+  - engine: sentence_transformers
+    version: "3.3.1"
+    flavor: cuda
+    params:
+      device: auto
+      batch_size: 32
+      normalize: true
+      max_seq_length: 8192
+parameters:
+  - { name: ctx_size, label: 上下文长度, type: number, default: 8192, min: 512, max: 32768 }
+  - { name: n_gpu_layers, label: GPU 层数, type: number, default: -1, min: -1, max: 256 }
+  - { name: batch_size, label: 批大小, type: number, default: 1024, min: 128, max: 4096 }
+quantization: [Q8_0, BF16]

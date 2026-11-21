@@ -1,0 +1,30 @@
+# BGE-Reranker-v2-M3 — 检索重排
+id: bge-reranker-v2-m3
+name: BGE-Reranker-v2-M3
+category: reranker
+description: BAAI 多语言重排模型，用于 RAG 召回后精排，提升 Top-K 相关性。
+tags: [reranker, rag, multilingual]
+vram_hint_gb: 2
+sources:
+  - provider: modelscope
+    repo_id: BAAI/bge-reranker-v2-m3
+  - provider: huggingface
+    repo_id: BAAI/bge-reranker-v2-m3
+engines:
+  - engine: sentence_transformers
+    version: "3.3.1"
+    flavor: cuda
+    params:
+      batch_size: 32
+  - engine: sentence_transformers
+    version: "3.3.1"
+    flavor: cpu
+    params:
+      batch_size: 8
+  - engine: llama_cpp
+    version: latest
+    flavor: cuda
+    params:
+      reranking: true
+      ctx_size: 8192
+quantization: []
